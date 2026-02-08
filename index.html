@@ -30,16 +30,19 @@
         #ai-toggle { position: fixed; bottom: 80px; right: 30px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; border: none; font-weight: 700; z-index: 100; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
         #ai-window { display: none; position: fixed; bottom: 140px; right: 30px; width: 350px; height: 450px; background: white; border: 1px solid var(--border); border-radius: 20px; z-index: 100; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; max-height: 600px; overflow-y: auto; padding-right: 10px; }
+        .trophy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
+        .trophy { padding: 20px; border-radius: 20px; background: #f1f5f9; filter: grayscale(1); opacity: 0.3; transition: 0.5s; }
+        .trophy.unlocked { filter: grayscale(0); opacity: 1; background: #fff; border: 2px solid var(--gold); transform: scale(1.05); }
+        .trophy-icon { font-size: 3rem; display: block; margin-bottom: 10px; }
+
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
         .fact-card { background: #f1f5f9; padding: 15px; border-radius: 12px; font-size: 0.9rem; border-left: 4px solid var(--accent); }
 
         footer { margin-top: auto; padding: 20px 0; border-top: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 0.8rem; }
-
-        .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; }
+        .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; margin-top: 10px;}
         .opt-btn { background: white; border: 1px solid var(--border); padding: 12px; margin-top: 10px; text-align: left; cursor: pointer; border-radius: 10px; width: 100%; }
-        .opt-btn:hover { border-color: var(--primary); background: #f8fafc; }
-
-        @media (max-width: 850px) { body { flex-direction: column; } #sidebar { width: 100%; flex-direction: row; height: auto; padding: 10px; overflow-x: auto; } #main { padding: 20px; } }
+        
+        @media (max-width: 850px) { body { flex-direction: column; } #sidebar { width: 100%; flex-direction: row; height: auto; padding: 10px; overflow-x: auto; } }
     </style>
 </head>
 <body>
@@ -56,6 +59,7 @@
     <div style="font-family:'Outfit'; font-weight:900; font-size:1.5rem; margin-bottom:30px; color:var(--primary);">SkiLabs_</div>
     <div class="nav-btn active" onclick="nav('dash', this)">🏠 Hub</div>
     <div class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Gauntlet</div>
+    <div class="nav-btn" onclick="nav('trophy', this)">🏆 Trophies</div>
     <div class="nav-btn" onclick="nav('glossary', this)">📖 Glossary</div>
 </nav>
 
@@ -73,9 +77,9 @@
         <h1 style="font-family:'Outfit';">The Gauntlet</h1>
         <div class="glass-panel" id="quiz-container">
             <div id="quiz-intro">
-                <p>Select your difficulty level. A perfect 10/10 is required to earn the rank.</p>
-                <button class="action-btn" onclick="startQuiz('Pro')" style="margin-bottom:10px;">PRO TEST</button>
-                <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent); margin-bottom:10px;">MASTER TEST</button>
+                <p>Complete each level to earn a permanent trophy. 10/10 required.</p>
+                <button class="action-btn" onclick="startQuiz('Pro')">PRO TEST</button>
+                <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent);">MASTER TEST</button>
                 <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE TEST</button>
             </div>
             <div id="quiz-active" style="display:none;">
@@ -83,8 +87,19 @@
                     <span id="quiz-level" style="font-weight:700; color:var(--primary);">Level</span>
                     <span id="quiz-progress">1/10</span>
                 </div>
-                <h3 id="question-text">Loading question...</h3>
+                <h3 id="question-text">Loading...</h3>
                 <div id="answer-options"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="trophy" class="view">
+        <h1 style="font-family:'Outfit';">Trophy Room</h1>
+        <div class="glass-panel">
+            <div class="trophy-grid">
+                <div class="trophy" id="t-pro"><span class="trophy-icon">🥉</span><b>Pro</b><br>Certified</div>
+                <div class="trophy" id="t-master"><span class="trophy-icon">🥈</span><b>Master</b><br>Scientist</div>
+                <div class="trophy" id="t-elite"><span class="trophy-icon">🥇</span><b>Elite</b><br>Architect</div>
             </div>
         </div>
     </section>
@@ -97,80 +112,29 @@
     <button id="ai-toggle" onclick="toggleAI()">🧠 Omni Brain</button>
     <div id="ai-window">
         <div style="background:var(--primary); color:white; padding:15px; font-weight:700; display:flex; justify-content:space-between;">
-            <span>OMNI AI v4.0</span>
-            <span onclick="toggleAI()" style="cursor:pointer;">✕</span>
+            <span>OMNI AI v4.0</span><span onclick="toggleAI()" style="cursor:pointer;">✕</span>
         </div>
         <div id="ai-chat" style="flex-grow:1; padding:15px; overflow-y:auto; font-size:0.9rem; background: #fafafa;"></div>
         <div style="padding:10px; border-top:1px solid var(--border); display:flex; gap:5px;">
-            <input type="text" id="ai-input" placeholder="Type hello or a question..." style="border:none; background:#f1f5f9; padding:12px; border-radius:10px; flex-grow:1; outline:none;">
+            <input type="text" id="ai-input" placeholder="Say hello or use secret code..." style="border:none; background:#f1f5f9; padding:12px; border-radius:10px; flex-grow:1; outline:none;">
             <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 15px; cursor:pointer;">Send</button>
         </div>
     </div>
 
     <footer>
         <p>© 2026 Made by <b>Caleb Fiifi Asare</b></p>
-        <p style="font-size: 0.7rem; opacity: 0.5;">Nexus Protocol Active</p>
     </footer>
 </main>
 
 <script>
-    let currentLevel = "";
-    let qIdx = 0;
-    let score = 0;
-    let userRank = "NOVICE";
+    let currentLevel = ""; let qIdx = 0; let score = 0;
+    let unlockedRanks = { Pro: false, Master: false, Elite: false };
 
     const questions = {
-        Pro: [
-            {q:"Symbol for Gold?", a:["Au","Ag","Fe","Gd"], c:0},
-            {q:"H2O is common name for?", a:["Salt","Water","Air","Acid"], c:1},
-            {q:"Largest planet?", a:["Mars","Earth","Jupiter","Venus"], c:2},
-            {q:"Powerhouse of cell?", a:["Nucleus","Ribosome","Mitochondria","Wall"], c:2},
-            {q:"Boiling point of water?", a:["90C","100C","120C","80C"], c:1},
-            {q:"Plants breathe what?", a:["Oxygen","CO2","Nitrogen","Argon"], c:1},
-            {q:"Human bones total?", a:["206","300","150","210"], c:0},
-            {q:"Speed of light is?", a:["300k km/s","10k km/s","Fastest","Constant"], c:0},
-            {q:"Center of atom?", a:["Electron","Nucleus","Proton","Neutron"], c:1},
-            {q:"Red planet?", a:["Mars","Venus","Jupiter","Moon"], c:0}
-        ],
-        Master: [
-            {q:"Gas making up 78% of air?", a:["Oxygen","Nitrogen","CO2","Argon"], c:1},
-            {q:"Unit of electric resistance?", a:["Volt","Ampere","Ohm","Watt"], c:2},
-            {q:"Chemical symbol for Silver?", a:["Si","Sl","Ag","Au"], c:2},
-            {q:"Who wrote 'Origin of Species'?", a:["Newton","Darwin","Einstein","Tesla"], c:1},
-            {q:"Study of fossils is?", a:["Biology","Geology","Paleontology","Botany"], c:2},
-            {q:"Nearest star to Earth?", a:["Proxima Centauri","The Sun","Sirius","Vega"], c:1},
-            {q:"Lightest element?", a:["Helium","Oxygen","Hydrogen","Lithium"], c:2},
-            {q:"pH of pure water?", a:["5","7","9","1"], c:1},
-            {q:"Process: Gas to Liquid?", a:["Evaporation","Condensation","Freezing","Melting"], c:1},
-            {q:"How many teeth in adult humans?", a:["28","30","32","34"], c:2}
-        ],
-        Elite: [
-            {q:"Charge of an electron?", a:["Positive","Negative","Neutral","Variable"], c:1},
-            {q:"Avogadro's constant?", a:["6.02x10^23","3.14","9.81","1.6x10^-19"], c:0},
-            {q:"Main component of glass?", a:["Iron","Carbon","Silica","Sodium"], c:2},
-            {q:"Bond where electrons are shared?", a:["Ionic","Metallic","Covalent","Hydrogen"], c:2},
-            {q:"Gravity on Earth (m/s²)?", a:["8.8","9.8","10.8","7.8"], c:1},
-            {q:"Element with Atomic Number 6?", a:["Oxygen","Nitrogen","Carbon","Helium"], c:2},
-            {q:"Smallest bone in body?", a:["Femur","Stapes","Rib","Skull"], c:1},
-            {q:"Newton's 2nd Law equation?", a:["E=mc2","F=ma","a+b=c","V=IR"], c:1},
-            {q:"What is Absolute Zero (C)?", a:["0","-100","-273.15","-300"], c:2},
-            {q:"Hardest natural mineral?", a:["Steel","Ruby","Diamond","Quartz"], c:2}
-        ]
+        Pro: [{q:"Symbol for Gold?", a:["Au","Ag","Fe","Gd"], c:0},{q:"H2O is?", a:["Salt","Water","Air","Acid"], c:1},{q:"Largest planet?", a:["Mars","Earth","Jupiter","Venus"], c:2},{q:"Powerhouse of cell?", a:["Nucleus","Ribosome","Mitochondria","Wall"], c:2},{q:"Boiling point of water?", a:["90C","100C","120C","80C"], c:1},{q:"Plants breathe?", a:["Oxygen","CO2","Nitrogen","Argon"], c:1},{q:"Human bones total?", a:["206","300","150","210"], c:0},{q:"Speed of light is?", a:["300k km/s","10k km/s","Fastest","Constant"], c:0},{q:"Center of atom?", a:["Electron","Nucleus","Proton","Neutron"], c:1},{q:"Red planet?", a:["Mars","Venus","Jupiter","Moon"], c:0}],
+        Master: [{q:"Gas making 78% of air?", a:["Oxygen","Nitrogen","CO2","Argon"], c:1},{q:"Unit of resistance?", a:["Volt","Ampere","Ohm","Watt"], c:2},{q:"Symbol for Silver?", a:["Si","Sl","Ag","Au"], c:2},{q:"Who wrote Darwin?", a:["Newton","Darwin","Einstein","Tesla"], c:1},{q:"Study of fossils?", a:["Biology","Geology","Paleontology","Botany"], c:2},{q:"Nearest star?", a:["Proxima Centauri","The Sun","Sirius","Vega"], c:1},{q:"Lightest element?", a:["Helium","Oxygen","Hydrogen","Lithium"], c:2},{q:"pH of pure water?", a:["5","7","9","1"], c:1},{q:"Gas to Liquid?", a:["Evaporation","Condensation","Freezing","Melting"], c:1},{q:"Adult human teeth?", a:["28","30","32","34"], c:2}],
+        Elite: [{q:"Electron charge?", a:["Positive","Negative","Neutral","Variable"], c:1},{q:"Avogadro's constant?", a:["6.02x10^23","3.14","9.81","1.6x10^-19"], c:0},{q:"Glass component?", a:["Iron","Carbon","Silica","Sodium"], c:2},{q:"Shared electron bond?", a:["Ionic","Metallic","Covalent","Hydrogen"], c:2},{q:"Earth Gravity?", a:["8.8","9.8","10.8","7.8"], c:1},{q:"Atomic Number 6?", a:["Oxygen","Nitrogen","Carbon","Helium"], c:2},{q:"Smallest bone?", a:["Femur","Stapes","Rib","Skull"], c:1},{q:"F = ma is Newton's?", a:["1st","2nd","3rd","4th"], c:1},{q:"Absolute Zero (C)?", a:["0","-100","-273.15","-300"], c:2},{q:"Hardest mineral?", a:["Steel","Ruby","Diamond","Quartz"], c:2}]
     };
-
-    const facts = [
-        "A teaspoon of a neutron star weighs 6 billion tons.",
-        "Bananas are slightly radioactive due to potassium.",
-        "Water can boil and freeze at the same time (Triple Point).",
-        "Octopuses have three hearts and blue blood.",
-        "DNA is a natural flame retardant.",
-        "Light takes 8 minutes 20 seconds to travel from Sun to Earth.",
-        "Venus is the only planet that rotates clockwise.",
-        "Honey never spoils; edible honey was found in 3000-year-old tombs.",
-        "A bolt of lightning is 5 times hotter than the Sun's surface.",
-        "Sharks have existed for longer than trees.",
-        "Every atom in your body is billions of years old."
-    ];
 
     function login() {
         const n = document.getElementById('user-name').value;
@@ -189,6 +153,7 @@
 
     function loadGlossary() {
         const box = document.getElementById('glossary-box');
+        const facts = ["Mitochondria has its own DNA.", "Venus is the hottest planet.", "Diamond is pure carbon.", "Humans share 50% DNA with bananas.", "Light takes 8 mins to reach Earth.", "Sound is 4x faster in water.", "Oxygen is a gas at room temp.", "Steel is an alloy of iron.", "Jupiter has 79 moons.", "The heart is a muscle."];
         box.innerHTML = "";
         facts.forEach(f => { box.innerHTML += `<div class="fact-card">${f}</div>`; });
     }
@@ -199,23 +164,12 @@
     }
 
     function askAI() {
-        const rawInput = document.getElementById('ai-input').value;
-        const input = rawInput.toLowerCase().trim();
+        const input = document.getElementById('ai-input').value.toLowerCase().trim();
         const chat = document.getElementById('ai-chat');
-        let response = "I don't have a specific answer for that yet. Try asking about science!";
-        
-        if(input === "nkb gf") {
-            response = `<div style="background:#fff1f2; padding:15px; border-radius:12px; border:1px solid #fda4af; color:#be123c;">
-                <b>❤️ MESSAGE DECODED:</b><br><br>
-                Dear Nhyira Karikari Bonsu,<br><br>
-                You are my world. I love you!
-            </div>`;
-        } else if(input.includes("hello")) {
-            response = "Greetings, Operator. Systems are ready.";
-        }
-
-        chat.innerHTML += `<div style="margin-bottom:12px; text-align:right;"><b>You:</b> ${rawInput}</div>`;
-        chat.innerHTML += `<div style="color:var(--primary); margin-bottom:15px;"><b>Omni:</b> ${response}</div>`;
+        let res = "I'm not sure. Ask about Science!";
+        if(input === "nkb gf") res = "❤️ MESSAGE: Nhyira Karikari Bonsu, you are my world, my life and my light. I love you!";
+        else if(input.includes("hello")) res = "Hello Operator Caleb. How can I help?";
+        chat.innerHTML += `<div><b>You:</b> ${input}</div><div style="color:var(--primary); margin-bottom:10px;"><b>Omni:</b> ${res}</div>`;
         document.getElementById('ai-input').value = "";
         chat.scrollTop = chat.scrollHeight;
     }
@@ -224,7 +178,6 @@
         currentLevel = lvl; qIdx = 0; score = 0;
         document.getElementById('quiz-intro').style.display = 'none';
         document.getElementById('quiz-active').style.display = 'block';
-        document.getElementById('quiz-level').innerText = "Difficulty: " + lvl;
         showQ();
     }
 
@@ -238,48 +191,31 @@
             const b = document.createElement('button');
             b.className = "opt-btn";
             b.innerText = opt;
-            b.onclick = () => { checkA(i, qData.c); };
+            b.onclick = () => { if(i === qData.c) score++; qIdx++; if(qIdx < 10) showQ(); else endQuiz(); };
             opts.appendChild(b);
         });
     }
 
-    function checkA(pick, correct) {
-        if(pick === correct) score++;
-        qIdx++;
-        if(qIdx < 10) showQ();
-        else endQuiz();
-    }
-
     function endQuiz() {
-        const box = document.getElementById('quiz-container');
+        const container = document.getElementById('quiz-container');
         if(score === 10) {
-            userRank = currentLevel.toUpperCase();
-            document.getElementById('rank-tag').innerText = userRank;
-            box.innerHTML = `<h2>10/10 PERFECT!</h2><p>Rank updated to <b>${userRank}</b>.</p><button onclick="resetQuiz()" class="action-btn">Done</button>`;
+            unlockedRanks[currentLevel] = true;
+            updateStatus();
+            container.innerHTML = `<h2>10/10 PERFECT!</h2><p>Trophy Unlocked: <b>${currentLevel}</b></p><button class="action-btn" onclick="location.reload()">Continue</button>`;
             confetti();
         } else {
-            box.innerHTML = `<h2>SCORE: ${score}/10</h2><p>Perfect score needed for rank increase.</p><button onclick="resetQuiz()" class="action-btn">Try Again</button>`;
+            container.innerHTML = `<h2>Score: ${score}/10</h2><p>Try again for the trophy.</p><button class="action-btn" onclick="location.reload()">Retry</button>`;
         }
     }
 
-    function resetQuiz() {
-        document.getElementById('quiz-intro').style.display = 'block';
-        document.getElementById('quiz-active').style.display = 'none';
-        document.getElementById('quiz-container').innerHTML = `
-            <div id="quiz-intro">
-                <p>Select difficulty. 10/10 required for rank.</p>
-                <button class="action-btn" onclick="startQuiz('Pro')" style="margin-bottom:10px;">PRO TEST</button>
-                <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent); margin-bottom:10px;">MASTER TEST</button>
-                <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE TEST</button>
-            </div>
-            <div id="quiz-active" style="display:none;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                    <span id="quiz-level" style="font-weight:700; color:var(--primary);">Level</span>
-                    <span id="quiz-progress">1/10</span>
-                </div>
-                <h3 id="question-text">Loading question...</h3>
-                <div id="answer-options"></div>
-            </div>`;
+    function updateStatus() {
+        if(unlockedRanks.Elite) document.getElementById('rank-tag').innerText = "ELITE ARCHITECT";
+        else if(unlockedRanks.Master) document.getElementById('rank-tag').innerText = "MASTER SCIENTIST";
+        else if(unlockedRanks.Pro) document.getElementById('rank-tag').innerText = "PRO CERTIFIED";
+        
+        if(unlockedRanks.Pro) document.getElementById('t-pro').classList.add('unlocked');
+        if(unlockedRanks.Master) document.getElementById('t-master').classList.add('unlocked');
+        if(unlockedRanks.Elite) document.getElementById('t-elite').classList.add('unlocked');
     }
 </script>
 </body>
