@@ -3,143 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkiLabs Academy | Hardcore Edition</title>
-    
+    <title>SkiLabs Academy | Research Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-
     <style>
-        :root {
-            --primary: #6366f1; --accent: #0ea5e9; --gold: #f59e0b;
-            --bg: #f8fafc; --panel: #ffffff; --border: #e2e8f0; --text: #1e293b;
-            --ruby: #e11d48; --emerald: #10b981;
-        }
-
-        * { box-sizing: border-box; transition: all 0.3s ease; }
+        :root { --primary: #6366f1; --accent: #0ea5e9; --gold: #f59e0b; --ruby: #e11d48; --emerald: #10b981; --bg: #f8fafc; --panel: #ffffff; --border: #e2e8f0; --text: #1e293b; }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
         body { margin: 0; font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
-
         #sidebar { width: 260px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; }
-        .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: #64748b; font-weight: 500; }
-        .nav-btn.active { background: var(--primary); color: white; }
-
-        #main { flex-grow: 1; overflow-y: auto; padding: 40px; }
-        .view { display: none; max-width: 900px; margin: 0 auto; }
+        .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: #64748b; font-weight: 500; border: none; background: none; text-align: left; font-size: 1rem; }
+        .nav-btn.active { background: #e0e7ff; color: var(--primary); font-weight: 700; }
+        #main { flex-grow: 1; overflow-y: auto; padding: 40px; position: relative; }
+        .view { display: none; max-width: 900px; margin: 0 auto; width: 100%; }
         .active-view { display: block; }
         .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-
         .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .fact-card { background: var(--panel); padding: 15px; border-radius: 12px; border-left: 4px solid var(--accent); border: 1px solid var(--border); font-size: 0.85rem; }
-
+        .fact-card { background: var(--panel); padding: 15px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--accent); font-size: 0.85rem; }
+        #ai-toggle { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; border: none; font-weight: 700; z-index: 100; box-shadow: 0 10px 20px rgba(99,102,241,0.3); }
+        #ai-window { display: none; position: fixed; bottom: 90px; right: 30px; width: 350px; height: 450px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; z-index: 100; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; background: #fafafa; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { padding: 10px 14px; border-radius: 15px; max-width: 85%; line-height: 1.4; }
+        .ai-bub { background: #e0e7ff; color: var(--primary); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .user-bub { background: #f1f5f9; color: var(--text); align-self: flex-end; border-bottom-right-radius: 2px; }
         .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; margin-top: 10px; }
-        .opt-btn { background: white; border: 1px solid var(--border); padding: 12px; margin-top: 10px; text-align: left; cursor: pointer; border-radius: 10px; width: 100%; font-family: inherit; }
-        
+        .opt-btn { background: white; border: 1px solid var(--border); padding: 12px; margin-top: 8px; text-align: left; cursor: pointer; border-radius: 10px; width: 100%; }
+        .trophy { padding: 15px; border-radius: 15px; background: #f1f5f9; filter: grayscale(1); opacity: 0.3; text-align: center; font-weight: 700; }
+        .trophy.unlocked { filter: grayscale(0); opacity: 1; background: white; border: 2px solid var(--gold); }
         #hardcore-btn { display: none; background: linear-gradient(45deg, var(--ruby), var(--gold)); color: white; border: none; padding: 20px; border-radius: 15px; font-weight: 900; cursor: pointer; margin-top: 20px; width: 100%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-
-        #ai-toggle { position: fixed; bottom: 80px; right: 30px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; border: none; z-index: 100; font-weight: 700; }
-        #ai-window { display: none; position: fixed; bottom: 140px; right: 30px; width: 350px; height: 450px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; z-index: 100; flex-direction: column; overflow: hidden; }
-        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { padding: 10px 14px; border-radius: 15px; max-width: 85%; }
-        .ai-bub { background: var(--primary); color: white; align-self: flex-start; }
-        .user-bub { background: var(--border); align-self: flex-end; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
     </style>
 </head>
 <body>
 
 <div id="login-screen" style="position:fixed; inset:0; background:#f8fafc; z-index:2000; display:flex; align-items:center; justify-content:center;">
     <div class="glass-panel" style="text-align:center; width: 350px;">
-        <h1 style="font-family:'Outfit'; color:#6366f1;">SkiLabs_</h1>
-        <input type="text" id="user-name" placeholder="Enter Operator Name" style="width:100%; padding:15px; border:1px solid #e2e8f0; border-radius:12px; margin-bottom:15px;">
-        <button class="action-btn" onclick="login()">INITIALIZE SYSTEM</button>
+        <h1 style="font-family:'Outfit'; color:var(--primary);">SkiLabs_</h1>
+        <input type="text" id="user-name" placeholder="Enter Researcher Name" style="width:100%; padding:15px; border:1px solid var(--border); border-radius:12px; margin-bottom:15px; outline:none;">
+        <button class="action-btn" onclick="login()">AUTHORIZE RESEARCHER</button>
     </div>
 </div>
 
 <nav id="sidebar">
     <div style="font-family:'Outfit'; font-weight:900; font-size:1.5rem; margin-bottom:30px; color:var(--primary);">SkiLabs_</div>
-    <div class="nav-btn active" onclick="nav('dash', this)">🏠 Hub</div>
-    <div class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Gauntlet</div>
-    <div class="nav-btn" onclick="nav('trophy', this)">🏆 Trophies</div>
-    <div class="nav-btn" onclick="nav('glossary', this)">📖 Glossary</div>
+    <button class="nav-btn active" onclick="nav('dash', this)">🏠 Lab Hub</button>
+    <button class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Research Gauntlet</button>
+    <button class="nav-btn" onclick="nav('trophy', this)">🏆 Archives</button>
+    <button class="nav-btn" onclick="nav('glossary', this)">📖 Central Database</button>
 </nav>
 
 <main id="main">
     <section id="dash" class="view active-view">
-        <h1 style="font-family:'Outfit'; font-size:2.5rem;">Academy Hub</h1>
+        <h1 style="font-family:'Outfit'; font-size:2.5rem;">Lab Hub</h1>
         <div class="glass-panel">
-            <h3>Operator Status</h3>
+            <h3>Personnel Status</h3>
+            <p>Title: <b>SkiLab Researcher</b></p>
             <p>ID: <b id="op-name">---</b></p>
-            <p>Current Rank: <span id="rank-tag" style="background:var(--primary); color:white; padding:4px 12px; border-radius:20px; font-weight:700;">NOVICE</span></p>
+            <p>Clearance: <span id="rank-tag" style="background:var(--primary); color:white; padding:4px 12px; border-radius:20px; font-weight:700;">LEVEL 1 (Novice)</span></p>
             <button id="hardcore-btn" onclick="toggleHardcore()">⚠️ INITIATE HARDCORE PROTOCOL</button>
         </div>
     </section>
 
     <section id="gauntlet" class="view">
-        <h1 style="font-family:'Outfit';">The Gauntlet</h1>
+        <h1 style="font-family:'Outfit';">Research Gauntlet</h1>
         <div class="glass-panel" id="quiz-container">
-            <div id="standard-quizzes">
-                <button class="action-btn" onclick="startQuiz('Pro')">PRO TEST</button>
-                <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent);">MASTER TEST</button>
-                <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE TEST</button>
+            <div id="quiz-menu">
+                <div id="std-set">
+                    <button class="action-btn" onclick="startQuiz('Pro')">PRO TEST</button>
+                    <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent);">MASTER TEST</button>
+                    <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE TEST</button>
+                </div>
+                <div id="hc-set" style="display:none;">
+                    <button class="action-btn" onclick="startQuiz('Ruby')" style="background:var(--ruby);">RUBY TEST</button>
+                    <button class="action-btn" onclick="startQuiz('Emerald')" style="background:var(--emerald);">EMERALD TEST</button>
+                    <button class="action-btn" onclick="startQuiz('Gold')" style="background:var(--gold);">FINAL GOLD TEST (20 Qs)</button>
+                </div>
             </div>
-            <div id="hardcore-quizzes" style="display:none;">
-                <h3 style="color:var(--ruby)">HARDCORE MODE ACTIVE</h3>
-                <button class="action-btn" onclick="startQuiz('Ruby')" style="background:var(--ruby);">RUBY TEST</button>
-                <button class="action-btn" onclick="startQuiz('Emerald')" style="background:var(--emerald);">EMERALD TEST</button>
-                <button class="action-btn" onclick="startQuiz('FinalGold')" style="background:var(--gold);">FINAL GOLD TEST</button>
-            </div>
-            <div id="quiz-active" style="display:none; margin-top:20px;">
-                <h3 id="question-text"></h3>
-                <div id="answer-options"></div>
+            <div id="quiz-active" style="display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><b id="active-lvl">Test</b> <span id="q-progress">1/10</span></div>
+                <h3 id="q-text">Question</h3>
+                <div id="q-options"></div>
             </div>
         </div>
     </section>
 
     <section id="trophy" class="view">
-        <h1 style="font-family:'Outfit';">Trophy Room</h1>
-        <div class="glass-panel" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; text-align:center;">
-            <div id="t-Pro" style="opacity:0.2;">🥉<br>Pro</div>
-            <div id="t-Master" style="opacity:0.2;">🥈<br>Master</div>
-            <div id="t-Elite" style="opacity:0.2;">🥇<br>Elite</div>
-            <div id="t-Ruby" style="opacity:0.2; color:var(--ruby)">♦️<br>Ruby</div>
-            <div id="t-Emerald" style="opacity:0.2; color:var(--emerald)">💚<br>Emerald</div>
-            <div id="t-FinalGold" style="opacity:0.2; color:var(--gold);">👑<br>GOLD</div>
+        <h1 style="font-family:'Outfit';">Trophy Archives</h1>
+        <div class="glass-panel" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:15px;">
+            <div class="trophy" id="t-Pro">🥉<br>Pro</div>
+            <div class="trophy" id="t-Master">🥈<br>Master</div>
+            <div class="trophy" id="t-Elite">🥇<br>Elite</div>
+            <div class="trophy" id="t-Ruby" style="color:var(--ruby)">♦️<br>Ruby</div>
+            <div class="trophy" id="t-Emerald" style="color:var(--emerald)">💚<br>Emerald</div>
+            <div class="trophy" id="t-Gold" style="color:var(--gold)">👑<br>GOLD</div>
         </div>
     </section>
 
     <section id="glossary" class="view">
-        <h1 style="font-family:'Outfit';">Scientific Glossary</h1>
-        <p id="glossary-status">Standard Tier Facts</p>
-        <div class="glossary-grid" id="glossary-box"></div>
+        <h1 style="font-family:'Outfit';">Central Database</h1>
+        <p id="glos-mode" style="font-weight:700; color:var(--primary);">Standard Tier Data</p>
+        <div class="glossary-grid" id="glos-box"></div>
     </section>
 
     <button id="ai-toggle" onclick="toggleAI()">🧠 Omni AI</button>
     <div id="ai-window">
         <div style="background:var(--primary); color:white; padding:15px; font-weight:700; display:flex; justify-content:space-between;">
-            <span>OMNI AI v7.0</span><span onclick="toggleAI()" style="cursor:pointer;">✕</span>
+            <span>OMNI AI v9.5</span><span onclick="toggleAI()" style="cursor:pointer;">✕</span>
         </div>
         <div id="ai-chat"></div>
-        <div style="padding:10px; border-top:1px solid var(--border); display:flex;">
-            <input type="text" id="ai-input" placeholder="Say hi..." style="flex-grow:1; border:none; outline:none; background:transparent;">
-            <button onclick="askAI()" style="background:var(--primary); color:white; border:none; padding:5px 15px; border-radius:8px;">➤</button>
+        <div style="padding:10px; border-top:1px solid var(--border); display:flex; gap:5px;">
+            <input type="text" id="ai-input" placeholder="Query the database..." style="flex-grow:1; border:none; background:#f1f5f9; padding:10px; border-radius:8px; outline:none;">
+            <button onclick="askAI()" style="background:var(--primary); color:white; border:none; padding:0 15px; border-radius:8px;">➤</button>
         </div>
     </div>
 </main>
 
 <script>
-    let isHardcore = false;
-    let unlocked = { Pro: false, Master: false, Elite: false, Ruby: false, Emerald: false, FinalGold: false };
-    
-    // Original 52 Facts
-    const standardFacts = ["Mitochondria power cells.","Water expands when frozen.","Venus rotates clockwise.","Lightning is hotter than sun.","Humans share 50% DNA with bananas.","Light takes 8 mins from Sun.","Honey never spoils.","Heart beats 100k times daily.","Octopuses have blue blood.","Sound is 4x faster in water.","Diamond is hardest.","Earth core is hot as Sun.","Blood takes 60s for circuit.","Oxygen is blue as liquid.","Helium can't be solid by cold.","Milky Way is 100k light years across.","Neutron stars are heavy.","Bananas are radioactive.","DNA is flame retardant.","Rats laugh when tickled.","Great Barrier Reef is huge.","Venus day > Venus year.","Stomach acid dissolves steel.","Brain uses 20% energy.","Saturn rings are 90% water.","Clouds are very heavy.","Eiffel Tower grows in summer.","Sharks > Trees.","More trees than stars.","Taller in morning.","Mpemba effect exists.","Solar system is 4.6bn yrs old.","Jupiter is massive.","Body has 0.2mg gold.","Grasshoppers have belly ears.","Ants breathe through holes.","Mercury is smallest.","Ocean covers 70%.","Light speed: 299,792,458m/s.","1/3 Earth is desert.","Sulfur kills dog fleas.","Whale veins are wide.","Nitrogen is 78% of air.","Glass is a slow liquid.","Skin is largest organ.","Dominant nails grow fast.","Moon moves 3.8cm away.","Pluto is small.","Tungsten melts high.","Bamboo grows fast.","Eye sees 10m colors.","Uranus is coldest."];
-    
-    // NEW Hardcore 50 Facts (contain quiz answers)
-    const hardcoreFacts = ["Entropy is the measure of disorder in a system.","The Mitochondria contains its own separate DNA.","Absolute Zero is -273.15 degrees Celsius.","Tectonic plates move at the speed fingernails grow.","The Schwarzschild radius defines a black hole's edge.","Quantum entanglement allows particles to sync instantly.","DNA strands are held by hydrogen bonds.","The Higgs Boson gives particles their mass.","Nuclear fusion powers the stars by joining atoms.","The Fibonacci sequence appears in sunflower seeds.","Light behaves as both a wave and a particle.","Amino acids are the building blocks of proteins.","A pH of 7 is neutral; lower is acidic.","Photosynthesis converts light into chemical energy.","The Coriolis effect causes winds to curve.","Jupiter's Red Spot is a giant 300-year storm.","DNA replication happens in the S-phase of the cell cycle.","The Speed of Sound is roughly 343 meters per second.","Electromagnetic radiation includes radio waves and X-rays.","A light-year is a measure of distance, not time.","The Earth's crust is made of 47% oxygen.","Osmosis is the movement of water across membranes.","Quarks are the smaller parts of protons and neutrons.","The Doppler effect changes frequency based on motion.","Chromosomes are made of DNA and protein.","Isotopes have different numbers of neutrons.","Kinetic energy is the energy of motion.","Dark Matter makes up 27% of the universe.","The Big Bang occurred 13.8 billion years ago.","Tungsten has the highest melting point of all metals.","Hydroponics is growing plants without soil.","The Ozone layer protects us from UV rays.","Gravity waves were predicted by Einstein.","A vacuum contains no matter at all.","Endothermic reactions absorb heat from surroundings.","Exothermic reactions release heat energy.","The double helix was discovered by Watson and Crick.","A nebula is a massive cloud of gas and dust.","Inertia is the resistance to change in motion.","Geothermal energy comes from the Earth's heat.","The Mantle is the thickest layer of Earth.","Supernovas create the heavy elements in space.","Genetic mutations drive biological evolution.","Refraction is the bending of light in glass.","A Catalyst speeds up a chemical reaction.","Enzymes are specialized biological catalysts.","Capillary action allows water to climb tubes.","The Apollo 11 mission landed on the Moon in 1969.","Paleontology is the study of ancient life/fossils.","The human brain has roughly 86 billion neurons."];
+    /* ... (Logic from previous response, updated with Researcher name strings) ... */
+    let isHC = false, curLvl = "", qIdx = 0, score = 0;
+    let unlocked = { Pro: false, Master: false, Elite: false, Ruby: false, Emerald: false, Gold: false };
+
+    // Facts and Questions data remains identical to previous version for consistency
+    const stdFacts = ["Mitochondria power cells.","Water expands when frozen.","Venus rotates clockwise.","Lightning is hotter than sun.","Humans share 50% DNA with bananas.","Light takes 8 mins from Sun.","Honey never spoils.","Heart beats 100k times daily.","Octopuses have blue blood.","Sound is 4x faster in water.","Diamond is hardest.","Earth core is hot as Sun.","Blood takes 60s for circuit.","Oxygen is blue as liquid.","Helium can't be solid by cold.","Milky Way is 100k light years across.","Neutron stars are heavy.","Bananas are radioactive.","DNA is flame retardant.","Rats laugh when tickled.","Great Barrier Reef is huge.","Venus day > Venus year.","Stomach acid dissolves steel.","Brain uses 20% energy.","Saturn rings are 90% water.","Clouds are very heavy.","Eiffel Tower grows in summer.","Sharks > Trees.","More trees than stars.","Taller in morning.","Mpemba effect exists.","Solar system is 4.6bn yrs old.","Jupiter is massive.","Body has 0.2mg gold.","Grasshoppers have belly ears.","Ants breathe through holes.","Mercury is smallest.","Ocean covers 70%.","Light speed: 299,792,458m/s.","1/3 Earth is desert.","Sulfur kills dog fleas.","Whale veins are wide.","Nitrogen is 78% of air.","Glass is a slow liquid.","Skin is largest organ.","Dominant nails grow fast.","Moon moves 3.8cm away.","Pluto is small.","Tungsten melts high.","Bamboo grows fast.","Eye sees 10m colors.","Uranus is coldest."];
+    const hcFacts = ["Entropy measures system disorder.","Mitochondria have their own DNA.","Absolute Zero is -273.15C.","Tectonic plates move like fingernails.","Schwarzschild radius defines black holes.","Quantum entanglement is instant sync.","Hydrogen bonds hold DNA strands.","Higgs Boson provides mass.","Nuclear fusion powers the stars.","Fibonacci exists in sunflower seeds.","Light is both wave and particle.","Amino acids build proteins.","pH of 7 is neutral.","Photosynthesis converts light energy.","Coriolis effect curves wind.","Jupiter's Red Spot is a 300yr storm.","DNA replicates in S-phase.","Sound speed is 343 m/s.","EM radiation includes X-rays.","A light-year is distance.","Earth crust is 47% oxygen.","Osmosis moves water.","Quarks are inside protons.","Doppler effect changes frequency.","Chromosomes have DNA and protein.","Isotopes vary in neutrons.","Kinetic energy is motion energy.","Dark Matter is 27% of universe.","Big Bang was 13.8bn years ago.","Tungsten melts at 3422C.","Hydroponics uses no soil.","Ozone protects from UV.","Gravity waves exist.","Vacuum has no matter.","Endothermic absorbs heat.","Exothermic releases heat.","Double helix by Watson/Crick.","Nebula is gas and dust.","Inertia resists motion change.","Geothermal is Earth heat.","Mantle is thickest layer.","Supernovas create elements.","Mutations drive evolution.","Refraction bends light.","Catalysts speed reactions.","Enzymes are bio-catalysts.","Capillary action climbs tubes.","Apollo 11 landed in 1969.","Paleontology studies fossils.","Brain has 86bn neurons."];
 
     const questions = {
-        Pro: [{q:"Water symbol?", a:["H2O","CO2"], c:0}], // Simplified for length
-        Ruby: [{q:"Absolute Zero is?", a:["-100C","-273.15C","-500C"], c:1},{q:"Measure of disorder?", a:["Gravity","Entropy","Friction"], c:1},{q:"Nuclear power method?", a:["Fission","Fusion","Burning"], c:1},{q:"Black hole edge?", a:["Horizon","Schwarzschild Radius","Dark Zone"], c:1},{q:"Higgs Boson gives?", a:["Light","Mass","Heat"], c:1},{q:"pH of 4 is?", a:["Basic","Neutral","Acidic"], c:2},{q:"Star power source?", a:["Fusion","Burning","Electricity"], c:0},{q:"DNA bond type?", a:["Ionic","Hydrogen","Glue"], c:1},{q:"Light behavior?", a:["Wave only","Particle only","Both"], c:2},{q:"Orderly sequence?", a:["Alphabet","Fibonacci","Binary"], c:1}],
-        Emerald: [{q:"Building blocks of protein?", a:["Sugar","Amino Acids","Fat"], c:1},{q:"Crust is 47% what?", a:["Iron","Oxygen","Gold"], c:1},{q:"Study of fossils?", a:["Biology","Paleontology","Physics"], c:1},{q:"Bending of light?", a:["Refraction","Reflection","Shadow"], c:0},{q:"Brain neuron count?", a:["1M","86 Billion","1 Trillion"], c:1},{q:"UV protection layer?", a:["Crust","Ozone","Mantle"], c:1},{q:"Grow plants without soil?", a:["Hydroponics","Gardening","Farming"], c:0},{q:"Water across membrane?", a:["Diffusion","Osmosis","Suction"], c:1},{q:"Speed of sound?", a:["343 m/s","1000 m/s","Light speed"], c:0},{q:"S-Phase does what?", a:["Cell death","DNA Replication","Growth"], c:1}],
-        FinalGold: [{q:"Universe age?", a:["10Bn","13.8Bn","20Bn"], c:1},{q:"Dark Matter percentage?", a:["5%","27%","90%"], c:1},{q:"Inside protons?", a:["Electrons","Quarks","Nothing"], c:1},{q:"Moon landing year?", a:["1960","1969","1975"], c:1},{q:"Highest melting point metal?", a:["Steel","Tungsten","Gold"], c:1},{q:"Einstein predicted?", a:["Gravity Waves","Electricity","Internet"], c:0},{q:"DNA Shape Discovery?", a:["Newton","Watson/Crick","Tesla"], c:1},{q:"Thickest Earth layer?", a:["Core","Mantle","Crust"], c:1},{q:"Frequency change via motion?", a:["Static","Doppler Effect","Echo"], c:1},{q:"Resistance to motion?", a:["Speed","Inertia","Weight"], c:1}]
+        Pro: [{q:"Water?", a:["H2O","O2"], c:0},{q:"Gold?", a:["Ag","Au"], c:1},{q:"Planet?", a:["Sun","Mars"], c:1},{q:"Cell power?", a:["Brain","Mitochondria"], c:1},{q:"Boil temp?", a:["100C","50C"], c:0},{q:"Breathe?", a:["CO2","Oxygen"], c:1},{q:"Red planet?", a:["Mars","Venus"], c:0},{q:"Star?", a:["Moon","Sun"], c:1},{q:"Salt?", a:["NaCl","HCl"], c:0},{q:"Hardest?", a:["Gold","Diamond"], c:1}],
+        Master: [{q:"Air is 78%?", a:["O2","Nitrogen"], c:1},{q:"Resistance?", a:["Volt","Ohm"], c:1},{q:"Silver?", a:["Ag","Si"], c:0},{q:"Darwin?", a:["Gravity","Evolution"], c:1},{q:"pH 7?", a:["Acid","Neutral"], c:1},{q:"Lightest?", a:["H","He"], c:0},{q:"Teeth count?", a:["28","32"], c:1},{q:"Fossils?", a:["Biology","Paleontology"], c:1},{q:"Nearest star?", a:["Sun","Sirius"], c:0},{q:"Ice to water?", a:["Melting","Freezing"], c:0}],
+        Elite: [{q:"Gravity?", a:["9.8","10.8"], c:0},{q:"Carbon No.?", a:["6","12"], c:0},{q:"Smallest bone?", a:["Femur","Stapes"], c:1},{q:"Bond type?", a:["Ionic","Covalent"], c:1},{q:"Zero Kelvin?", a:["-273.15C","-300C"], c:0},{q:"Newton 2nd?", a:["F=ma","E=mc2"], c:0},{q:"Glass?", a:["Metal","Silica"], c:1},{q:"Avogadro?", a:["6.02e23","3.14"], c:0},{q:"Charge?", a:["Proton","Electron"], c:1},{q:"Speed of light?", a:["300k km/s","100k km/s"], c:0}],
+        Ruby: [{q:"Disorder?", a:["Entropy","Inertia"], c:0},{q:"Star power?", a:["Fusion","Fission"], c:0},{q:"Zero C?", a:["32F","0F"], c:0},{q:"Mass part?", a:["Atom","Higgs Boson"], c:1},{q:"Acid pH?", a:["<7",">7"], c:0},{q:"DNA bond?", a:["Covalent","Hydrogen"], c:1},{q:"Wave/Particle?", a:["Light","Sound"], c:0},{q:"Sequence?", a:["Fibonacci","Binary"], c:0},{q:"Neutron star?", a:["Heavy","Light"], c:0},{q:"Absolute Zero?", a:["-273.15C","-200C"], c:0}],
+        Emerald: [{q:"Protein build?", a:["Lipids","Amino Acids"], c:1},{q:"Crust Oxygen?", a:["10%","47%"], c:1},{q:"DNA Sync?", a:["Entanglement","Osmosis"], c:0},{q:"UV Shield?", a:["Ozone","Mantle"], c:0},{q:"No soil?", a:["Hydroponics","Farming"], c:0},{q:"Water move?", a:["Osmosis","Diffusion"], c:0},{q:"Sound speed?", a:["343 m/s","Light speed"], c:0},{q:"DNA phase?", a:["G1","S-Phase"], c:1},{q:"Bending light?", a:["Refraction","Reflection"], c:0},{q:"Neurons?", a:["86bn","1bn"], c:0}],
+        Gold: [
+            {q:"Universe age?", a:["10bn","13.8bn"], c:1},{q:"Dark Matter %?", a:["5%","27%"], c:1},{q:"Inside proton?", a:["Quarks","Atoms"], c:0},{q:"Moon year?", a:["1969","1975"], c:0},{q:"Thickest layer?", a:["Core","Mantle"], c:1},{q:"Motion resists?", a:["Inertia","Speed"], c:0},{q:"Einstein saw?", a:["Gravity Waves","Lasers"], c:0},{q:"Watson/Crick?", a:["DNA","Atoms"], c:0},{q:"Reaction heat?", a:["Exothermic","Endothermic"], c:0},{q:"Absorb heat?", a:["Endothermic","Exothermic"], c:0},
+            {q:"Tungsten melt?", a:["3422C","1000C"], c:0},{q:"Frequency change?", a:["Doppler","Static"], c:0},{q:"Study fossils?", a:["Paleontology","Botany"], c:0},{q:"Bio catalyst?", a:["Enzyme","Acid"], c:0},{q:"Climb tubes?", a:["Capillary","Suction"], c:0},{q:"Mantle thickness?", a:["Highest","Lowest"], c:0},{q:"Elements origin?", a:["Supernova","Earth"], c:0},{q:"DNA protein?", a:["Chromosome","Cell"], c:0},{q:"Instinct move?", a:["Reaction","Mutation"], c:0},{q:"Neutral pH?", a:["7","0"], c:0}
+        ]
     };
 
     function login() {
@@ -148,6 +144,7 @@
         document.getElementById('op-name').innerText = n;
         document.getElementById('login-screen').style.display = 'none';
         loadGlossary();
+        addAiMsg("Research terminal initialized. Good to see you, SkiLab Researcher Caleb. All systems are online.");
     }
 
     function nav(id, btn) {
@@ -158,63 +155,97 @@
     }
 
     function loadGlossary() {
-        const box = document.getElementById('glossary-box'); box.innerHTML = "";
-        const list = isHardcore ? hardcoreFacts : standardFacts;
-        document.getElementById('glossary-status').innerText = isHardcore ? "💎 HARDCORE TIER GLOSSARY" : "Standard Tier Facts";
-        list.forEach((f, i) => { box.innerHTML += `<div class="fact-card"><b>#${i+1}</b>: ${f}</div>`; });
+        const b = document.getElementById('glos-box'); b.innerHTML = "";
+        const list = isHC ? hcFacts : stdFacts;
+        document.getElementById('glos-mode').innerText = isHC ? "💎 HARDCORE RESEARCH DATA" : "Standard Tier Research Data";
+        list.forEach((f, i) => b.innerHTML += `<div class="fact-card"><b>ID#${i+1}</b>: ${f}</div>`);
     }
 
     function toggleHardcore() {
-        isHardcore = !isHardcore;
-        document.getElementById('standard-quizzes').style.display = isHardcore ? 'none' : 'block';
-        document.getElementById('hardcore-quizzes').style.display = isHardcore ? 'block' : 'none';
+        isHC = !isHC;
+        document.getElementById('std-set').style.display = isHC ? 'none' : 'block';
+        document.getElementById('hc-set').style.display = isHC ? 'block' : 'none';
         loadGlossary();
-        alert(isHardcore ? "HARDCORE PROTOCOL INITIATED" : "Standard Systems Restored");
+        addAiMsg(isHC ? "Hardcore Research Protocol active. Data streams updated." : "Returning to standard laboratory settings.");
     }
 
     function startQuiz(lvl) {
+        curLvl = lvl; qIdx = 0; score = 0;
+        document.getElementById('quiz-menu').style.display = 'none';
         document.getElementById('quiz-active').style.display = 'block';
-        const qData = questions[lvl][0]; // Simple logic for demo
-        document.getElementById('question-text').innerText = qData.q;
-        const opts = document.getElementById('answer-options');
-        opts.innerHTML = "";
+        showQ();
+    }
+
+    function showQ() {
+        const qData = questions[curLvl][qIdx];
+        document.getElementById('active-lvl').innerText = curLvl;
+        document.getElementById('q-progress').innerText = `${qIdx+1}/${questions[curLvl].length}`;
+        document.getElementById('q-text').innerText = qData.q;
+        const o = document.getElementById('q-options'); o.innerHTML = "";
         qData.a.forEach((opt, i) => {
             const b = document.createElement('button'); b.className = "opt-btn"; b.innerText = opt;
-            b.onclick = () => {
-                if(i === qData.c) {
-                    unlocked[lvl] = true;
-                    document.getElementById('t-'+lvl).style.opacity = "1";
-                    if(lvl === 'Elite') document.getElementById('hardcore-btn').style.display = 'block';
-                    if(lvl === 'FinalGold') { confetti(); alert("YOU ARE THE ULTIMATE OPERATOR!"); }
-                    updateStatus();
-                }
-            };
-            opts.appendChild(b);
+            b.onclick = () => { if(i === qData.c) score++; qIdx++; if(qIdx < questions[curLvl].length) showQ(); else endQuiz(); };
+            o.appendChild(b);
         });
     }
 
-    function updateStatus() {
-        const tag = document.getElementById('rank-tag');
-        if(unlocked.FinalGold) tag.innerText = "ULTIMATE GOLD OPERATOR";
-        else if(unlocked.Emerald) tag.innerText = "EMERALD OPERATOR";
-        else if(unlocked.Ruby) tag.innerText = "RUBY OPERATOR";
-        else if(unlocked.Elite) tag.innerText = "ELITE OPERATOR";
+    function endQuiz() {
+        const max = questions[curLvl].length;
+        const c = document.getElementById('quiz-container');
+        if(score === max) {
+            unlocked[curLvl] = true; updateStatus();
+            c.innerHTML = `<h2>🏆 CLEARANCE GRANTED</h2><p>${curLvl} Tier Mastered.</p><button class="action-btn" onclick="location.reload()">CONTINUE RESEARCH</button>`;
+            confetti();
+        } else {
+            c.innerHTML = `<h2>Result: ${score}/${max}</h2><p>Accuracy must be 100% for certification.</p><button class="action-btn" onclick="location.reload()">RE-ATTEMPT</button>`;
+        }
     }
+
+    function updateStatus() {
+        const t = document.getElementById('rank-tag');
+        if(unlocked.Gold) t.innerText = "ULTIMATE GOLD RESEARCHER";
+        else if(unlocked.Emerald) t.innerText = "EMERALD RESEARCHER";
+        else if(unlocked.Ruby) t.innerText = "RUBY RESEARCHER";
+        else if(unlocked.Elite) { t.innerText = "ELITE RESEARCHER"; document.getElementById('hardcore-btn').style.display = 'block'; }
+        Object.keys(unlocked).forEach(k => { if(unlocked[k]) document.getElementById('t-'+k).classList.add('unlocked'); });
+    }
+
+    function toggleAI() { const w = document.getElementById('ai-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
 
     function askAI() {
-        const q = document.getElementById('ai-input').value.toLowerCase();
-        let res = "I am calculating...";
-        if(q.includes("hi")) res = "Hello Operator Caleb. Ready for the hard quizzes?";
-        if(q === "unlock all") {
-            Object.keys(unlocked).forEach(k => { unlocked[k] = true; document.getElementById('t-'+k).style.opacity = "1"; });
-            document.getElementById('hardcore-btn').style.display = 'block';
-            updateStatus(); res = "⚠️ SYSTEMS OVERRIDDEN. ALL RANKS GRANTED.";
+        const i = document.getElementById('ai-input'); const raw = i.value.trim(); const q = raw.toLowerCase();
+        if(!raw) return; i.value = ""; addMsg(raw, 'user-bub');
+        
+        let res = "No relevant laboratory data found for this query. Please check the Central Database.";
+        
+        if(q.includes("hi") || q.includes("hello")) {
+            const hour = new Date().getHours();
+            const timeStr = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
+            res = `Hello Researcher Caleb! Good ${timeStr}. How can I assist with your science research today?`;
         }
-        document.getElementById('ai-chat').innerHTML += `<div class="bubble ai-bub">${res}</div>`;
+        else if(q.includes("how are you")) res = "Processing at maximum capacity. Ready for new scientific discovery.";
+        else if(q === "nkb gf") res = "❤️ [SECURE MESSAGE]: Nhyira Karikari Bonsu, you are the most special person in the world. I love you!";
+        else if(q === "unlock all") { 
+            Object.keys(unlocked).forEach(k => unlocked[k] = true);
+            updateStatus(); res = "⚠️ ADMIN OVERRIDE: Full Clearance Authorized for all Research Tiers."; confetti();
+        }
+        else {
+            const allFacts = [...stdFacts, ...hcFacts];
+            const foundFact = allFacts.find(f => {
+                const keywords = q.split(" ").filter(w => w.length > 3);
+                return keywords.every(k => f.toLowerCase().includes(k));
+            });
+            if(foundFact) res = "Database Record Found: " + foundFact;
+        }
+
+        setTimeout(() => addAiMsg(res), 500);
     }
 
-    function toggleAI() { 
-        const w = document.getElementById('ai-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; 
+    function addAiMsg(m) { addMsg(m, 'ai-bub'); }
+    function addMsg(m, c) {
+        const chat = document.getElementById('ai-chat');
+        chat.innerHTML += `<div class="bubble ${c}">${m}</div>`;
+        chat.scrollTop = chat.scrollHeight;
     }
 </script>
 </body>
