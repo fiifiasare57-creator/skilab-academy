@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkiLabs Academy | Infinite</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1; --accent: #0ea5e9; --gold: #f59e0b;
+            --bg: #f8fafc; --panel: #ffffff; --border: #e2e8f0; --text: #1e293b;
+        }
+
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+        body { margin: 0; font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        #sidebar { width: 260px; background: white; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; }
+        .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: #64748b; display: flex; align-items: center; gap: 12px; font-weight: 500; }
+        .nav-btn:hover { background: #f1f5f9; }
+        .nav-btn.active { background: #e0e7ff; color: var(--primary); font-weight: 700; }
+
+        /* --- MAIN CONTENT --- */
+        #main { flex-grow: 1; overflow-y: auto; padding: 40px; position: relative; display: flex; flex-direction: column; }
+        .view { display: none; max-width: 900px; margin: 0 auto; width: 100%; flex-grow: 1; }
+        .active-view { display: block; }
+        .glass-panel { background: white; border: 1px solid var(--border); border-radius: 24px; padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+
+        /* --- AI CHAT FLOATER --- */
+        #ai-toggle { position: fixed; bottom: 80px; right: 30px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; border: none; font-weight: 700; z-index: 100; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
+        #ai-window { display: none; position: fixed; bottom: 140px; right: 30px; width: 350px; height: 450px; background: white; border: 1px solid var(--border); border-radius: 20px; z-index: 100; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+        /* --- GLOSSARY --- */
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; max-height: 500px; overflow-y: auto; padding-right: 10px; }
+        .fact-card { background: #f1f5f9; padding: 15px; border-radius: 12px; font-size: 0.9rem; border-left: 4px solid var(--accent); }
+
+        /* --- FOOTER --- */
+        footer { margin-top: auto; padding: 20px 0; border-top: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 0.8rem; }
+
+        .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; }
+        .opt-btn { background: white; border: 1px solid var(--border); padding: 12px; margin-top: 10px; text-align: left; cursor: pointer; border-radius: 10px; width: 100%; }
+        .opt-btn:hover { border-color: var(--primary); background: #f8fafc; }
+
+        @media (max-width: 850px) { body { flex-direction: column; } #sidebar { width: 100%; flex-direction: row; height: auto; } }
+    </style>
+</head>
+<body>
+
+<div id="login-screen" style="position:fixed; inset:0; background:#f8fafc; z-index:2000; display:flex; align-items:center; justify-content:center;">
+    <div class="glass-panel" style="text-align:center; width: 350px;">
+        <h1 style="font-family:'Outfit'; color:var(--primary); margin-top:0;">SkiLabs_</h1>
+        <input type="text" id="user-name" placeholder="Operator Name" style="width:100%; padding:15px; border:1px solid var(--border); border-radius:12px; margin-bottom:15px;">
+        <button class="action-btn" onclick="login()">Enter System</button>
+    </div>
+</div>
+
+<nav id="sidebar">
+    <div style="font-family:'Outfit'; font-weight:900; font-size:1.5rem; margin-bottom:30px; color:var(--primary);">SkiLabs_</div>
+    <div class="nav-btn active" onclick="nav('dash', this)">🏠 Hub</div>
+    <div class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Gauntlet</div>
+    <div class="nav-btn" onclick="nav('glossary', this)">📖 Glossary</div>
+    <div class="nav-btn" onclick="nav('lab', this)">🧪 Labs</div>
+</nav>
+
+<main id="main">
+    <section id="dash" class="view active-view">
+        <h1 style="font-family:'Outfit'; font-size:2.5rem;">Academy Hub</h1>
+        <div class="glass-panel">
+            <h3>Operator Status</h3>
+            <p>Name: <b id="op-name">---</b></p>
+            <p>Rank: <span id="rank-tag" style="background:var(--primary); color:white; padding:4px 12px; border-radius:20px; font-weight:700; font-size:0.8rem;">NOVICE</span></p>
+        </div>
+        <div class="glass-panel" style="background: linear-gradient(to right, #e0e7ff, #ffffff);">
+            <h4>Daily Mission</h4>
+            <p>Master the levels to unlock Elite status.</p>
+        </div>
+    </section>
+
+    <section id="gauntlet" class="view">
+        <h1 style="font-family:'Outfit';">The Gauntlet</h1>
+        <div class="glass-panel" id="quiz-container">
+            <div id="quiz-intro">
+                <p>Select your difficulty. You must get 10/10 to rank up.</p>
+                <button class="action-btn" onclick="startQuiz('Pro')" style="margin-bottom:10px;">PRO LEVEL</button>
+                <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent); margin-bottom:10px;">MASTER LEVEL</button>
+                <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE LEVEL</button>
+            </div>
+            <div id="quiz-active" style="display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                    <span id="quiz-level">Level</span>
+                    <span id="quiz-progress">1/10</span>
+                </div>
+                <h3 id="question-text">Question goes here?</h3>
+                <div id="answer-options"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="glossary" class="view">
+        <h1 style="font-family:'Outfit';">Science Glossary</h1>
+        <p style="color:#64748b;">A limitless collection of scientific facts.</p>
+        <div class="glossary-grid" id="glossary-box"></div>
+    </section>
+
+    <section id="lab" class="view">
+        <h1 style="font-family:'Outfit';">Virtual Labs</h1>
+        <div class="glass-panel">
+            <h3>Module Offline</h3>
+            <p>Interactive simulations are loading in the background. Access temporary data in the Glossary.</p>
+        </div>
+    </section>
+
+    <button id="ai-toggle" onclick="toggleAI()">🧠 Ask Omni AI</button>
+    <div id="ai-window">
+        <div style="background:var(--primary); color:white; padding:15px; font-weight:700;">Omni Brain v3.0</div>
+        <div id="ai-chat" style="flex-grow:1; padding:15px; overflow-y:auto; font-size:0.9rem;"></div>
+        <div style="padding:10px; border-top:1px solid var(--border); display:flex; gap:5px;">
+            <input type="text" id="ai-input" placeholder="Type hello or a question..." style="border:none; background:#f1f5f9; padding:10px; border-radius:10px; flex-grow:1;">
+            <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 15px;">Send</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Developed by <b>[Your Name]</b></p>
+    </footer>
+</main>
+
+<script>
+    let currentLevel = "";
+    let qIdx = 0;
+    let score = 0;
+
+    const questions = {
+        Pro: [
+            {q:"Symbol for Gold?", a:["Au","Ag","Fe","Gd"], c:0},
+            {q:"H2O is common name for?", a:["Salt","Water","Air","Acid"], c:1},
+            {q:"Largest planet?", a:["Mars","Earth","Jupiter","Venus"], c:2},
+            {q:"Powerhouse of cell?", a:["Nucleus","Ribosome","Mitochondria","Wall"], c:2},
+            {q:"Boiling point of water?", a:["90C","100C","120C","80C"], c:1},
+            {q:"Plants breathe what?", a:["Oxygen","CO2","Nitrogen","Argon"], c:1},
+            {q:"Human bones total?", a:["206","300","150","210"], c:0},
+            {q:"Speed of light is?", a:["300k km/s","10k km/s","Fastest","Constant"], c:0},
+            {q:"Center of atom?", a:["Electron","Nucleus","Proton","Neutron"], c:1},
+            {q:"Red planet?", a:["Mars","Venus","Jupiter","Moon"], c:0}
+        ],
+        Master: [
+             {q:"What gas makes up most of Earth's atmosphere?", a:["Oxygen","Nitrogen","CO2","Argon"], c:1},
+             {q:"Smallest unit of life?", a:["Cell","Atom","Molecule","Tissue"], c:0},
+             {q:"Chemical symbol for Iron?", a:["Ir","Fe","In","F"], c:1},
+             {q:"Process of plants making food?", a:["Respiration","Digestion","Photosynthesis","Evaporation"], c:2},
+             {q:"What is the speed of sound?", a:["343 m/s","100 m/s","1000 m/s","300k km/s"], c:0},
+             {q:"Human heart has how many chambers?", a:["2","3","4","5"], c:2},
+             {q:"Planet with most rings?", a:["Mars","Saturn","Jupiter","Uranus"], c:1},
+             {q:"Acid on pH scale?", a:["Above 7","Below 7","Exactly 7","14"], c:1},
+             {q:"Main gas in the Sun?", a:["Oxygen","Helium","Hydrogen","Nitrogen"], c:2},
+             {q:"Who proposed E=mc²?", a:["Newton","Tesla","Einstein","Galileo"], c:2}
+        ],
+        Elite: [
+             {q:"Valency of Carbon?", a:["2","3","4","5"], c:2},
+             {q:"What is Absolute Zero?", a:["-273.15C","0C","-100C","100C"], c:0},
+             {q:"Avogadro's Number value?", a:["6.022x10^23","3x10^8","9.81","1.6x10^-19"], c:0},
+             {q:"Noble gas example?", a:["Oxygen","Helium","Nitrogen","Hydrogen"], c:1},
+             {q:"Charge of a Neutron?", a:["Positive","Negative","Neutral","Double"], c:2},
+             {q:"Closest star to Earth?", a:["Proxima Centauri","The Sun","Sirius","Vega"], c:1},
+             {q:"Hardest natural substance?", a:["Gold","Steel","Diamond","Iron"], c:2},
+             {q:"First element on Periodic Table?", a:["Helium","Oxygen","Hydrogen","Carbon"], c:2},
+             {q:"Gravity on Earth?", a:["9.8 m/s²","5.5 m/s²","12 m/s²","8.9 m/s²"], c:0},
+             {q:"Study of mushrooms?", a:["Botany","Biology","Mycology","Zoology"], c:2}
+        ]
+    };
+
+    const facts = [
+        "A teaspoon of a neutron star weighs 6 billion tons.",
+        "Bananas are slightly radioactive.",
+        "Water has a 'triple point' where it exists as gas, liquid, and solid.",
+        "Octopuses have three hearts and blue blood.",
+        "DNA is a natural flame retardant.",
+        "Light takes 8 minutes 20 seconds to reach Earth from the Sun.",
+        "Venus is the only planet that rotates clockwise.",
+        "Diamonds are made of compressed carbon.",
+        "Sharks have existed longer than trees.",
+        "Honey never spoils; it lasts thousands of years.",
+        "Lightning is 5 times hotter than the surface of the sun.",
+        "The human body contains 37 trillion cells.",
+        "Sound travels 4 times faster in water than in air.",
+        "An individual blood cell takes 60 seconds to make a complete circuit of the body.",
+        "Mitochondria has its own separate DNA.",
+        "Helium is the only element that cannot be solidified by cooling.",
+        "The ozone layer protects Earth from UV radiation.",
+        "A cockroach can live for weeks without its head.",
+        "Saturn could float on water because of its low density.",
+        "Glass is actually a very slow-moving liquid."
+    ];
+
+    function login() {
+        const n = document.getElementById('user-name').value;
+        if(!n) return;
+        document.getElementById('op-name').innerText = n;
+        document.getElementById('login-screen').style.display = 'none';
+        loadGlossary();
+    }
+
+    function nav(id, btn) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active-view');
+        btn.classList.add('active');
+    }
+
+    function loadGlossary() {
+        const box = document.getElementById('glossary-box');
+        box.innerHTML = "";
+        facts.forEach(f => {
+            box.innerHTML += `<div class="fact-card">${f}</div>`;
+        });
+    }
+
+    function toggleAI() {
+        const win = document.getElementById('ai-window');
+        win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function askAI() {
+        const rawInput = document.getElementById('ai-input').value;
+        const input = rawInput.toLowerCase().trim();
+        const chat = document.getElementById('ai-chat');
+        let response = "I'm analyzing that. Can you ask a science-related question?";
+        
+        if(input === "nkb gf") {
+            response = `<div style="background:#fff1f2; padding:15px; border-radius:10px; border:1px solid #fda4af;">
+                <b style="color:#e11d48;">SECRET ACCESS GRANTED ❤️</b><br><br>
+                Dear Nhyira Karikari Bonsu,<br><br>
+                You are the most amazing person in my world. I built this entire system thinking about how much you inspire me. I love you!
+            </div>`;
+        } else if(input.includes("hello") || input.includes("hi")) {
+            response = "Greetings, Operator! I am Omni Brain. Systems are nominal.";
+        } else if(input.includes("science")) {
+            response = "Science is the systematic study of the structure and behavior of the physical world.";
+        }
+
+        chat.innerHTML += `<div style="margin-bottom:10px; text-align:right;"><b>You:</b> ${rawInput}</div>`;
+        chat.innerHTML += `<div style="color:var(--primary); margin-bottom:15px;"><b>Omni:</b> ${response}</div>`;
+        document.getElementById('ai-input').value = "";
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function startQuiz(lvl) {
+        currentLevel = lvl; qIdx = 0; score = 0;
+        document.getElementById('quiz-intro').style.display = 'none';
+        document.getElementById('quiz-active').style.display = 'block';
+        document.getElementById('quiz-level').innerText = "Difficulty: " + lvl;
+        showQ();
+    }
+
+    function showQ() {
+        const qData = questions[currentLevel][qIdx];
+        document.getElementById('question-text').innerText = qData.q;
+        document.getElementById('quiz-progress').innerText = `${qIdx+1}/10`;
+        const opts = document.getElementById('answer-options');
+        opts.innerHTML = "";
+        qData.a.forEach((opt, i) => {
+            const b = document.createElement('button');
+            b.className = "opt-btn";
+            b.innerText = opt;
+            b.onclick = () => checkA(i, qData.c);
+            opts.appendChild(b);
+        });
+    }
+
+    function checkA(pick, correct) {
+        if(pick === correct) score++;
+        qIdx++;
+        if(qIdx < 10) showQ();
+        else endQuiz();
+    }
+
+    function endQuiz() {
+        const box = document.getElementById('quiz-container');
+        if(score === 10) {
+            document.getElementById('rank-tag').innerText = currentLevel.toUpperCase();
+            box.innerHTML = `<h2>10/10 PERFECT!</h2><p>Your rank is now <b>${currentLevel}</b>.</p><button onclick="location.reload()" class="action-btn">Finish</button>`;
+            confetti();
+        } else {
+            box.innerHTML = `<h2>SCORE: ${score}/10</h2><p>You need a perfect score to rank up.</p><button onclick="location.reload()" class="action-btn">Try Again</button>`;
+        }
+    }
+</script>
+</body>
+</html>
+     
+
