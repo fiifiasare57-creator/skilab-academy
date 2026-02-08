@@ -29,6 +29,12 @@
 
         #ai-toggle { position: fixed; bottom: 80px; right: 30px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; border: none; font-weight: 700; z-index: 100; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
         #ai-window { display: none; position: fixed; bottom: 140px; right: 30px; width: 350px; height: 450px; background: white; border: 1px solid var(--border); border-radius: 20px; z-index: 100; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; background: #fafafa; display: flex; flex-direction: column; gap: 10px; }
+
+        .bubble { padding: 10px 14px; border-radius: 15px; max-width: 85%; line-height: 1.4; animation: pop 0.3s ease-out; }
+        @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .ai-bub { background: #e0e7ff; color: var(--primary); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .user-bub { background: #f1f5f9; color: var(--text); align-self: flex-end; border-bottom-right-radius: 2px; }
 
         .trophy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
         .trophy { padding: 20px; border-radius: 20px; background: #f1f5f9; filter: grayscale(1); opacity: 0.3; transition: 0.5s; border: 2px solid transparent; }
@@ -36,13 +42,13 @@
         .trophy-icon { font-size: 3rem; display: block; margin-bottom: 10px; }
 
         .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .fact-card { background: #f1f5f9; padding: 15px; border-radius: 12px; font-size: 0.9rem; border-left: 4px solid var(--accent); line-height: 1.4; }
+        .fact-card { background: #f1f5f9; padding: 15px; border-radius: 12px; font-size: 0.85rem; border-left: 4px solid var(--accent); line-height: 1.4; }
 
         footer { margin-top: auto; padding: 20px 0; border-top: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 0.8rem; }
         .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; margin-top: 10px;}
         .opt-btn { background: white; border: 1px solid var(--border); padding: 12px; margin-top: 10px; text-align: left; cursor: pointer; border-radius: 10px; width: 100%; }
         
-        @media (max-width: 850px) { body { flex-direction: column; } #sidebar { width: 100%; flex-direction: row; height: auto; padding: 10px; overflow-x: auto; } }
+        @media (max-width: 850px) { body { flex-direction: column; } #sidebar { width: 100%; flex-direction: row; height: auto; padding: 5px; overflow-x: auto; } #main { padding: 20px; } }
     </style>
 </head>
 <body>
@@ -109,15 +115,15 @@
         <div class="glossary-grid" id="glossary-box"></div>
     </section>
 
-    <button id="ai-toggle" onclick="toggleAI()">🧠 Omni Brain</button>
+    <button id="ai-toggle" onclick="toggleAI()">🧠 Omni AI</button>
     <div id="ai-window">
         <div style="background:var(--primary); color:white; padding:15px; font-weight:700; display:flex; justify-content:space-between;">
-            <span>OMNI AI v4.0</span><span onclick="toggleAI()" style="cursor:pointer;">✕</span>
+            <span>OMNI AI v6.0</span><span onclick="toggleAI()" style="cursor:pointer;">✕</span>
         </div>
-        <div id="ai-chat" style="flex-grow:1; padding:15px; overflow-y:auto; font-size:0.9rem; background: #fafafa;"></div>
+        <div id="ai-chat"></div>
         <div style="padding:10px; border-top:1px solid var(--border); display:flex; gap:5px;">
-            <input type="text" id="ai-input" placeholder="Ask science or use secret code..." style="border:none; background:#f1f5f9; padding:12px; border-radius:10px; flex-grow:1; outline:none;">
-            <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 15px; cursor:pointer;">Send</button>
+            <input type="text" id="ai-input" placeholder="Type hi or ask a question..." style="border:none; background:#f1f5f9; padding:12px; border-radius:10px; flex-grow:1; outline:none;">
+            <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 15px; cursor:pointer;">➤</button>
         </div>
     </div>
 
@@ -136,60 +142,7 @@
         Elite: [{q:"Electron charge?", a:["Positive","Negative","Neutral","Variable"], c:1},{q:"Avogadro's constant?", a:["6.02x10^23","3.14","9.81","1.6x10^-19"], c:0},{q:"Glass component?", a:["Iron","Carbon","Silica","Sodium"], c:2},{q:"Shared electron bond?", a:["Ionic","Metallic","Covalent","Hydrogen"], c:2},{q:"Earth Gravity?", a:["8.8","9.8","10.8","7.8"], c:1},{q:"Atomic Number 6?", a:["Oxygen","Nitrogen","Carbon","Helium"], c:2},{q:"Smallest bone?", a:["Femur","Stapes","Rib","Skull"], c:1},{q:"F = ma is Newton's?", a:["1st","2nd","3rd","4th"], c:1},{q:"Absolute Zero (C)?", a:["0","-100","-273.15","-300"], c:2},{q:"Hardest mineral?", a:["Steel","Ruby","Diamond","Quartz"], c:2}]
     };
 
-    const facts = [
-        "Mitochondria generate most of the chemical energy needed to power the cell.",
-        "Water expands when it freezes, unlike most other substances.",
-        "Venus is the only planet that rotates clockwise.",
-        "A bolt of lightning is 5 times hotter than the surface of the sun.",
-        "Humans share about 50% of their DNA with bananas.",
-        "Light takes 8 minutes and 20 seconds to travel from the Sun to Earth.",
-        "Honey is the only food that doesn't spoil.",
-        "The human heart beats about 100,000 times a day.",
-        "Octopuses have three hearts and blue blood.",
-        "Sound travels about 4 times faster in water than in air.",
-        "Diamond is the hardest natural substance on Earth.",
-        "The Earth's core is as hot as the surface of the Sun.",
-        "An individual blood cell takes about 60 seconds to make a complete circuit of the body.",
-        "Oxygen has a blue color when in liquid and solid states.",
-        "Helium is the only element that cannot be solidified by cooling alone.",
-        "The Milky Way galaxy is about 100,000 light-years across.",
-        "A teaspoon of a neutron star would weigh 6 billion tons.",
-        "Bananas are slightly radioactive because they contain potassium.",
-        "DNA is a flame retardant.",
-        "Rats laugh when they are tickled.",
-        "The Great Barrier Reef is the largest living structure on Earth.",
-        "A day on Venus is longer than a year on Venus.",
-        "Stomach acid is strong enough to dissolve stainless steel.",
-        "The human brain uses about 20% of the body's total energy.",
-        "Saturn's rings are 90% water.",
-        "Clouds are actually very heavy; an average cloud weighs about 1.1 million pounds.",
-        "Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.",
-        "Sharks have been around longer than trees.",
-        "There are more trees on Earth than stars in the Milky Way.",
-        "A person would be about 1 cm taller in the morning than at night.",
-        "Hot water freezes faster than cold water (Mpemba effect).",
-        "The solar system is 4.6 billion years old.",
-        "Jupiter is twice as massive as all the other planets combined.",
-        "The human body contains about 0.2 milligrams of gold.",
-        "Grasshoppers have ears in their bellies.",
-        "Ants don't have lungs; they breathe through tiny holes.",
-        "Mercury is the smallest planet in our solar system.",
-        "The ocean covers more than 70% of the Earth's surface.",
-        "The speed of light is exactly 299,792,458 meters per second.",
-        "One third of the Earth's land surface is partially or totally desert.",
-        "The average human body contains enough sulfur to kill all the fleas on an average dog.",
-        "A small child could swim through the veins of a blue whale.",
-        "Nitrogen makes up 78% of the Earth's atmosphere.",
-        "Glass is actually a liquid that flows very, very slowly.",
-        "Your skin is the body's largest organ.",
-        "The fingernails on your dominant hand grow faster.",
-        "The moon is moving away from Earth at 3.8 cm per year.",
-        "Pluto is smaller than the United States.",
-        "Tungsten has the highest melting point of all metals.",
-        "Bamboo is the fastest-growing plant on Earth.",
-        "The human eye can distinguish 10 million different colors.",
-        "Uranus is the coldest planet in the solar system."
-    ];
+    const facts = ["Mitochondria are the cell powerhouses.","Water expands when it freezes.","Venus rotates clockwise.","Lightning is 5x hotter than the sun.","Humans share 50% DNA with bananas.","Light takes 8 mins from Sun to Earth.","Honey never spoils.","Heart beats 100,000 times a day.","Octopuses have 3 hearts and blue blood.","Sound travels 4x faster in water.","Diamond is the hardest natural material.","Earth's core is as hot as the sun's surface.","Blood takes 60s for a full circuit.","Oxygen is blue as a liquid.","Helium can't be solid by cooling alone.","Milky Way is 100,000 light years wide.","A teaspoon of neutron star weighs billions of tons.","Bananas are slightly radioactive.","DNA is a flame retardant.","Rats laugh when tickled.","Great Barrier Reef is the largest living structure.","Venus day is longer than its year.","Stomach acid dissolves steel.","Brain uses 20% of body energy.","Saturn's rings are 90% water.","Clouds weigh millions of pounds.","Eiffel Tower grows 15cm in summer.","Sharks are older than trees.","There are more trees than stars.","You are 1cm taller in the morning.","Mpemba effect: hot freezes faster.","Solar system is 4.6 billion years old.","Jupiter is massive.","Human body contains 0.2mg gold.","Grasshoppers hear with their bellies.","Ants breathe through tiny holes.","Mercury is the smallest planet.","Ocean covers 70% of Earth.","Light speed: 299,792,458 m/s.","1/3 of Earth is desert.","Body sulfur kills dog fleas.","Blue whale veins are huge.","Nitrogen is 78% of air.","Glass is a very slow liquid.","Skin is the largest organ.","Dominant hand nails grow faster.","Moon moves 3.8cm away every year.","Pluto is smaller than the USA.","Tungsten has the highest melting point.","Bamboo is the fastest growing plant.","Human eye sees 10 million colors.","Uranus is the coldest planet."];
 
     function login() {
         const n = document.getElementById('user-name').value;
@@ -197,30 +150,20 @@
         document.getElementById('op-name').innerText = n;
         document.getElementById('login-screen').style.display = 'none';
         loadGlossary();
+        addAiMessage("System online. Welcome, Lead Architect Caleb. My sensors are at 100%.");
     }
 
-    function nav(viewId, btn) {
+    function nav(id, btn) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active-view');
+        document.getElementById(id).classList.add('active-view');
         btn.classList.add('active');
-        if(viewId === 'gauntlet') resetQuizMenu();
+        if(id === 'gauntlet') resetQuizMenu();
     }
 
     function loadGlossary() {
-        const box = document.getElementById('glossary-box');
-        box.innerHTML = "";
-        facts.forEach((f, i) => { 
-            box.innerHTML += `<div class="fact-card"><b>Fact #${i+1}:</b><br>${f}</div>`; 
-            if(i === 0) box.innerHTML += `<div class="fact-card">
-
-[Image of animal cell organelles]
-</div>`;
-            if(i === 1) box.innerHTML += `<div class="fact-card">
-
-[Image of water molecule structure]
-</div>`;
-        });
+        const box = document.getElementById('glossary-box'); box.innerHTML = "";
+        facts.forEach((f, i) => { box.innerHTML += `<div class="fact-card"><b>#${i+1}</b>: ${f}</div>`; });
     }
 
     function toggleAI() {
@@ -229,13 +172,38 @@
     }
 
     function askAI() {
-        const input = document.getElementById('ai-input').value.toLowerCase().trim();
+        const input = document.getElementById('ai-input');
+        const text = input.value.trim(); if(!text) return;
+        addUserMessage(text); input.value = "";
+        const q = text.toLowerCase();
+        let res = "Processing Caleb's request... Try asking about science!";
+        
+        const hour = new Date().getHours();
+        const timeStr = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
+
+        if(q.includes("hi") || q.includes("hello")) res = `Hello Caleb! Good ${timeStr}. Systems are operational.`;
+        else if(q.includes("how are you") || q.includes("how r u")) res = "I am functioning at peak efficiency. Ready for your next command!";
+        else if(q.includes("good morning")) res = "Good Morning, Lead Architect. Ready for discovery?";
+        else if(q.includes("good afternoon")) res = "Good Afternoon, Caleb. The Academy is running smoothly.";
+        else if(q.includes("how smart")) res = "I have a database of 52 complex facts and a perfect understanding of the SkiLabs curriculum. I'm quite advanced!";
+        else if(q === "nkb gf") res = "❤️ [ENCRYPTED]: Nhyira Karikari Bonsu, you are the most precious person to me. I love you!";
+        else if(q === "unlock all") { 
+            unlockedRanks.Pro = true; unlockedRanks.Master = true; unlockedRanks.Elite = true; 
+            updateStatus(); res = "⚠️ ADMIN OVERRIDE: All Ranks Authorized."; confetti(); 
+        }
+        
+        setTimeout(() => addAiMessage(res), 500);
+    }
+
+    function addUserMessage(msg) {
         const chat = document.getElementById('ai-chat');
-        let res = "Analyzing Caleb's database... Ask me something about science!";
-        if(input === "nkb gf") res = "❤️ ENCRYPTED: Nhyira Karikari Bonsu, you are my everything. I love you!";
-        else if(input.includes("hello")) res = "Hello Operator Caleb. Systems are operational.";
-        chat.innerHTML += `<div><b>You:</b> ${input}</div><div style="color:var(--primary); margin-bottom:10px;"><b>Omni:</b> ${res}</div>`;
-        document.getElementById('ai-input').value = "";
+        chat.innerHTML += `<div class="bubble user-bub">${msg}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function addAiMessage(msg) {
+        const chat = document.getElementById('ai-chat');
+        chat.innerHTML += `<div class="bubble ai-bub">${msg}</div>`;
         chat.scrollTop = chat.scrollHeight;
     }
 
@@ -253,9 +221,7 @@
         const opts = document.getElementById('answer-options');
         opts.innerHTML = "";
         qData.a.forEach((opt, i) => {
-            const b = document.createElement('button');
-            b.className = "opt-btn";
-            b.innerText = opt;
+            const b = document.createElement('button'); b.className = "opt-btn"; b.innerText = opt;
             b.onclick = () => { if(i === qData.c) score++; qIdx++; if(qIdx < 10) showQ(); else endQuiz(); };
             opts.appendChild(b);
         });
@@ -264,9 +230,8 @@
     function endQuiz() {
         const container = document.getElementById('quiz-container');
         if(score === 10) {
-            unlockedRanks[currentLevel] = true;
-            updateStatus();
-            container.innerHTML = `<h2>🏆 10/10 PERFECT!</h2><p>Rank and Trophy unlocked: <b>${currentLevel}</b></p><button class="action-btn" onclick="resetQuizMenu()">BACK TO LEVELS</button>`;
+            unlockedRanks[currentLevel] = true; updateStatus();
+            container.innerHTML = `<h2>🏆 10/10 PERFECT!</h2><p>Rank unlocked: <b>${currentLevel}</b></p><button class="action-btn" onclick="resetQuizMenu()">CONTINUE</button>`;
             confetti();
         } else {
             container.innerHTML = `<h2>Score: ${score}/10</h2><p>Need 10/10 for trophy.</p><button class="action-btn" onclick="resetQuizMenu()">RETRY</button>`;
@@ -275,21 +240,7 @@
 
     function resetQuizMenu() {
         const container = document.getElementById('quiz-container');
-        container.innerHTML = `
-            <div id="quiz-intro">
-                <p>Perfect 10/10 scores unlock permanent trophies and rank upgrades.</p>
-                <button class="action-btn" onclick="startQuiz('Pro')">PRO TEST</button>
-                <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent);">MASTER TEST</button>
-                <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE TEST</button>
-            </div>
-            <div id="quiz-active" style="display:none;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                    <span id="quiz-level" style="font-weight:700; color:var(--primary);">Level</span>
-                    <span id="quiz-progress">1/10</span>
-                </div>
-                <h3 id="question-text">Loading...</h3>
-                <div id="answer-options"></div>
-            </div>`;
+        container.innerHTML = `<div id="quiz-intro"><p>10/10 required for rank.</p><button class="action-btn" onclick="startQuiz('Pro')">PRO</button><button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent);">MASTER</button><button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE</button></div><div id="quiz-active" style="display:none;"><h3 id="question-text"></h3><div id="answer-options"></div></div>`;
     }
 
     function updateStatus() {
@@ -297,7 +248,6 @@
         if(unlockedRanks.Elite) tag.innerText = "ELITE ARCHITECT";
         else if(unlockedRanks.Master) tag.innerText = "MASTER SCIENTIST";
         else if(unlockedRanks.Pro) tag.innerText = "PRO CERTIFIED";
-        
         if(unlockedRanks.Pro) document.getElementById('t-Pro').classList.add('unlocked');
         if(unlockedRanks.Master) document.getElementById('t-Master').classList.add('unlocked');
         if(unlockedRanks.Elite) document.getElementById('t-Elite').classList.add('unlocked');
