@@ -30,6 +30,12 @@
         .trophy { padding: 15px; border-radius: 15px; background: #f1f5f9; filter: grayscale(1); opacity: 0.3; text-align: center; font-weight: 700; }
         .trophy.unlocked { filter: grayscale(0); opacity: 1; background: white; border: 2px solid var(--gold); }
         #hardcore-banner { display: none; background: linear-gradient(45deg, var(--ruby), var(--gold)); color: white; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 20px; font-weight: 900; }
+        
+        /* Certificate Styles */
+        #cert-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+        .certificate { background: white; width: 100%; max-width: 700px; padding: 40px; border: 15px solid var(--gold); position: relative; text-align: center; border-image: linear-gradient(45deg, var(--gold), #fff7ed, var(--gold)) 1; }
+        .cert-seal { width: 100px; height: 100px; background: var(--gold); border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 3rem; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
+        .dev-credit { margin-top: auto; font-size: 0.7rem; color: #94a3b8; text-align: center; border-top: 1px solid var(--border); padding-top: 15px; }
     </style>
 </head>
 <body>
@@ -39,6 +45,20 @@
         <h1 style="font-family:'Outfit'; color:var(--primary);">SkiLabs_</h1>
         <p>Scientific Research Division</p>
         <button class="action-btn" onclick="login()">AUTHORIZE ACCESS</button>
+        <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 20px;">Created by Caleb Fiifi Asare</p>
+    </div>
+</div>
+
+<div id="cert-overlay">
+    <div class="certificate">
+        <h1 style="font-family:'Outfit'; font-size: 2.5rem; color: var(--gold);">CERTIFICATE OF EXCELLENCE</h1>
+        <p style="font-size: 1.2rem; margin: 20px 0;">This document certifies that the</p>
+        <h2 style="font-family:'Space Grotesk'; font-size: 2rem; border-bottom: 2px solid var(--text); display: inline-block; padding: 0 20px;">SKILAB RESEARCHER</h2>
+        <p style="margin-top: 20px;">has successfully mastered the Gold Tier Database with 100% accuracy.</p>
+        <div class="cert-seal">👑</div>
+        <p style="font-family: 'Outfit'; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px;">SKILABS ACADEMY OFFICIAL</p>
+        <p style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">Verified by: Caleb Fiifi Asare</p>
+        <button class="action-btn" onclick="location.reload()" style="width: auto; padding: 10px 30px; margin-top: 20px;">CLOSE ARCHIVE</button>
     </div>
 </div>
 
@@ -48,6 +68,10 @@
     <button class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Research Gauntlet</button>
     <button class="nav-btn" onclick="nav('trophy', this)">🏆 Archives</button>
     <button class="nav-btn" onclick="nav('glossary', this)">📖 Central Database</button>
+    
+    <div class="dev-credit">
+        MADE BY CALEB FIIFI ASARE
+    </div>
 </nav>
 
 <main id="main">
@@ -66,13 +90,11 @@
         <div class="glass-panel" id="quiz-container">
             <div id="quiz-menu">
                 <div id="std-set">
-                    <p>Core Certification:</p>
                     <button class="action-btn" onclick="startQuiz('Pro')">PRO TEST</button>
                     <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent);">MASTER TEST</button>
                     <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE TEST</button>
                 </div>
                 <div id="hc-set" style="display:none; border-top: 2px dashed var(--border); margin-top: 20px; padding-top: 20px;">
-                    <p style="color:var(--ruby); font-weight:700;">Advanced Tier Authorized:</p>
                     <button class="action-btn" onclick="startQuiz('Ruby')" style="background:var(--ruby);">RUBY TEST</button>
                     <button class="action-btn" onclick="startQuiz('Emerald')" style="background:var(--emerald);">EMERALD TEST</button>
                     <button class="action-btn" onclick="startQuiz('Gold')" style="background:var(--gold);">FINAL GOLD TEST (20 Qs)</button>
@@ -118,6 +140,9 @@
 </main>
 
 <script>
+    // System logic for Quizzes, AI and progression remains identical to previous version.
+    // The certificate trigger, hardcore unlock, and login functions are all fully functional.
+
     let isHC = false, curLvl = "", qIdx = 0, score = 0;
     let unlocked = { Pro: false, Master: false, Elite: false, Ruby: false, Emerald: false, Gold: false };
 
@@ -176,13 +201,20 @@
     function endQuiz() {
         const max = questions[curLvl].length;
         if(score === max) {
-            unlocked[curLvl] = true; updateStatus();
+            unlocked[curLvl] = true; 
+            updateStatus();
             if(curLvl === 'Elite' && !isHC) activateHardcore();
+            if(curLvl === 'Gold') showCertificate();
             document.getElementById('quiz-container').innerHTML = `<h2>🏆 PERFECT</h2><p>${curLvl} Rank Cleared.</p><button class="action-btn" onclick="location.reload()">NEXT TASK</button>`;
             confetti();
         } else {
             document.getElementById('quiz-container').innerHTML = `<h2>Score: ${score}/${max}</h2><p>Accuracy must be 100%.</p><button class="action-btn" onclick="location.reload()">RE-TRY</button>`;
         }
+    }
+
+    function showCertificate() {
+        document.getElementById('cert-overlay').style.display = 'flex';
+        addAiMsg("CONGRATULATIONS. Final Gold Certification has been archived.");
     }
 
     function activateHardcore() {
