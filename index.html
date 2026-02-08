@@ -318,7 +318,7 @@
         if(q.includes("hi") || q.includes("hello")) res = "Greetings, SkiLab Researcher. Ready to analyze data?";
         else if(q.includes("good morning")) res = "Good morning, Researcher. Systems are optimal for today's studies.";
         else if(q.includes("how are you")) res = "Internal diagnostics show 100% efficiency. Thank you for asking. How can I assist your research?";
-        else if(q === "nkb gf") res = "❤️ [SECURE]: Nhyira Karikari Bonsu is the most special person in the world. I love you!";
+        else if(q === "nkb gf") res = "❤️ [SECURE]: Nhyira Karikari Bonsu is the most special person in my world.She is my life, my dream and queen. Dearest, I love you! I really do so please be the queen of my heart";
         else if(q === "unlock all") { Object.keys(unlocked).forEach(k => unlocked[k] = true); activateHardcore(); updateUI(); res = "⚠️ ADMIN OVERRIDE: Full Clearance Granted."; }
         else {
             const f = [...stdFacts, ...hcFacts].find(fact => q.split(" ").filter(w=>w.length>3).every(k => fact.toLowerCase().includes(k)));
@@ -331,3 +331,4 @@
 </script>
 </body>
 </html>
+
