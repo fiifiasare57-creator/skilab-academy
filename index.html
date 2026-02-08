@@ -17,27 +17,22 @@
         * { box-sizing: border-box; transition: all 0.3s ease; }
         body { margin: 0; font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- SIDEBAR --- */
         #sidebar { width: 260px; background: white; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; }
         .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: #64748b; display: flex; align-items: center; gap: 12px; font-weight: 500; }
         .nav-btn:hover { background: #f1f5f9; }
         .nav-btn.active { background: #e0e7ff; color: var(--primary); font-weight: 700; }
 
-        /* --- MAIN CONTENT --- */
         #main { flex-grow: 1; overflow-y: auto; padding: 40px; position: relative; display: flex; flex-direction: column; }
         .view { display: none; max-width: 900px; margin: 0 auto; width: 100%; flex-grow: 1; }
         .active-view { display: block; }
         .glass-panel { background: white; border: 1px solid var(--border); border-radius: 24px; padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
 
-        /* --- AI CHAT FLOATER --- */
         #ai-toggle { position: fixed; bottom: 80px; right: 30px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; border: none; font-weight: 700; z-index: 100; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
         #ai-window { display: none; position: fixed; bottom: 140px; right: 30px; width: 350px; height: 450px; background: white; border: 1px solid var(--border); border-radius: 20px; z-index: 100; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        /* --- GLOSSARY --- */
         .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; max-height: 600px; overflow-y: auto; padding-right: 10px; }
         .fact-card { background: #f1f5f9; padding: 15px; border-radius: 12px; font-size: 0.9rem; border-left: 4px solid var(--accent); }
 
-        /* --- FOOTER --- */
         footer { margin-top: auto; padding: 20px 0; border-top: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 0.8rem; }
 
         .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; }
@@ -52,7 +47,6 @@
 <div id="login-screen" style="position:fixed; inset:0; background:#f8fafc; z-index:2000; display:flex; align-items:center; justify-content:center;">
     <div class="glass-panel" style="text-align:center; width: 350px;">
         <h1 style="font-family:'Outfit'; color:var(--primary); margin-top:0;">SkiLabs_</h1>
-        <p style="font-size: 0.9rem; color: #64748b;">Nexus-Zero Academy Access</p>
         <input type="text" id="user-name" placeholder="Enter Operator Name" style="width:100%; padding:15px; border:1px solid var(--border); border-radius:12px; margin-bottom:15px; outline: none;">
         <button class="action-btn" onclick="login()">INITIALIZE SYSTEM</button>
     </div>
@@ -72,10 +66,6 @@
             <h3>Operator Status</h3>
             <p>ID: <b id="op-name">---</b></p>
             <p>Current Rank: <span id="rank-tag" style="background:var(--primary); color:white; padding:4px 12px; border-radius:20px; font-weight:700; font-size:0.8rem;">NOVICE</span></p>
-        </div>
-        <div class="glass-panel" style="background: linear-gradient(to right, #eef2ff, #ffffff);">
-            <h4 style="margin-top:0;">Mission Directive</h4>
-            <p>Access the Gauntlet to increase your security clearance. Perfect scores are required for <b>Master</b> and <b>Elite</b> status.</p>
         </div>
     </section>
 
@@ -101,7 +91,6 @@
 
     <section id="glossary" class="view">
         <h1 style="font-family:'Outfit';">Science Glossary</h1>
-        <p style="color:#64748b;">A database of limitless scientific facts and definitions.</p>
         <div class="glossary-grid" id="glossary-box"></div>
     </section>
 
@@ -119,7 +108,7 @@
     </div>
 
     <footer>
-        <p>© 2026 Developed by <b>[Your Name]</b></p>
+        <p>© 2026 Made by <b>Caleb Fiifi Asare</b></p>
         <p style="font-size: 0.7rem; opacity: 0.5;">Nexus Protocol Active</p>
     </footer>
 </main>
@@ -128,6 +117,7 @@
     let currentLevel = "";
     let qIdx = 0;
     let score = 0;
+    let userRank = "NOVICE";
 
     const questions = {
         Pro: [
@@ -179,20 +169,6 @@
         "Honey never spoils; edible honey was found in 3000-year-old tombs.",
         "A bolt of lightning is 5 times hotter than the Sun's surface.",
         "Sharks have existed for longer than trees.",
-        "Mitochondria has its own separate DNA from the cell nucleus.",
-        "Absolute zero is -273.15 degrees Celsius.",
-        "Helium is the only element that cannot be solidified by cooling.",
-        "The human body contains enough carbon to fill 9,000 pencils.",
-        "Sound travels 4 times faster in water than in air.",
-        "Venus is the hottest planet in our solar system.",
-        "The Ozone layer protects us from harmful UV rays.",
-        "Diamonds are formed from carbon under extreme pressure.",
-        "An average person walks the equivalent of 3 times around the world in a lifetime.",
-        "The human brain uses 20% of the body's total energy.",
-        "A day on Venus is longer than a year on Venus.",
-        "Grasshoppers have ears in their bellies.",
-        "Saturn's density is so low it could float on water.",
-        "The Great Barrier Reef is the largest living structure on Earth.",
         "Every atom in your body is billions of years old."
     ];
 
@@ -226,18 +202,16 @@
         const rawInput = document.getElementById('ai-input').value;
         const input = rawInput.toLowerCase().trim();
         const chat = document.getElementById('ai-chat');
-        let response = "Searching database... I don't have a specific answer for that. Try asking about a science topic!";
+        let response = "I don't have a specific answer for that yet. Try asking about science!";
         
         if(input === "nkb gf") {
             response = `<div style="background:#fff1f2; padding:15px; border-radius:12px; border:1px solid #fda4af; color:#be123c;">
-                <b>❤️ ENCRYPTED MESSAGE DECODED:</b><br><br>
+                <b>❤️ MESSAGE DECODED:</b><br><br>
                 Dear Nhyira Karikari Bonsu,<br><br>
-                You are the most brilliant and beautiful person I know. Every line of code I wrote for this Academy was inspired by you. I love you so much!
+                You are my world. I love you!
             </div>`;
-        } else if(input.includes("hello") || input.includes("hi")) {
-            response = "Greetings, Operator. Omni AI systems are ready. How can I assist your research?";
-        } else if(input.includes("science")) {
-            response = "Science is the pursuit of knowledge through observation and experimentation. Check the Glossary for facts!";
+        } else if(input.includes("hello")) {
+            response = "Greetings, Operator. Systems are ready.";
         }
 
         chat.innerHTML += `<div style="margin-bottom:12px; text-align:right;"><b>You:</b> ${rawInput}</div>`;
@@ -279,12 +253,33 @@
     function endQuiz() {
         const box = document.getElementById('quiz-container');
         if(score === 10) {
-            document.getElementById('rank-tag').innerText = currentLevel.toUpperCase();
-            box.innerHTML = `<h2>10/10 PERFECT SCORE!</h2><p>Access Granted. Your rank is now <b>${currentLevel}</b>.</p><button onclick="location.reload()" class="action-btn" style="margin-top:10px;">Return to Dashboard</button>`;
+            userRank = currentLevel.toUpperCase();
+            document.getElementById('rank-tag').innerText = userRank;
+            box.innerHTML = `<h2>10/10 PERFECT!</h2><p>Rank updated to <b>${userRank}</b>.</p><button onclick="resetQuiz()" class="action-btn">Done</button>`;
             confetti();
         } else {
-            box.innerHTML = `<h2>SCORE: ${score}/10</h2><p>You need a perfect score (10/10) to earn the rank of ${currentLevel}.</p><button onclick="location.reload()" class="action-btn" style="margin-top:10px;">Try Again</button>`;
+            box.innerHTML = `<h2>SCORE: ${score}/10</h2><p>Perfect score needed for rank increase.</p><button onclick="resetQuiz()" class="action-btn">Try Again</button>`;
         }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-intro').style.display = 'block';
+        document.getElementById('quiz-active').style.display = 'none';
+        document.getElementById('quiz-container').innerHTML = `
+            <div id="quiz-intro">
+                <p>Select difficulty. 10/10 required for rank.</p>
+                <button class="action-btn" onclick="startQuiz('Pro')" style="margin-bottom:10px;">PRO TEST</button>
+                <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent); margin-bottom:10px;">MASTER TEST</button>
+                <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE TEST</button>
+            </div>
+            <div id="quiz-active" style="display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                    <span id="quiz-level" style="font-weight:700; color:var(--primary);">Level</span>
+                    <span id="quiz-progress">1/10</span>
+                </div>
+                <h3 id="question-text">Loading question...</h3>
+                <div id="answer-options"></div>
+            </div>`;
     }
 </script>
 </body>
