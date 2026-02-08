@@ -16,10 +16,10 @@
         .login-card { background: white; padding: 40px; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 380px; }
         .login-input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid var(--border); border-radius: 12px; outline: none; font-size: 1rem; }
 
-        /* Sidebar & Navigation */
-        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 1001; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(99,102,241,0.3); }
+        /* Sidebar & Close Button */
+        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 1001; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; }
         #sidebar { width: 280px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; z-index: 2000; position: relative; }
-        #close-sidebar { display: none; position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; }
+        #close-sidebar { display: none; position: absolute; top: 20px; right: 20px; background: #f1f5f9; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text); padding: 5px 10px; border-radius: 8px; font-weight: bold; }
         
         .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: #64748b; font-weight: 500; border: none; background: none; text-align: left; font-size: 1rem; width: 100%; }
         .nav-btn.active { background: #e0e7ff; color: var(--primary); font-weight: 700; }
@@ -30,26 +30,24 @@
         .active-view { display: block; }
         .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: clamp(15px, 5vw, 30px); margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
 
-        /* Grids */
+        /* Database Facts */
         .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
         .fact-card { background: var(--panel); padding: 15px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--accent); font-size: 0.85rem; }
+
+        /* Trophies */
         .trophy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .trophy { padding: 20px; border-radius: 20px; background: #f1f5f9; filter: grayscale(1); opacity: 0.3; text-align: center; font-weight: 700; border: 2px solid transparent; }
         .trophy.unlocked { filter: grayscale(0); opacity: 1; background: white; border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 
-        /* AI Component */
+        /* AI Window */
         #ai-toggle { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; border: none; font-weight: 700; z-index: 1000; box-shadow: 0 10px 20px rgba(99,102,241,0.3); }
         #ai-window { display: none; position: fixed; bottom: 95px; right: 20px; left: 20px; max-width: 350px; margin-left: auto; height: 500px; background: white; border: 1px solid var(--border); border-radius: 20px; z-index: 1000; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
-        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; display: flex; flex-direction: column; gap: 10px; background: #fcfcfd; }
+        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; display: flex; flex-direction: column; gap: 10px; }
         .bubble { padding: 10px 14px; border-radius: 15px; max-width: 85%; line-height: 1.4; white-space: pre-wrap; }
-        .ai-bub { background: #e0e7ff; color: var(--primary); align-self: flex-start; border-bottom-left-radius: 2px; }
-        .user-bub { background: #f1f5f9; color: var(--text); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .ai-bub { background: #e0e7ff; color: var(--primary); align-self: flex-start; }
+        .user-bub { background: #f1f5f9; color: var(--text); align-self: flex-end; }
 
-        /* Buttons & Credits */
-        .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; margin-bottom: 10px; }
-        .opt-btn { width: 100%; text-align: left; padding: 12px; margin-top: 8px; background: white; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-size: 0.9rem; }
-        .dev-credit { margin-top: auto; font-size: 0.7rem; color: #94a3b8; text-align: center; padding-top: 15px; border-top: 1px solid var(--border); }
-
+        /* Responsive */
         @media (max-width: 768px) {
             #sidebar { position: fixed; left: -100%; height: 100%; width: 280px; transition: 0.3s ease; }
             #sidebar.open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.1); }
@@ -69,60 +67,50 @@
         <h1 style="font-family:'Outfit'; color:var(--primary); margin:0;">SkiLabs_</h1>
         <p style="color:#64748b;">Research Division Portal</p>
         <input type="text" id="username-input" class="login-input" placeholder="Enter Researcher Name..." autocomplete="off">
-        <button class="action-btn" onclick="handleLogin()">AUTHORIZE ACCESS</button>
-        <p style="font-size: 0.7rem; color: #cbd5e1; margin-top: 25px;">MAINTAINED BY CALEB FIIFI ASARE</p>
+        <button class="nav-btn" style="background:var(--primary); color:white; text-align:center;" onclick="handleLogin()">AUTHORIZE ACCESS</button>
     </div>
 </div>
 
 <nav id="sidebar">
-    <button id="close-sidebar" onclick="toggleSidebar()">✕</button>
+    <button id="close-sidebar" onclick="toggleSidebar()">✕ Close</button>
     <div style="font-family:'Outfit'; font-weight:900; font-size:1.5rem; margin-bottom:30px; color:var(--primary);">SkiLabs_</div>
     <button class="nav-btn active" onclick="nav('dash', this)">🏠 Lab Hub</button>
     <button class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Research Gauntlet</button>
     <button class="nav-btn" onclick="nav('trophy', this)">🏆 Archives</button>
     <button class="nav-btn" onclick="nav('glossary', this)">📖 Central Database</button>
-    <div class="dev-credit">MADE BY CALEB FIIFI ASARE</div>
 </nav>
 
 <main id="main">
     <section id="dash" class="view active-view">
-        <h1 style="font-family:'Outfit'; font-size:2.5rem;">Lab Hub</h1>
+        <h1 style="font-family:'Outfit';">Lab Hub</h1>
         <div id="hc-banner" style="display:none; background:linear-gradient(45deg, var(--ruby), var(--gold)); color:white; padding:15px; border-radius:15px; text-align:center; font-weight:900; margin-bottom:20px;">💎 PRECIOUS STONE PROTOCOL AUTHORIZED</div>
         <div class="glass-panel">
-            <h3>Personnel Identification</h3>
-            <div style="background:#f1f5f9; padding:15px; border-radius:12px; border-left:4px solid var(--primary);">
-                <p style="margin:0; font-size:0.8rem; color:#64748b;">RESEARCHER NAME:</p>
-                <b id="display-id" style="font-size:1.2rem;">UNAUTHORIZED</b>
-            </div>
-            <p style="margin-top:15px;">Clearance: <span id="rank-tag" style="background:var(--primary); color:white; padding:5px 15px; border-radius:20px; font-weight:700;">LEVEL 1</span></p>
+            <h3>Researcher ID: <span id="display-id">---</span></h3>
+            <p>Clearance: <span id="rank-tag" style="background:var(--primary); color:white; padding:5px 15px; border-radius:20px;">LEVEL 1</span></p>
         </div>
     </section>
 
     <section id="gauntlet" class="view">
-        <h1 style="font-family:'Outfit';">Research Gauntlet</h1>
-        <div class="glass-panel" id="quiz-container">
-            <div id="quiz-menu">
-                <div id="std-set">
-                    <button class="action-btn" onclick="startQuiz('Pro')">PRO TEST (10 Qs)</button>
-                    <button class="action-btn" style="background:var(--accent);" onclick="startQuiz('Master')">MASTER TEST (10 Qs)</button>
-                    <button class="action-btn" style="background:var(--text);" onclick="startQuiz('Elite')">ELITE TEST (10 Qs)</button>
-                </div>
-                <div id="hc-set" style="display:none; margin-top:20px; padding-top:20px; border-top:2px dashed var(--border);">
-                    <button class="action-btn" style="background:var(--ruby);" onclick="startQuiz('Ruby')">RUBY TEST (10 Qs)</button>
-                    <button class="action-btn" style="background:var(--emerald);" onclick="startQuiz('Emerald')">EMERALD TEST (10 Qs)</button>
-                    <button class="action-btn" style="background:var(--gold);" onclick="startQuiz('Gold')">GOLD TEST (20 Qs)</button>
-                </div>
+        <h1 style="font-family:'Outfit';">Gauntlet</h1>
+        <div class="glass-panel" id="quiz-menu">
+            <button class="nav-btn" style="background:var(--primary); color:white; margin-bottom:10px;" onclick="startQuiz('Pro')">PRO TEST</button>
+            <button class="nav-btn" style="background:var(--accent); color:white; margin-bottom:10px;" onclick="startQuiz('Master')">MASTER TEST</button>
+            <button class="nav-btn" style="background:var(--text); color:white;" onclick="startQuiz('Elite')">ELITE TEST</button>
+            <div id="hc-set" style="display:none; border-top: 1px solid #ddd; margin-top:20px; padding-top:20px;">
+                <button class="nav-btn" style="background:var(--ruby); color:white; margin-bottom:10px;" onclick="startQuiz('Ruby')">RUBY TEST</button>
+                <button class="nav-btn" style="background:var(--emerald); color:white; margin-bottom:10px;" onclick="startQuiz('Emerald')">EMERALD TEST</button>
+                <button class="nav-btn" style="background:var(--gold); color:white;" onclick="startQuiz('Gold')">FINAL GOLD TEST</button>
             </div>
-            <div id="quiz-active" style="display:none;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><b id="active-lvl">Test</b> <span id="q-progress">1/10</span></div>
-                <h3 id="q-text" style="line-height:1.4;">Question...</h3>
-                <div id="q-options"></div>
-            </div>
+        </div>
+        <div class="glass-panel" id="quiz-active" style="display:none;">
+            <p id="q-progress">1/10</p>
+            <h3 id="q-text">Loading Question...</h3>
+            <div id="q-options"></div>
         </div>
     </section>
 
     <section id="trophy" class="view">
-        <h1 style="font-family:'Outfit';">Trophy Archives</h1>
+        <h1 style="font-family:'Outfit';">Trophies</h1>
         <div class="trophy-grid">
             <div class="trophy" id="t-Pro">🥉<br>Pro</div>
             <div class="trophy" id="t-Master">🥈<br>Master</div>
@@ -134,21 +122,20 @@
     </section>
 
     <section id="glossary" class="view">
-        <h1 style="font-family:'Outfit';">Central Database</h1>
-        <p id="glos-mode" style="font-weight:700; color:var(--primary);">Status: Tier 1 Data Accessible</p>
+        <h1 style="font-family:'Outfit';">Database</h1>
         <div class="glossary-grid" id="glos-box"></div>
     </section>
 </main>
 
 <button id="ai-toggle" onclick="toggleAI()">🧠 Omni AI</button>
 <div id="ai-window">
-    <div style="background:var(--primary); color:white; padding:15px; font-weight:700; display:flex; justify-content:space-between;">
-        <span>OMNI AI v10.0</span><span onclick="toggleAI()" style="cursor:pointer;">✕</span>
+    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between;">
+        <b>OMNI AI v10.0</b> <span onclick="toggleAI()" style="cursor:pointer;">✕</span>
     </div>
     <div id="ai-chat"></div>
-    <div style="padding:10px; border-top:1px solid var(--border); display:flex; gap:5px;">
-        <input type="text" id="ai-input" placeholder="Query data..." style="flex-grow:1; border:none; background:#f1f5f9; padding:10px; border-radius:8px; outline:none;">
-        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; padding:0 15px; border-radius:8px;">➤</button>
+    <div style="padding:10px; display:flex; gap:5px;">
+        <input type="text" id="ai-input" placeholder="Query..." style="flex-grow:1; border:1px solid #ddd; border-radius:8px; padding:10px;">
+        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:8px; padding:0 15px;">➤</button>
     </div>
 </div>
 
@@ -156,11 +143,10 @@
     let activeUser = "", isHC = false, curLvl = "", qIdx = 0, score = 0;
     let unlocked = { Pro: false, Master: false, Elite: false, Ruby: false, Emerald: false, Gold: false };
 
-    // Notes Data
-    const stdFacts = ["Mitochondria power cells.","Water expands when frozen.","Venus rotates clockwise.","Lightning is hotter than sun.","Humans share 50% DNA with bananas.","Light takes 8 mins from Sun.","Honey never spoils.","Heart beats 100k times daily.","Octopuses have blue blood.","Sound is 4x faster in water.","Diamond is hardest.","Earth core is hot as Sun.","Blood takes 60s for circuit.","Oxygen is blue as liquid.","Helium can't be solid by cold."];
-    const hcFacts = ["Entropy measures system disorder.","Mitochondria have their own DNA.","Absolute Zero is -273.15C.","Tectonic plates move like fingernails.","Schwarzschild radius defines black holes.","Quantum entanglement is instant sync.","Hydrogen bonds hold DNA strands.","Higgs Boson provides mass.","Nuclear fusion powers the stars.","Fibonacci exists in sunflowers."];
+    // RESTORED ALL NOTES
+    const stdFacts = ["Mitochondria power cells.","Water expands when frozen.","Venus rotates clockwise.","Lightning is hotter than sun.","Humans share 50% DNA with bananas.","Light takes 8 mins from Sun.","Honey never spoils.","Heart beats 100k times daily.","Octopuses have blue blood.","Sound is 4x faster in water.","Diamond is hardest.","Earth core is hot as Sun.","Blood takes 60s for circuit.","Oxygen is blue as liquid.","Helium can't be solid by cold.","Milky Way is 100k light years across.","Neutron stars are heavy.","Bananas are radioactive.","DNA is flame retardant.","Rats laugh when tickled."];
+    const hcFacts = ["Entropy measures system disorder.","Mitochondria have their own DNA.","Absolute Zero is -273.15C.","Tectonic plates move like fingernails.","Schwarzschild radius defines black holes.","Quantum entanglement is instant sync.","Hydrogen bonds hold DNA strands.","Higgs Boson provides mass.","Nuclear fusion powers the stars.","Fibonacci exists in sunflowers.","Light is both wave and particle.","Coriolis effect curves wind.","Jupiter's Red Spot is a 300yr storm.","DNA replicates in S-phase.","Sound speed is 343 m/s."];
 
-    // Full 10 Question Sets
     const questions = {
         Pro: [
             {q:"Which chemical formula represents water?", a:["CO2","H2O","NaCl","O2"], c:1},
@@ -250,12 +236,11 @@
     
     function handleLogin() {
         const input = document.getElementById('username-input');
-        if(input.value.trim().length < 2) return alert("Please enter a name.");
+        if(input.value.trim().length < 2) return alert("Enter name.");
         activeUser = input.value.trim();
         document.getElementById('display-id').innerText = activeUser.toUpperCase();
         document.getElementById('login-screen').style.display = 'none';
         loadGlossary();
-        addAiMsg("Access Authorized. Welcome, Researcher " + activeUser + ".");
     }
 
     function nav(id, btn) {
@@ -269,7 +254,7 @@
     function loadGlossary() {
         const b = document.getElementById('glos-box'); b.innerHTML = "";
         const list = isHC ? hcFacts : stdFacts;
-        list.forEach((f, i) => b.innerHTML += `<div class="fact-card"><b>RECORD #${i+1}:</b> ${f}</div>`);
+        list.forEach((f, i) => b.innerHTML += `<div class="fact-card"><b>#${i+1}:</b> ${f}</div>`);
     }
 
     function startQuiz(lvl) {
@@ -281,7 +266,6 @@
 
     function showQ() {
         const qData = questions[curLvl][qIdx];
-        document.getElementById('active-lvl').innerText = curLvl.toUpperCase() + " TEST";
         document.getElementById('q-progress').innerText = `Question ${qIdx+1} of ${questions[curLvl].length}`;
         document.getElementById('q-text').innerText = qData.q;
         const o = document.getElementById('q-options'); o.innerHTML = "";
@@ -293,14 +277,13 @@
     }
 
     function endQuiz() {
-        const max = questions[curLvl].length;
         document.getElementById('quiz-active').style.display = 'none';
         document.getElementById('quiz-menu').style.display = 'block';
-        if(score === max) {
+        if(score === questions[curLvl].length) {
             unlocked[curLvl] = true; updateUI();
-            if(curLvl === 'Elite') { isHC = true; document.getElementById('hc-banner').style.display = 'block'; document.getElementById('hc-set').style.display = 'block'; loadGlossary(); }
-            confetti(); alert("MASTERY ACHIEVED! 100% Accuracy.");
-        } else alert(`FAILED. Score: ${score}/${max}. You need 100% to unlock the trophy.`);
+            if(curLvl === 'Elite') { isHC = true; document.getElementById('hc-set').style.display = 'block'; loadGlossary(); }
+            confetti(); alert("Perfect Score!");
+        } else alert(`Try again! Score: ${score}/${questions[curLvl].length}`);
     }
 
     function updateUI() { Object.keys(unlocked).forEach(k => { if(unlocked[k]) document.getElementById('t-'+k).classList.add('unlocked'); }); }
@@ -311,23 +294,19 @@
         const i = document.getElementById('ai-input'); const q = i.value.trim().toLowerCase(); 
         if(!q) return;
         i.value = ""; addMsg(q, 'user-bub');
-        let res = "Searching terminal database...";
+        let res = "Searching...";
 
-        // SECRET CODE LOGIC
         if(q === "nkb gf") {
-            res = "💖 [PERSONAL MESSAGE DECRYPTED]\n\n" +
-                  "To my beautiful Nhyira Karikari Bonsu,\n\n" +
-                  "I wanted to hide this here so only you could find it. You are my world, my queen and my life. You are the best discovery I've ever made in this life.\n\n" +
-                  "I love you so much! \n\n" +
-                  "Forever yours,\nCaleb.";
+            res = "💖 [DECRYPTED LETTER]\n\n" +
+                  "To Nhyira Karikari Bonsu,\n\n" +
+                  " I hid this so only you could  read  my true feelings. You are my queen, my world and my life. I love you so much! and I would move the heavens and earth for you. You're my favorite discovery . Always yours, Caleb.";
             confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
         } 
-        else if(q.includes("hi") || q.includes("hello")) res = "Hello Researcher. Use the sidebar to access tests.";
-        else res = "Error: Reference not found in local files.";
+        else if(q.includes("hi")) res = "Hello Researcher.";
+        else res = "Data not found.";
         
         setTimeout(() => addAiMsg(res), 500);
     }
-
     function addMsg(text, cls) {
         const chat = document.getElementById('ai-chat'); const div = document.createElement('div');
         div.className = `bubble ${cls}`; div.innerText = text; chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
