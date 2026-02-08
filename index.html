@@ -167,7 +167,7 @@
         const input = document.getElementById('ai-input').value.toLowerCase().trim();
         const chat = document.getElementById('ai-chat');
         let res = "I'm not sure. Ask about Science!";
-        if(input === "nkb gf") res = "❤️ MESSAGE: Nhyira Karikari Bonsu, you are my world, my life and my light. I love you!";
+        if(input === "nkb gf") res = "❤️ MESSAGE: Nhyira Karikari Bonsu, you are my world. I love you!";
         else if(input.includes("hello")) res = "Hello Operator Caleb. How can I help?";
         chat.innerHTML += `<div><b>You:</b> ${input}</div><div style="color:var(--primary); margin-bottom:10px;"><b>Omni:</b> ${res}</div>`;
         document.getElementById('ai-input').value = "";
