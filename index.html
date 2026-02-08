@@ -150,7 +150,7 @@
         document.getElementById('op-name').innerText = n;
         document.getElementById('login-screen').style.display = 'none';
         loadGlossary();
-        addAiMessage("System online. Welcome, Lead Architect Caleb. My sensors are at 100%.");
+        addAiMessage("System online. Welcome, Operator Caleb. My sensors are at 100%.");
     }
 
     function nav(id, btn) {
@@ -183,7 +183,7 @@
 
         if(q.includes("hi") || q.includes("hello")) res = `Hello Caleb! Good ${timeStr}. Systems are operational.`;
         else if(q.includes("how are you") || q.includes("how r u")) res = "I am functioning at peak efficiency. Ready for your next command!";
-        else if(q.includes("good morning")) res = "Good Morning, Lead Architect. Ready for discovery?";
+        else if(q.includes("good morning")) res = "Good Morning, Operator. Ready for discovery?";
         else if(q.includes("good afternoon")) res = "Good Afternoon, Caleb. The Academy is running smoothly.";
         else if(q.includes("how smart")) res = "I have a database of 52 complex facts and a perfect understanding of the SkiLabs curriculum. I'm quite advanced!";
         else if(q === "nkb gf") res = "❤️ [ENCRYPTED]: Nhyira Karikari Bonsu, you are the most precious person to me. I love you!";
@@ -245,9 +245,9 @@
 
     function updateStatus() {
         const tag = document.getElementById('rank-tag');
-        if(unlockedRanks.Elite) tag.innerText = "ELITE ARCHITECT";
-        else if(unlockedRanks.Master) tag.innerText = "MASTER SCIENTIST";
-        else if(unlockedRanks.Pro) tag.innerText = "PRO CERTIFIED";
+        if(unlockedRanks.Elite) tag.innerText = "ELITE OPERATOR";
+        else if(unlockedRanks.Master) tag.innerText = "MASTER OPERATOR";
+        else if(unlockedRanks.Pro) tag.innerText = "PRO OPERATOR";
         if(unlockedRanks.Pro) document.getElementById('t-Pro').classList.add('unlocked');
         if(unlockedRanks.Master) document.getElementById('t-Master').classList.add('unlocked');
         if(unlockedRanks.Elite) document.getElementById('t-Elite').classList.add('unlocked');
