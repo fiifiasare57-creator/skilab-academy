@@ -3,49 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SkiLabs Academy | Terminal</title>
+    <title>SkiLabs Academy | Research Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root { --primary: #6366f1; --accent: #0ea5e9; --gold: #f59e0b; --bg: #f8fafc; --panel: #ffffff; --border: #e2e8f0; --text: #1e293b; --subtext: #64748b; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: all 0.2s ease; }
+        
         body { margin: 0; font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Login */
+        /* Smooth Custom Scrollbar */
+        #main::-webkit-scrollbar { width: 6px; }
+        #main::-webkit-scrollbar-track { background: #f1f1f1; }
+        #main::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        /* Screens */
         #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .login-card { background: white; padding: 35px; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 380px; }
         .login-input { width: 100%; padding: 15px; margin: 15px 0; border: 2px solid var(--border); border-radius: 12px; outline: none; font-size: 1rem; text-align: center; }
 
-        /* Sidebar */
+        /* Navigation */
         #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 1001; background: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
         #sidebar { width: 260px; background: white; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; z-index: 2000; position: relative; }
         #close-sidebar { position: absolute; top: 20px; right: 20px; color: var(--text); background: #f1f5f9; border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         
-        .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: var(--subtext); border: none; background: none; text-align: left; width: 100%; font-size: 1rem; }
+        .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: var(--subtext); border: none; background: none; text-align: left; width: 100%; font-size: 1rem; font-family: inherit; }
         .nav-btn.active { background: #eef2ff; color: var(--primary); font-weight: 700; }
 
-        /* Main Area */
-        #main { flex-grow: 1; overflow-y: auto; padding: 30px; width: 100%; }
-        .view { display: none; max-width: 800px; margin: 0 auto; }
+        /* Dashboard & Layout */
+        #main { flex-grow: 1; overflow-y: auto; padding: 30px; width: 100%; position: relative; scroll-behavior: smooth; }
+        .view { display: none; max-width: 800px; margin: 0 auto; padding-bottom: 80px; }
         .active-view { display: block; }
         .glass-panel { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
-        .info-label { font-weight: 700; color: var(--subtext); font-size: 0.8rem; text-transform: uppercase; }
+        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
 
-        /* Quiz UI */
-        .opt-btn { width: 100%; text-align: left; padding: 16px; margin-bottom: 10px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; color: var(--text); font-size: 1rem; }
+        /* Trophies */
+        .trophy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .trophy-item { background: #f8fafc; padding: 15px; border-radius: 15px; text-align: center; border: 2px solid #e2e8f0; opacity: 0.2; }
+        .trophy-unlocked { opacity: 1; border-color: var(--gold); background: #fffcf0; transition: 0.5s; }
+
+        /* Quiz Buttons */
+        .opt-btn { width: 100%; text-align: left; padding: 16px; margin-bottom: 10px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; color: var(--text); font-family: inherit; }
         .opt-btn:active { background: #e0e7ff; transform: scale(0.98); }
 
-        /* AI UI */
+        /* AI Window */
         #ai-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--primary); color: white; padding: 16px 24px; border-radius: 50px; border: none; font-weight: 900; z-index: 1000; box-shadow: 0 10px 20px rgba(99,102,241,0.3); }
-        #ai-window { display: none; position: fixed; bottom: 95px; right: 20px; left: 20px; max-width: 380px; margin-left: auto; height: 60vh; max-height: 500px; background: white; border: 1px solid var(--border); border-radius: 24px; z-index: 1000; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        #ai-window { display: none; position: fixed; bottom: 95px; right: 20px; left: 20px; max-width: 380px; margin-left: auto; height: 60vh; background: white; border: 1px solid var(--border); border-radius: 24px; z-index: 1000; flex-direction: column; overflow: hidden; }
         #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #fafbfc; }
-        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; }
-        .ai-bub { background: #ffffff; color: var(--text); align-self: flex-start; border: 1px solid var(--border); }
+        .bubble { padding: 10px 14px; border-radius: 15px; font-size: 0.9rem; max-width: 85%; }
+        .ai-bub { background: white; align-self: flex-start; border: 1px solid var(--border); }
         .user-bub { background: var(--primary); color: white; align-self: flex-end; }
-
-        /* Certificate */
-        #cert-wrap { display: none; text-align: center; padding: 40px; border: 10px double var(--gold); background: white; color: #1e293b; position: relative; }
 
         @media (max-width: 768px) {
             #sidebar { position: fixed; left: -100%; height: 100%; transition: 0.4s; }
@@ -62,10 +69,10 @@
 <div id="login-screen">
     <div class="login-card">
         <h1 style="font-family:'Outfit'; color:var(--primary); margin:0;">SkiLabs_</h1>
-        <p style="color:var(--subtext);">Research Terminal Access</p>
+        <p style="color:var(--subtext);">Research Access Only</p>
         <input type="text" id="username-input" class="login-input" placeholder="Enter Name">
         <button class="nav-btn" style="background:var(--primary); color:white; text-align:center;" onclick="handleLogin()">AUTHENTICATE</button>
-        <p style="font-size: 0.65rem; color: #cbd5e1; margin-top: 25px;">MADE BY CALEB FIIFI ASARE</p>
+        <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 25px; font-weight: bold;">MADE BY CALEB FIIFI ASARE</p>
     </div>
 </div>
 
@@ -74,41 +81,40 @@
     <div style="font-family:'Outfit'; font-weight:900; font-size:1.8rem; margin-bottom:40px; color:var(--primary); margin-top: 40px;">SkiLabs_</div>
     <button class="nav-btn active" onclick="nav('dash', this)">🏠 Dashboard</button>
     <button class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Gauntlet</button>
+    <button id="trophy-nav" class="nav-btn" onclick="nav('trophy', this)" style="display:none;">🏆 Trophy Room</button>
     <button class="nav-btn" onclick="nav('glossary', this)">📖 Database</button>
-    <div style="margin-top: auto; font-size: 0.65rem; color: var(--subtext); text-align: center; padding: 20px 0;">MADE BY CALEB FIIFI ASARE</div>
+    <div style="margin-top: auto; font-size: 0.7rem; color: var(--subtext); text-align: center; padding: 20px 0; border-top: 1px solid #f1f5f9;">MADE BY CALEB FIIFI ASARE</div>
 </nav>
 
 <main id="main">
     <section id="dash" class="view active-view">
-        <h1 style="font-family:'Outfit';">Research Hub</h1>
+        <h1 style="font-family:'Outfit';">Lab Center</h1>
         <div class="glass-panel">
-            <div class="info-row"><span class="info-label">Researcher:</span> <span id="display-id">---</span></div>
-            <div class="info-row"><span class="info-label">Current Rank:</span> <span id="display-lvl" style="color:var(--primary); font-weight:700;">PROBATION</span></div>
-            <div class="info-row"><span class="info-label">Belong:</span> <span>SKILABS RESEARCH DIV</span></div>
-            <div class="info-row"><span class="info-label">Quizzes Won:</span> <span id="win-count" style="font-weight:900; color:var(--gold);">0</span></div>
+            <div class="info-row"><b>Researcher:</b> <span id="display-id">---</span></div>
+            <div class="info-row"><b>Status:</b> <span id="display-lvl" style="color:var(--primary); font-weight:bold;">PROBATION</span></div>
+            <div class="info-row"><b>Wins:</b> <span id="win-count" style="color:var(--gold); font-weight:bold;">0</span></div>
         </div>
-        <div id="cert-wrap">
-            <h2 style="color:var(--gold); font-family:'Outfit';">CERTIFICATE OF EXCELLENCE</h2>
-            <p>This certifies that</p>
-            <h1 id="cert-name">---</h1>
-            <p>has successfully completed all 70 Research Modules.</p>
-            <small>Issued by SkiLabs Global Research</small>
+        <div style="text-align: center; margin-top: 40px;">
+            <p style="font-weight: bold; color: var(--subtext);">MADE BY CALEB FIIFI ASARE</p>
         </div>
     </section>
 
     <section id="gauntlet" class="view">
-        <h1 style="font-family:'Outfit';">Gauntlet</h1>
+        <h1 style="font-family:'Outfit';">Gauntlet Modules</h1>
         <div class="glass-panel" id="quiz-menu">
-            <button class="nav-btn" style="background:var(--primary); color:white; margin-bottom:10px;" onclick="startQuiz('Pro', 10)">PRO TEST (10 Qs)</button>
-            <button class="nav-btn" style="background:var(--accent); color:white; margin-bottom:10px;" onclick="startQuiz('Master', 10)">MASTER TEST (10 Qs)</button>
-            <button class="nav-btn" style="background:#475569; color:white; margin-bottom:10px;" onclick="startQuiz('Elite', 10)">ELITE TEST (10 Qs)</button>
-            <button class="nav-btn" style="background:#e11d48; color:white; margin-bottom:10px;" onclick="startQuiz('Ruby', 10)">RUBY TEST (10 Qs)</button>
-            <button class="nav-btn" style="background:#10b981; color:white; margin-bottom:10px;" onclick="startQuiz('Emerald', 10)">EMERALD TEST (10 Qs)</button>
-            <button id="gold-btn" class="nav-btn" style="background:var(--gold); color:white; display:none;" onclick="startQuiz('Gold', 20)">FINAL GOLD SEQUENCE (20 Qs)</button>
+            <button class="nav-btn" style="background:var(--primary); color:white; margin-bottom:12px;" onclick="startQuiz('Pro', 10)">PRO MODULE (10 Qs)</button>
+            <button class="nav-btn" style="background:var(--accent); color:white; margin-bottom:12px;" onclick="startQuiz('Master', 10)">MASTER MODULE (10 Qs)</button>
+            <button class="nav-btn" style="background:#475569; color:white;" onclick="startQuiz('Elite', 10)">ELITE MODULE (10 Qs)</button>
+            
+            <div id="advanced-ranks" style="display:none; margin-top:20px; border-top:2px solid #eee; padding-top:20px;">
+                <button class="nav-btn" style="background:#e11d48; color:white; margin-bottom:12px;" onclick="startQuiz('Ruby', 10)">RUBY MODULE (10 Qs)</button>
+                <button class="nav-btn" style="background:#10b981; color:white; margin-bottom:12px;" onclick="startQuiz('Emerald', 10)">EMERALD MODULE (10 Qs)</button>
+                <button class="nav-btn" style="background:var(--gold); color:white;" onclick="startQuiz('Gold', 20)">FINAL GOLD SEQUENCE (20 Qs)</button>
+            </div>
         </div>
         <div class="glass-panel" id="quiz-active" style="display:none;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size: 0.75rem; font-weight:bold;">
-                <span id="active-test-name">...</span>
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold; font-size:0.8rem;">
+                <span id="active-test-name">TESTING</span>
                 <span id="q-progress">0/0</span>
             </div>
             <h3 id="q-text" style="margin-bottom:25px;">...</h3>
@@ -116,21 +122,35 @@
         </div>
     </section>
 
+    <section id="trophy" class="view">
+        <h1 style="font-family:'Outfit';">Trophy Room</h1>
+        <div class="glass-panel">
+            <div class="trophy-grid">
+                <div id="t-pro" class="trophy-item">🥉<br>Pro</div>
+                <div id="t-master" class="trophy-item">🥈<br>Master</div>
+                <div id="t-elite" class="trophy-item">🥇<br>Elite</div>
+                <div id="t-ruby" class="trophy-item">💎<br>Ruby</div>
+                <div id="t-emerald" class="trophy-item">🟢<br>Emerald</div>
+                <div id="t-gold" class="trophy-item">👑<br>Gold</div>
+            </div>
+        </div>
+    </section>
+
     <section id="glossary" class="view">
         <h1 style="font-family:'Outfit';">The Deep (Facts 1-50)</h1>
-        <div id="glos-box" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;"></div>
+        <div id="glos-box"></div>
     </section>
 </main>
 
 <button id="ai-toggle" onclick="toggleAI()">🧠 OMNI AI</button>
 <div id="ai-window">
-    <div style="background:var(--primary); color:white; padding:18px; display:flex; justify-content:space-between; align-items:center;">
-        <b>OMNI AI v20.0</b> <span onclick="toggleAI()" style="cursor:pointer;">✕</span>
+    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
+        <b>OMNI AI v3.0</b> <span onclick="toggleAI()" style="cursor:pointer;">✕</span>
     </div>
     <div id="ai-chat"></div>
-    <div style="padding:12px; display:flex; gap:8px;">
-        <input type="text" id="ai-input" placeholder="Ask OMNI..." style="flex-grow:1; border:1px solid #e2e8f0; border-radius:12px; padding:12px; outline:none;">
-        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:12px; padding:0 15px;">➤</button>
+    <div style="padding:10px; display:flex; gap:5px; border-top:1px solid #eee;">
+        <input type="text" id="ai-input" placeholder="Say Hi to OMNI..." style="flex-grow:1; border:1px solid #ddd; border-radius:10px; padding:10px; outline:none;">
+        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 15px;">➤</button>
     </div>
 </div>
 
@@ -138,24 +158,18 @@
     let activeUser = "", curLvl = "", qIdx = 0, score = 0, totalWins = 0, maxQs = 0;
 
     const facts = [
-        "Mitochondria is the powerhouse of the cell.", "Water expands when frozen.", "Venus rotates clockwise.", "Lightning is 5x hotter than the sun.", "DNA share: 50% with bananas.", "Sunlight takes 8 mins to Earth.", "Honey never spoils.", "Heart beats 100k times daily.", "Octopuses have blue blood.", "Sound: 4x faster in water.", "Diamond is hardest material.", "Core: Hot as Sun.", "Blood cycle: 60s.", "Oxygen is blue in liquid.", "Helium: Hard to solidify.", "Galaxy: 100k LY wide.", "Neutron stars: Dense.", "Bananas: Radioactive.", "DNA: Flame retardant.", "Rats laugh.", "Ants: No lungs.", "Venus day > Venus year.", "Sharks > Trees.", "Moonquakes exist.", "Hot water freezes faster.", "Cows: Best friends.", "Lightning toasts bread.", "Otters hold hands.", "Polar bear skin: Black.", "Eiffel Tower: Grows in heat.", "Teeth: Shark strong.", "Jellyfish: 95% water.", "Ostrich eye > brain.", "Turtles: Butt breathing.", "Koalas: Fingerprints.", "Flamingo group: Flamboyance.", "Butterflies: Taste with feet.", "Sloths hold breath 40m.", "Circulatory: 60k miles.", "Nose: 50k scents.", "Brain: 20% energy.", "Apples float (air).", "Mars: Blue sunsets.", "Trees > Stars on Earth.", "Cloud: 1M pounds.", "Sneeze: 100mph.", "Elephants can't jump.", "Tongue: Strongest muscle.", "Shrimp heart: In head.", "Wall: Not seen from space."
+        "Mitochondria is the powerhouse of the cell.", "Water expands when frozen.", "Venus rotates clockwise.", "Lightning is 5x hotter than the sun.", "Humans share 50% DNA with bananas.", "Light takes 8 mins from Sun to Earth.", "Honey never spoils.", "The heart beats 100k times daily.", "Octopuses have blue blood.", "Sound travels 4x faster in water.", "Diamond is the hardest natural material.", "Earth's core is hot as the Sun.", "Blood circuit takes 60 seconds.", "Oxygen is blue in liquid form.", "Helium can't be solidified easily.", "Milky Way is 100k light-years wide.", "Neutron stars are extremely dense.", "Bananas are radioactive.", "DNA is flame retardant.", "Rats can laugh.", "Ants have no lungs.", "Venus day is longer than its year.", "Sharks older than trees.", "Moon has quakes.", "Hot water freezes faster than cold.", "Cows have best friends.", "Lightning toasts 100k slices of bread.", "Sea otters hold hands.", "Polar bear skin is black.", "Eiffel Tower grows in summer.", "Human teeth are strong.", "Jellyfish is 95% water.", "Ostrich eye > brain.", "Turtles breathe through butts.", "Koalas have fingerprints.", "Flamingo group: Flamboyance.", "Butterflies taste with feet.", "Sloths hold breath 40 mins.", "Circulatory system: 60k miles.", "Nose remembers 50k scents.", "Brain uses 20% energy.", "Apples float (25% air).", "Mars has blue sunsets.", "More trees on Earth than stars.", "Cloud weighs 1M pounds.", "Sneeze speed: 100mph.", "Elephants can't jump.", "Tongue is the strongest muscle.", "Shrimp heart in head.", "Great Wall not visible from space."
     ];
 
     const answers = {
-        Pro: [{q:"Chemical for Water?", a:["H2O","O2"], c:0}],
-        Master: [{q:"Hardest substance?", a:["Gold","Diamond"], c:1}],
-        Elite: [{q:"Absolute Zero?", a:["-100C","-273.15C"], c:1}],
-        Ruby: [{q:"Red Planet?", a:["Mars","Venus"], c:0}],
-        Emerald: [{q:"Green Gem?", a:["Ruby","Emerald"], c:1}],
-        Gold: [{q:"First Element?", a:["O","H"], c:1}, {q:"Sun is a?", a:["Star","Planet"], c:0}] // Expands to 20
+        pro: "H2O", master: "Diamond", elite: "-273.15C", ruby: "Mars", emerald: "Emerald", gold: "Hydrogen"
     };
 
     function handleLogin() {
         const i = document.getElementById('username-input');
         if(i.value.length < 2) return;
-        activeUser = i.value;
-        document.getElementById('display-id').innerText = activeUser.toUpperCase();
-        document.getElementById('cert-name').innerText = activeUser.toUpperCase();
+        activeUser = i.value.trim().toUpperCase();
+        document.getElementById('display-id').innerText = activeUser;
         document.getElementById('login-screen').style.display = 'none';
         loadGlossary();
     }
@@ -171,25 +185,25 @@
 
     function loadGlossary() {
         const b = document.getElementById('glos-box'); b.innerHTML = "";
-        facts.forEach((f, i) => b.innerHTML += `<div style="background:#f8fafc; padding:15px; border-radius:12px; border-left:4px solid var(--accent); font-size:0.9rem;"><b>#${i+1}:</b> ${f}</div>`);
+        facts.forEach((f, i) => b.innerHTML += `<div class="glass-panel" style="padding:15px; margin-bottom:10px; border-left:4px solid var(--primary);"><b>#${i+1}:</b> ${f}</div>`);
     }
 
     function startQuiz(lvl, count) {
         curLvl = lvl; qIdx = 0; score = 0; maxQs = count;
         document.getElementById('quiz-menu').style.display = 'none';
         document.getElementById('quiz-active').style.display = 'block';
-        document.getElementById('active-test-name').innerText = lvl.toUpperCase() + " SEQUENCE";
+        document.getElementById('active-test-name').innerText = lvl + " SEQUENCE";
         showQ();
     }
 
     function showQ() {
-        // Logic handles generic questions for demo, real questions added for Gold
         document.getElementById('q-progress').innerText = `${qIdx+1}/${maxQs}`;
-        document.getElementById('q-text').innerText = `Research Question ${qIdx+1} for ${curLvl} Rank?`;
+        document.getElementById('q-text').innerText = `What is the validated answer for the ${curLvl} Module? (Reference Database)`;
         const o = document.getElementById('q-options'); o.innerHTML = "";
-        ["Option A (Correct)", "Option B"].forEach((opt, i) => {
+        const correct = answers[curLvl.toLowerCase()] || "Verified Data";
+        [correct, "Corrupted File"].sort().forEach(opt => {
             const b = document.createElement('button'); b.className = "opt-btn"; b.innerText = opt;
-            b.onclick = () => { if(i === 0) score++; qIdx++; if(qIdx < maxQs) showQ(); else endQuiz(); };
+            b.onclick = () => { if(opt === correct) score++; qIdx++; if(qIdx < maxQs) showQ(); else endQuiz(); };
             o.appendChild(b);
         });
     }
@@ -200,10 +214,13 @@
         if(score === maxQs) {
             totalWins++; document.getElementById('win-count').innerText = totalWins;
             document.getElementById('display-lvl').innerText = curLvl.toUpperCase();
-            if(curLvl === 'Emerald') document.getElementById('gold-btn').style.display = 'block';
-            if(curLvl === 'Gold') { document.getElementById('cert-wrap').style.display = 'block'; confetti(); }
-            alert(curLvl + " Rank Promoted!");
-        } else alert("Try again for 100% accuracy.");
+            document.getElementById('t-' + curLvl.toLowerCase()).classList.add('trophy-unlocked');
+            if(curLvl === 'Elite') { 
+                document.getElementById('advanced-ranks').style.display = 'block';
+                document.getElementById('trophy-nav').style.display = 'block';
+            }
+            confetti();
+        } else { alert("Error: 100% accuracy required to pass."); }
     }
 
     function toggleAI() { const w = document.getElementById('ai-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
@@ -211,20 +228,25 @@
     function askAI() {
         const i = document.getElementById('ai-input'); const q = i.value.trim().toLowerCase();
         if(!q) return; i.value = ""; addMsg(q, 'user-bub');
-        let r = "I am searching 'The Deep'... No direct match found.";
-        
-        // Smart Knowledge Logic
-        if(q.includes("powerhouse")) r = "Fact #1: Mitochondria is the powerhouse of the cell.";
-        if(q.includes("honey")) r = "Fact #7: Honey never spoils.";
-        if(q.includes("venus")) r = "Fact #3: Venus rotates clockwise.";
-        if(q.includes("water expansion")) r = "Fact #2: Water expands when frozen.";
-        
-        // Unlock All Code
+        let r = "Scanning database... No match found.";
+
+        if(q.match(/hi|hello|hey/)) r = "Greetings, Researcher. OMNI AI is online.";
+        if(q.includes("how are you")) r = "Systems are nominal. How can I help your research?";
+        if(q.includes("mitochondria")) r = "It is the powerhouse of the cell.";
+        if(q.includes("pro answer")) r = "The Pro Module answer is H2O.";
+        if(q.includes("master answer")) r = "The Master Module answer is Diamond.";
+        if(q.includes("elite answer")) r = "The Elite Module answer is -273.15C.";
+        if(q.includes("ruby answer")) r = "The Ruby answer is Mars.";
+        if(q.includes("emerald answer")) r = "The Emerald answer is Emerald.";
+        if(q.includes("gold answer")) r = "The Gold sequence answer is Hydrogen.";
+        if(q.includes("fact") || q.includes("tell me something")) r = facts[Math.floor(Math.random()*facts.length)];
+
         if(q === "unlock all") {
-            document.getElementById('gold-btn').style.display = 'block';
-            document.getElementById('display-lvl').innerText = "GOLD";
-            document.getElementById('win-count').innerText = "70";
-            r = "MASTER OVERRIDE: All ranks unlocked. Gold Sequence active.";
+            document.getElementById('advanced-ranks').style.display = 'block';
+            document.getElementById('trophy-nav').style.display = 'block';
+            document.getElementById('display-lvl').innerText = "GOLD_VERIFIED";
+            document.querySelectorAll('.trophy-item').forEach(t => t.classList.add('trophy-unlocked'));
+            r = "MASTER OVERRIDE: All modules unlocked. Gold clearance granted.";
             confetti();
         }
 
@@ -233,8 +255,9 @@
             confetti();
         }
         
-        setTimeout(() => addMsg(r, 'ai-bub'), 500);
+        setTimeout(() => addMsg(r, 'ai-bub'), 600);
     }
+
     function addMsg(t, c) {
         const chat = document.getElementById('ai-chat'); const d = document.createElement('div');
         d.className = `bubble ${c}`; d.innerText = t; chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
