@@ -10,42 +10,62 @@
         :root { --primary: #6366f1; --accent: #0ea5e9; --gold: #f59e0b; --ruby: #e11d48; --emerald: #10b981; --bg: #f8fafc; --panel: #ffffff; --border: #e2e8f0; --text: #1e293b; }
         * { box-sizing: border-box; transition: all 0.2s ease; }
         body { margin: 0; font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
-        
-        #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: white; padding: 40px; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.05); text-align: center; width: 380px; }
+
+        /* Login Screen */
+        #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: white; padding: 40px; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 380px; }
         .login-input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid var(--border); border-radius: 12px; outline: none; font-size: 1rem; }
+
+        /* Sidebar & Navigation */
+        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 1001; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(99,102,241,0.3); }
+        #sidebar { width: 280px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; z-index: 2000; position: relative; }
+        #close-sidebar { display: none; position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; }
         
-        #sidebar { width: 260px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; }
         .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: #64748b; font-weight: 500; border: none; background: none; text-align: left; font-size: 1rem; width: 100%; }
         .nav-btn.active { background: #e0e7ff; color: var(--primary); font-weight: 700; }
-        #main { flex-grow: 1; overflow-y: auto; padding: 40px; position: relative; }
+
+        /* Main Content */
+        #main { flex-grow: 1; overflow-y: auto; padding: 40px; position: relative; width: 100%; }
         .view { display: none; max-width: 900px; margin: 0 auto; width: 100%; }
         .active-view { display: block; }
-        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: clamp(15px, 5vw, 30px); margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
 
-        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        /* Grids */
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
         .fact-card { background: var(--panel); padding: 15px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--accent); font-size: 0.85rem; }
         .trophy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .trophy { padding: 20px; border-radius: 20px; background: #f1f5f9; filter: grayscale(1); opacity: 0.3; text-align: center; font-weight: 700; border: 2px solid transparent; }
         .trophy.unlocked { filter: grayscale(0); opacity: 1; background: white; border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 
+        /* AI Component */
         #ai-toggle { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; border: none; font-weight: 700; z-index: 1000; box-shadow: 0 10px 20px rgba(99,102,241,0.3); }
-        #ai-window { display: none; position: fixed; bottom: 95px; right: 30px; width: 350px; height: 500px; background: white; border: 1px solid var(--border); border-radius: 20px; z-index: 1000; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
+        #ai-window { display: none; position: fixed; bottom: 95px; right: 20px; left: 20px; max-width: 350px; margin-left: auto; height: 500px; background: white; border: 1px solid var(--border); border-radius: 20px; z-index: 1000; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
         #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; display: flex; flex-direction: column; gap: 10px; background: #fcfcfd; }
         .bubble { padding: 10px 14px; border-radius: 15px; max-width: 85%; line-height: 1.4; }
         .ai-bub { background: #e0e7ff; color: var(--primary); align-self: flex-start; border-bottom-left-radius: 2px; }
         .user-bub { background: #f1f5f9; color: var(--text); align-self: flex-end; border-bottom-right-radius: 2px; }
 
+        /* Overlay & Buttons */
         #cert-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
         .certificate { background: white; width: 100%; max-width: 600px; padding: 40px; border: 15px solid var(--gold); text-align: center; border-image: linear-gradient(45deg, var(--gold), #fff, var(--gold)) 1; }
-
-        .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; }
-        .opt-btn { width: 100%; text-align: left; padding: 12px; margin-top: 8px; background: white; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-size: 0.9rem; line-height: 1.3; }
-        .opt-btn:hover { border-color: var(--primary); background: #f8faff; }
+        .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; margin-bottom: 10px; }
+        .opt-btn { width: 100%; text-align: left; padding: 12px; margin-top: 8px; background: white; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-size: 0.9rem; }
         .dev-credit { margin-top: auto; font-size: 0.7rem; color: #94a3b8; text-align: center; padding-top: 15px; border-top: 1px solid var(--border); }
+
+        /* Mobile Responsive Breakpoints */
+        @media (max-width: 768px) {
+            #sidebar { position: fixed; left: -100%; height: 100%; width: 280px; transition: 0.3s ease; }
+            #sidebar.open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.1); }
+            #menu-toggle { display: block; }
+            #close-sidebar { display: block; }
+            #main { padding: 80px 20px 40px 20px; }
+            .trophy-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
+
+<button id="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
 
 <div id="login-screen">
     <div class="login-card">
@@ -58,6 +78,7 @@
 </div>
 
 <nav id="sidebar">
+    <button id="close-sidebar" onclick="toggleSidebar()">✕</button>
     <div style="font-family:'Outfit'; font-weight:900; font-size:1.5rem; margin-bottom:30px; color:var(--primary);">SkiLabs_</div>
     <button class="nav-btn active" onclick="nav('dash', this)">🏠 Lab Hub</button>
     <button class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Research Gauntlet</button>
@@ -86,13 +107,13 @@
             <div id="quiz-menu">
                 <div id="std-set">
                     <button class="action-btn" onclick="startQuiz('Pro')">PRO TEST</button>
-                    <button class="action-btn" style="background:var(--accent); margin-top:10px;" onclick="startQuiz('Master')">MASTER TEST</button>
-                    <button class="action-btn" style="background:var(--text); margin-top:10px;" onclick="startQuiz('Elite')">ELITE TEST</button>
+                    <button class="action-btn" style="background:var(--accent);" onclick="startQuiz('Master')">MASTER TEST</button>
+                    <button class="action-btn" style="background:var(--text);" onclick="startQuiz('Elite')">ELITE TEST</button>
                 </div>
                 <div id="hc-set" style="display:none; margin-top:20px; padding-top:20px; border-top:2px dashed var(--border);">
                     <button class="action-btn" style="background:var(--ruby);" onclick="startQuiz('Ruby')">RUBY TEST</button>
-                    <button class="action-btn" style="background:var(--emerald); margin-top:10px;" onclick="startQuiz('Emerald')">EMERALD TEST</button>
-                    <button class="action-btn" style="background:var(--gold); margin-top:10px;" onclick="startQuiz('Gold')">FINAL GOLD TEST (20 Qs)</button>
+                    <button class="action-btn" style="background:var(--emerald);" onclick="startQuiz('Emerald')">EMERALD TEST</button>
+                    <button class="action-btn" style="background:var(--gold);" onclick="startQuiz('Gold')">FINAL GOLD TEST (20 Qs)</button>
                 </div>
             </div>
             <div id="quiz-active" style="display:none;">
@@ -142,7 +163,7 @@
         <p>has achieved 100% Mastery in all SkiLab Tiers.</p>
         <div style="font-size:3rem; margin:20px;">👑</div>
         <p style="font-size:0.8rem; color:var(--primary);">Verified by: Caleb Fiifi Asare</p>
-        <button class="action-btn" onclick="location.reload()" style="width:auto; padding:10px 30px; margin-top:20px;">FINALIZE ARCHIVE</button>
+        <button class="action-btn" onclick="clearData()" style="width:auto; padding:10px 30px; margin-top:20px;">FINALIZE ARCHIVE</button>
     </div>
 </div>
 
@@ -150,93 +171,97 @@
     let activeUser = "", isHC = false, curLvl = "", qIdx = 0, score = 0;
     let unlocked = { Pro: false, Master: false, Elite: false, Ruby: false, Emerald: false, Gold: false };
 
+    // --- Data Definitions ---
     const stdFacts = ["Mitochondria power cells.","Water expands when frozen.","Venus rotates clockwise.","Lightning is hotter than sun.","Humans share 50% DNA with bananas.","Light takes 8 mins from Sun.","Honey never spoils.","Heart beats 100k times daily.","Octopuses have blue blood.","Sound is 4x faster in water.","Diamond is hardest.","Earth core is hot as Sun.","Blood takes 60s for circuit.","Oxygen is blue as liquid.","Helium can't be solid by cold.","Milky Way is 100k light years across.","Neutron stars are heavy.","Bananas are radioactive.","DNA is flame retardant.","Rats laugh when tickled.","Great Barrier Reef is huge.","Venus day > Venus year.","Stomach acid dissolves steel.","Brain uses 20% energy.","Saturn rings are 90% water.","Clouds are very heavy.","Eiffel Tower grows in summer.","Sharks > Trees.","More trees than stars.","Taller in morning.","Mpemba effect exists.","Solar system is 4.6bn yrs old.","Jupiter is massive.","Body has 0.2mg gold.","Grasshoppers have belly ears.","Ants breathe through holes.","Mercury is smallest.","Ocean covers 70%.","Light speed: 299,792,458m/s.","1/3 Earth is desert.","Sulfur kills dog fleas.","Whale veins are wide.","Nitrogen is 78% of air.","Glass is a slow liquid.","Skin is largest organ.","Dominant nails grow fast.","Moon moves 3.8cm away.","Pluto is small.","Tungsten melts high.","Bamboo grows fast.","Eye sees 10m colors.","Uranus is coldest."];
     const hcFacts = ["Entropy measures system disorder.","Mitochondria have their own DNA.","Absolute Zero is -273.15C.","Tectonic plates move like fingernails.","Schwarzschild radius defines black holes.","Quantum entanglement is instant sync.","Hydrogen bonds hold DNA strands.","Higgs Boson provides mass.","Nuclear fusion powers the stars.","Fibonacci exists in sunflower seeds.","Light is both wave and particle.","Amino acids build proteins.","pH of 7 is neutral.","Photosynthesis converts light energy.","Coriolis effect curves wind.","Jupiter's Red Spot is a 300yr storm.","DNA replicates in S-phase.","Sound speed is 343 m/s.","EM radiation includes X-rays.","A light-year is distance.","Earth crust is 47% oxygen.","Osmosis moves water.","Quarks are inside protons.","Doppler effect changes frequency.","Chromosomes have DNA and protein.","Isotopes vary in neutrons.","Kinetic energy is motion energy.","Dark Matter is 27% of universe.","Big Bang was 13.8bn years ago.","Tungsten melts at 3422C.","Hydroponics uses no soil.","Ozone protects from UV.","Gravity waves exist.","Vacuum has no matter.","Endothermic absorbs heat.","Exothermic releases heat.","Double helix by Watson/Crick.","Nebula is gas and dust.","Inertia resists motion change.","Geothermal is Earth heat.","Mantle is thickest layer.","Supernovas create elements.","Mutations drive evolution.","Refraction bends light.","Catalysts speed reactions.","Enzymes are bio-catalysts.","Capillary action climbs tubes.","Apollo 11 landed in 1969.","Paleontology studies fossils.","Brain has 86bn neurons."];
 
     const questions = {
         Pro: [
-            {q:"Which chemical formula represents the essential molecule for life known as water?", a:["CO2 (Carbon Dioxide)","H2O (Dihydrogen Monoxide)","NaCl (Sodium Chloride)","O2 (Oxygen)"], c:1},
-            {q:"Which chemical symbol on the Periodic Table represents the precious metal Gold?", a:["Ag (Silver)","Fe (Iron)","Au (Aurum)","Cu (Copper)"], c:2},
-            {q:"Which celestial body in our solar system is famously known as the 'Red Planet' due to iron oxide on its surface?", a:["Venus","Mars","Jupiter","Saturn"], c:1},
-            {q:"In cellular biology, which organelle is responsible for generating most of the cell's supply of adenosine triphosphate (ATP)?", a:["Nucleus","Ribosome","Mitochondria","Golgi Apparatus"], c:2},
-            {q:"At standard atmospheric pressure, what is the exact boiling temperature of pure water on the Celsius scale?", a:["50°C","90°C","100°C","120°C"], c:2},
-            {q:"Which massive star sits at the center of our solar system and provides the energy necessary for life on Earth?", a:["The Moon","Alpha Centauri","The Sun","Polaris"], c:2},
-            {q:"What is the chemical notation for common table salt, formed by the ionic bonding of sodium and chlorine?", a:["HCl","NaCl","NaOH","KCl"], c:1},
-            {q:"Based on the Mohs scale of mineral hardness, which naturally occurring substance is ranked as the hardest?", a:["Quartz","Ruby","Diamond","Topaz"], c:2},
-            {q:"Which gas do humans primarily inhale from the atmosphere to facilitate cellular respiration?", a:["Nitrogen","Carbon Dioxide","Oxygen","Argon"], c:2},
-            {q:"Which of the following is categorized as the smallest planet within our recognized solar system?", a:["Earth","Mercury","Mars","Neptune"], c:1}
+            {q:"Which chemical formula represents water?", a:["CO2","H2O","NaCl","O2"], c:1},
+            {q:"Which symbol represents Gold?", a:["Ag","Fe","Au","Cu"], c:2},
+            {q:"Which is the 'Red Planet'?", a:["Venus","Mars","Jupiter","Saturn"], c:1},
+            {q:"Which organelle generates ATP?", a:["Nucleus","Ribosome","Mitochondria","Golgi"], c:2},
+            {q:"Boiling point of water in Celsius?", a:["50°C","90°C","100°C","120°C"], c:2},
+            {q:"The center of our solar system is?", a:["The Moon","Alpha Centauri","The Sun","Polaris"], c:2},
+            {q:"Chemical notation for table salt?", a:["HCl","NaCl","NaOH","KCl"], c:1},
+            {q:"Hardest natural substance?", a:["Quartz","Ruby","Diamond","Topaz"], c:2},
+            {q:"Gas humans primarily inhale?", a:["Nitrogen","CO2","Oxygen","Argon"], c:2},
+            {q:"Smallest planet in solar system?", a:["Earth","Mercury","Mars","Neptune"], c:1}
         ],
         Master: [
-            {q:"Earth's atmosphere is primarily composed of which gas, making up roughly 78% of the air we breathe?", a:["Oxygen","Carbon Dioxide","Nitrogen","Hydrogen"], c:2},
-            {q:"In electrical physics, which unit is used to measure the amount of electrical resistance in a circuit?", a:["Volt","Ampere","Ohm","Watt"], c:2},
-            {q:"Which chemical symbol is used to identify the metallic element Silver on the periodic table?", a:["Si","Ag","Au","Pb"], c:1},
-            {q:"On the pH scale, which numerical value represents a perfectly neutral substance, such as pure water?", a:["1","14","7","0"], c:2},
-            {q:"Which element is the most abundant and lightest in the entire universe?", a:["Helium","Oxygen","Hydrogen","Carbon"], c:2},
-            {q:"How many permanent teeth are typically found in a full set of a healthy adult human?", a:["28","30","32","36"], c:2},
-            {q:"What is the scientific name for the study of prehistoric life through the examination of plant and animal fossils?", a:["Archaeology","Paleontology","Geology","Botany"], c:1},
-            {q:"Excluding our own Sun, which star is physically located closest to the Earth?", a:["Sirius","Proxima Centauri","Betelgeuse","Vega"], c:1},
-            {q:"Most liquids contract when they freeze, but which unique substance expands as it turns into a solid?", a:["Mercury","Olive Oil","Water","Alcohol"], c:2},
-            {q:"When oxygen is cooled into its liquid state, what distinct color does it take on?", a:["Pale Blue","Deep Red","Clear","Neon Green"], c:0}
+            {q:"Earth's atmosphere is 78% what?", a:["Oxygen","CO2","Nitrogen","Hydrogen"], c:2},
+            {q:"Unit of electrical resistance?", a:["Volt","Ampere","Ohm","Watt"], c:2},
+            {q:"Symbol for Silver?", a:["Si","Ag","Au","Pb"], c:1},
+            {q:"Neutral pH value?", a:["1","14","7","0"], c:2},
+            {q:"Lightest element in universe?", a:["Helium","Oxygen","Hydrogen","Carbon"], c:2},
+            {q:"Healthy adult tooth count?", a:["28","30","32","36"], c:2},
+            {q:"Study of prehistoric life?", a:["Archaeology","Paleontology","Geology","Botany"], c:1},
+            {q:"Star closest to Earth (not Sun)?", a:["Sirius","Proxima Centauri","Betelgeuse","Vega"], c:1},
+            {q:"Substance that expands when frozen?", a:["Mercury","Olive Oil","Water","Alcohol"], c:2},
+            {q:"Color of liquid oxygen?", a:["Pale Blue","Deep Red","Clear","Neon Green"], c:0}
         ],
         Elite: [
-            {q:"On Earth, what is the standard value for the acceleration due to gravity (g) at sea level?", a:["8.5 m/s²","9.8 m/s²","10.2 m/s²","12.0 m/s²"], c:1},
-            {q:"In chemistry, what is the atomic number of the element Carbon, which serves as the basis for all known life?", a:["1","6","12","14"], c:1},
-            {q:"Located in the middle ear, what is the name of the smallest bone in the entire human body?", a:["Femur","Stapes (Stirrup)","Ulna","Phalanges"], c:1},
-            {q:"Which type of chemical bond is formed when two atoms share one or more pairs of electrons?", a:["Ionic Bond","Covalent Bond","Hydrogen Bond","Metallic Bond"], c:1},
-            {q:"What is the equivalent temperature of Absolute Zero (0 Kelvin) on the Celsius scale?", a:["-100.00°C","-212.15°C","-273.15°C","-300.00°C"], c:2},
-            {q:"According to Newton's Second Law of Motion, what is the formula for calculating Force?", a:["F = m/v","F = m + a","F = ma","F = E/c²"], c:2},
-            {q:"Standard glass is primarily manufactured by melting which common geological substance?", a:["Limestone","Alumina","Silica (Sand)","Potash"], c:2},
-            {q:"Which scientific constant represents the number of particles in one mole of a substance?", a:["Planck's Constant","Avogadro's Number (6.022e23)","The Golden Ratio","Pi"], c:1},
-            {q:"Which subatomic particle carries a negative electrical charge and orbits the nucleus of an atom?", a:["Proton","Neutron","Electron","Quark"], c:2},
-            {q:"What is the approximate speed of light in a vacuum, a fundamental constant of the universe?", a:["150,000 km/s","299,792 km/s","500,000 km/s","1,000,000 km/s"], c:1}
+            {q:"Gravity on Earth (sea level)?", a:["8.5 m/s²","9.8 m/s²","10.2 m/s²","12.0 m/s²"], c:1},
+            {q:"Atomic number of Carbon?", a:["1","6","12","14"], c:1},
+            {q:"Smallest bone in human body?", a:["Femur","Stapes","Ulna","Phalanges"], c:1},
+            {q:"Bond where atoms share electrons?", a:["Ionic","Covalent","Hydrogen","Metallic"], c:1},
+            {q:"Absolute Zero in Celsius?", a:["-100.00°C","-212.15°C","-273.15°C","-300.00°C"], c:2},
+            {q:"Formula for Force?", a:["F=m/v","F=m+a","F=ma","F=E/c²"], c:2},
+            {q:"Main ingredient in glass?", a:["Limestone","Alumina","Silica","Potash"], c:2},
+            {q:"Particles in one mole?", a:["Planck","Avogadro","Golden Ratio","Pi"], c:1},
+            {q:"Negative subatomic particle?", a:["Proton","Neutron","Electron","Quark"], c:2},
+            {q:"Speed of light (vacuum)?", a:["150k km/s","299,792 km/s","500k km/s","1m km/s"], c:1}
         ],
         Ruby: [
-            {q:"In thermodynamics, what term describes the measure of a system’s thermal energy per unit temperature that is unavailable for doing useful work, often called 'disorder'?", a:["Inertia","Entropy","Enthalpy","Friction"], c:1},
-            {q:"Which complex nuclear process involves the combining of light atomic nuclei to form a heavier nucleus, releasing massive energy in stars?", a:["Nuclear Fission","Chemical Oxidation","Nuclear Fusion","Radioactive Decay"], c:2},
-            {q:"On the Fahrenheit scale, what is the numerical value that represents the freezing point of water (0°C)?", a:["0°F","100°F","32°F","212°F"], c:2},
-            {q:"Which theoretical subatomic particle is known as the 'God Particle' because it is associated with the field that gives mass to other particles?", a:["Proton","Neutron","Higgs Boson","Graviton"], c:2},
-            {q:"A substance with a pH value significantly less than 7 is categorized as having which chemical property?", a:["Alkaline","Neutral","Acidic","Amphoteric"], c:2},
-            {q:"Within a DNA molecule, what type of weak chemical bond holds the two strands of the double helix together at the nitrogenous bases?", a:["Covalent Bond","Hydrogen Bond","Metallic Bond","Peptide Bond"], c:1},
-            {q:"In quantum mechanics, which phenomenon describes a single entity acting as both a physical particle and a continuous wave?", a:["Photoelectric Effect","Uncertainty Principle","Wave-Particle Duality","Entanglement"], c:2},
-            {q:"Which mathematical sequence appears frequently in nature, where each number is the sum of the two preceding ones?", a:["Binary Sequence","Prime Sequence","Fibonacci Sequence","Geometric Progression"], c:2},
-            {q:"What is the state of a star that has collapsed under its own gravity to the point that its protons and electrons are crushed into neutrons?", a:["White Dwarf","Neutron Star","Red Giant","Supernova"], c:1},
-            {q:"What is the theoretical lowest possible temperature where all molecular motion ceases?", a:["Relative Zero","Liquid Nitrogen Temp","Absolute Zero (-273.15°C)","Deep Space Temp"], c:2}
+            {q:"Measure of system 'disorder'?", a:["Inertia","Entropy","Enthalpy","Friction"], c:1},
+            {q:"Process that powers stars?", a:["Fission","Oxidation","Fusion","Decay"], c:2},
+            {q:"Freezing point of water in F?", a:["0°F","100°F","32°F","212°F"], c:2},
+            {q:"The 'God Particle' name?", a:["Proton","Neutron","Higgs Boson","Graviton"], c:2},
+            {q:"pH less than 7 property?", a:["Alkaline","Neutral","Acidic","Amphoteric"], c:2},
+            {q:"Bond holding DNA strands?", a:["Covalent","Hydrogen","Metallic","Peptide"], c:1},
+            {q:"Wave-particle duality term?", a:["Photoelectric","Uncertainty","Quantum Wave","Entanglement"], c:2},
+            {q:"Nature's mathematical sequence?", a:["Binary","Prime","Fibonacci","Geometric"], c:2},
+            {q:"Collapsed star state?", a:["White Dwarf","Neutron Star","Red Giant","Supernova"], c:1},
+            {q:"Theoretical lowest temperature?", a:["Relative Zero","Liquid Nitrogen","Absolute Zero","Deep Space"], c:2}
         ],
         Emerald: [
-            {q:"Proteins are essential biological molecules built from long chains of which smaller chemical building blocks?", a:["Lipids","Glucose","Amino Acids","Nucleotides"], c:2},
-            {q:"By mass, which element is the most abundant within the Earth's crust, making up approximately 47% of its composition?", a:["Iron","Silicon","Oxygen","Aluminum"], c:2},
-            {q:"Which quantum phenomenon occurs when two particles become linked such that the state of one instantly influences the other, regardless of distance?", a:["Quantum Tunneling","Quantum Entanglement","Superposition","Decoherence"], c:1},
-            {q:"Which atmospheric layer contains a high concentration of O3 molecules that serve as a shield against harmful solar UV radiation?", a:["Troposphere","Ozone Layer","Mesosphere","Exosphere"], c:1},
-            {q:"What is the specialized method of growing plants in a water-based, nutrient-rich solution instead of traditional soil?", a:["Photosynthesis","Aquaculture","Hydroponics","Irrigation"], c:2},
-            {q:"In biology, what is the process called where water molecules move through a semi-permeable membrane from low to high solute concentration?", a:["Diffusion","Active Transport","Osmosis","Capillary Action"], c:2},
-            {q:"At room temperature in dry air, what is the approximate speed at which sound waves travel?", a:["100 m/s","343 m/s","1,000 m/s","300,000 m/s"], c:1},
-            {q:"During the eukaryotic cell cycle, in which specific phase does the replication of DNA take place?", a:["G1 Phase","S Phase (Synthesis)","G2 Phase","Mitosis"], c:1},
-            {q:"What optical phenomenon describes the bending of light as it passes from one medium into another of a different density?", a:["Reflection","Refraction","Diffraction","Dispersion"], c:1},
-            {q:"Approximately how many billions of neurons are found in a healthy adult human brain?", a:["10 Billion","50 Billion","86 Billion","200 Billion"], c:2}
+            {q:"Building blocks of proteins?", a:["Lipids","Glucose","Amino Acids","Nucleotides"], c:2},
+            {q:"Most abundant element in Earth's crust?", a:["Iron","Silicon","Oxygen","Aluminum"], c:2},
+            {q:"Instant link between particles?", a:["Tunneling","Entanglement","Superposition","Decoherence"], c:1},
+            {q:"Layer shielding UV radiation?", a:["Troposphere","Ozone Layer","Mesosphere","Exosphere"], c:1},
+            {q:"Growing plants without soil?", a:["Photosynthesis","Aquaculture","Hydroponics","Irrigation"], c:2},
+            {q:"Water movement through membrane?", a:["Diffusion","Active Transport","Osmosis","Capillary"], c:2},
+            {q:"Speed of sound (dry air)?", a:["100 m/s","343 m/s","1,000 m/s","300k m/s"], c:1},
+            {q:"DNA replication phase?", a:["G1","S Phase","G2","Mitosis"], c:1},
+            {q:"Bending of light?", a:["Reflection","Refraction","Diffraction","Dispersion"], c:1},
+            {q:"Neurons in adult brain?", a:["10bn","50bn","86bn","200bn"], c:2}
         ],
         Gold: [
-            {q:"According to the widely accepted cosmological model, approximately how many billions of years ago did the Big Bang occur?", a:["5.4 Billion","13.8 Billion","20.1 Billion","4.6 Billion"], c:1},
-            {q:"Invisible to telescopes, which form of matter is estimated to make up about 27% of the total mass and energy in the universe?", a:["Anti-Matter","Dark Matter","Nebula Dust","Black Hole Matter"], c:1},
-            {q:"Protons and neutrons are not fundamental particles; they are composed of even smaller particles known as what?", a:["Leptons","Quarks","Bosons","Mesons"], c:1},
-            {q:"In which historic year did the Apollo 11 mission successfully land the first humans on the lunar surface?", a:["1961","1969","1972","1955"], c:1},
-            {q:"Which layer of the Earth, located between the crust and the outer core, is the thickest and composed of silicate rocks?", a:["Lithosphere","Mantle","Asthenosphere","Inner Core"], c:1},
-            {q:"According to Newton's first law, what property of an object causes it to resist any change in its state of motion?", a:["Velocity","Acceleration","Inertia","Momentum"], c:2},
-            {q:"Which fundamental prediction by Albert Einstein was finally directly detected in 2015, confirming 'ripples' in the fabric of spacetime?", a:["Black Holes","Gravitational Waves","Dark Energy","Time Dilation"], c:1},
-            {q:"The double-helix structure of the DNA molecule was famously modeled in 1953 by which scientific duo?", a:["Einstein and Hawking","Watson and Crick","Darwin and Wallace","Bohr and Planck"], c:1},
-            {q:"In chemistry, what is the term for a reaction that releases energy into its surroundings, usually in the form of heat?", a:["Endothermic","Catalytic","Exothermic","Hydrolytic"], c:2},
-            {q:"Conversely, which type of chemical reaction absorbs thermal energy from its environment?", a:["Exothermic","Endothermic","Combustion","Oxidation"], c:1},
-            {q:"Which metallic element possesses the highest melting point of all elements in pure form at 3422°C?", a:["Iron","Titanium","Tungsten","Platinum"], c:2},
-            {q:"What is the change in the observed frequency of a wave as its source moves toward or away from an observer?", a:["Photoelectric Effect","Doppler Effect","Redshift","Interference"], c:1},
-            {q:"Which branch of science focuses exclusively on the study of prehistoric life through the fossil record?", a:["Geology","Anthropology","Paleontology","Entomology"], c:2},
-            {q:"What is the biological term for a specialized protein that acts as a catalyst to speed up chemical reactions in the body?", a:["Hormone","Vitamin","Enzyme","Lipid"], c:2},
-            {q:"Which physical force allows liquids to flow in narrow spaces without the assistance of external forces like gravity?", a:["Surface Tension","Capillary Action","Viscosity","Magnetism"], c:1},
-            {q:"The Earth's mantle behaves like a solid over short periods but flows like a thick liquid over millions of years. This property is called what?", a:["Plasticity","Rigidity","Brittleness","Elasticity"], c:0},
-            {q:"Most of the heavy elements found in the universe (like gold and silver) were originally created during what stellar event?", a:["Solar Wind","Supernova","Main Sequence","Red Giant"], c:1},
-            {q:"Chromosomes, the carriers of genetic information, are primarily composed of which two substances?", a:["DNA and Lipid","DNA and Protein","RNA and Sugar","RNA and Fat"], c:1},
-            {q:"What is the primary mechanism of evolution that results from small, random changes in the genetic code?", a:["Adaptation","Mutation","Natural Selection","Speciation"], c:1},
-            {q:"Which specific numerical value on the pH scale represents a substance that is neither acidic nor basic?", a:["0","7","14","1"], c:1}
+            {q:"Age of Big Bang (billions)?", a:["5.4","13.8","20.1","4.6"], c:1},
+            {q:"27% of universe composition?", a:["Anti-Matter","Dark Matter","Nebula","Black Hole"], c:1},
+            {q:"Components of protons?", a:["Leptons","Quarks","Bosons","Mesons"], c:1},
+            {q:"Apollo 11 landing year?", a:["1961","1969","1972","1955"], c:1},
+            {q:"Thickest Earth layer?", a:["Crust","Mantle","Core","Lithosphere"], c:1},
+            {q:"Newton's Resistance to change?", a:["Velocity","Accel","Inertia","Momentum"], c:2},
+            {q:"Spacetime ripples detected 2015?", a:["Black Holes","Gravitational Waves","Dark Energy","Dilation"], c:1},
+            {q:"DNA double-helix duo?", a:["Einstein/Hawking","Watson/Crick","Darwin/Wallace","Bohr/Planck"], c:1},
+            {q:"Reaction that releases heat?", a:["Endothermic","Catalytic","Exothermic","Hydrolytic"], c:2},
+            {q:"Reaction that absorbs heat?", a:["Exothermic","Endothermic","Combustion","Oxidation"], c:1},
+            {q:"Highest melting point element?", a:["Iron","Titanium","Tungsten","Platinum"], c:2},
+            {q:"Wave frequency change by motion?", a:["Photoelectric","Doppler Effect","Redshift","Interference"], c:1},
+            {q:"Study of fossil record?", a:["Geology","Anthropology","Paleontology","Entomology"], c:2},
+            {q:"Biological catalyst?", a:["Hormone","Vitamin","Enzyme","Lipid"], c:2},
+            {q:"Liquid flow in narrow spaces?", a:["Surface Tension","Capillary Action","Viscosity","Magnetism"], c:1},
+            {q:"Mantle's liquid-solid behavior?", a:["Plasticity","Rigidity","Brittleness","Elasticity"], c:0},
+            {q:"Heavy element creation event?", a:["Solar Wind","Supernova","Main Sequence","Red Giant"], c:1},
+            {q:"Chromosome composition?", a:["DNA/Lipid","DNA/Protein","RNA/Sugar","RNA/Fat"], c:1},
+            {q:"Genetic code evolution mechanism?", a:["Adaptation","Mutation","Natural Selection","Speciation"], c:1},
+            {q:"Neutral pH number?", a:["0","7","14","1"], c:1}
         ]
     };
+
+    // --- Core Functions ---
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
     function handleLogin() {
         const input = document.getElementById('username-input');
@@ -246,7 +271,7 @@
         document.getElementById('cert-name').innerText = activeUser.toUpperCase();
         document.getElementById('login-screen').style.display = 'none';
         loadGlossary();
-        addAiMsg("Access Authorized. Welcome to the SkiLab terminal, Researcher " + activeUser + ".");
+        addAiMsg("Access Authorized. Welcome back, Researcher " + activeUser + ".");
     }
 
     function nav(id, btn) {
@@ -254,6 +279,7 @@
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active-view');
         btn.classList.add('active');
+        if(window.innerWidth <= 768) toggleSidebar();
     }
 
     function loadGlossary() {
@@ -292,8 +318,8 @@
             if(curLvl === 'Elite' && !isHC) activateHardcore();
             if(curLvl === 'Gold') document.getElementById('cert-overlay').style.display = 'flex';
             confetti();
-            alert("MASTERY ACHIEVED: Your data analysis was 100% accurate.");
-        } else alert(`MASTERY FAILED: You scored ${score}/${max}. Accuracy must be 100% to progress.`);
+            alert("MASTERY ACHIEVED: Data integrity confirmed.");
+        } else alert(`MASTERY FAILED: Score ${score}/${max}. 100% accuracy required.`);
     }
 
     function activateHardcore() {
@@ -301,7 +327,7 @@
         document.getElementById('hc-banner').style.display = 'block';
         document.getElementById('hc-set').style.display = 'block';
         loadGlossary();
-        addAiMsg("Notice: Elite rank achieved. Precious Stone Protocol (Hardcore Tiers) are now authorized.");
+        addAiMsg("Notice: Precious Stone Protocol authorized.");
     }
 
     function updateUI() {
@@ -314,21 +340,18 @@
     function askAI() {
         const i = document.getElementById('ai-input'); const q = i.value.trim().toLowerCase(); if(!q) return;
         i.value = ""; addMsg(q, 'user-bub');
-        let res = "Searching terminal database...";
-        if(q.includes("hi") || q.includes("hello")) res = "Greetings, SkiLab Researcher. Ready to analyze data?";
-        else if(q.includes("good morning")) res = "Good morning, Researcher. Systems are optimal for today's studies.";
-        else if(q.includes("how are you")) res = "Internal diagnostics show 100% efficiency. Thank you for asking. How can I assist your research?";
-        else if(q === "nkb gf") res = "❤️ [SECURE]: Nhyira Karikari Bonsu is the most special person in my world.She is my life, my dream and queen. Dearest, I love you! I really do so please be the queen of my heart";
-        else if(q === "unlock all") { Object.keys(unlocked).forEach(k => unlocked[k] = true); activateHardcore(); updateUI(); res = "⚠️ ADMIN OVERRIDE: Full Clearance Granted."; }
-        else {
-            const f = [...stdFacts, ...hcFacts].find(fact => q.split(" ").filter(w=>w.length>3).every(k => fact.toLowerCase().includes(k)));
-            res = f ? "Record Found: " + f : "I could not find that specific record. Please continue your research.";
-        }
+        let res = "Searching database...";
+        if(q.includes("hi") || q.includes("hello")) res = "Greetings, Researcher. Systems nominal.";
+        else if(q.includes("nkb gf")) res = "Data Encrypted. Clearance Level insufficient.";
+        else res = "Data reference point not found. Please try a different query.";
         setTimeout(() => addAiMsg(res), 500);
     }
-    function addAiMsg(m) { addMsg(m, 'ai-bub'); }
-    function addMsg(m, c) { const chat = document.getElementById('ai-chat'); chat.innerHTML += `<div class="bubble ${c}">${m}</div>`; chat.scrollTop = chat.scrollHeight; }
+    function addMsg(text, cls) {
+        const chat = document.getElementById('ai-chat'); const div = document.createElement('div');
+        div.className = `bubble ${cls}`; div.innerText = text; chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
+    }
+    function addAiMsg(text) { addMsg(text, 'ai-bub'); }
+    function clearData() { location.reload(); }
 </script>
 </body>
 </html>
-
