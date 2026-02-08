@@ -31,12 +31,12 @@
         #ai-window { display: none; position: fixed; bottom: 140px; right: 30px; width: 350px; height: 450px; background: white; border: 1px solid var(--border); border-radius: 20px; z-index: 100; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
         .trophy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
-        .trophy { padding: 20px; border-radius: 20px; background: #f1f5f9; filter: grayscale(1); opacity: 0.3; transition: 0.5s; }
-        .trophy.unlocked { filter: grayscale(0); opacity: 1; background: #fff; border: 2px solid var(--gold); transform: scale(1.05); }
+        .trophy { padding: 20px; border-radius: 20px; background: #f1f5f9; filter: grayscale(1); opacity: 0.3; transition: 0.5s; border: 2px solid transparent; }
+        .trophy.unlocked { filter: grayscale(0); opacity: 1; background: #fff; border: 2px solid var(--gold); transform: scale(1.05); box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2); }
         .trophy-icon { font-size: 3rem; display: block; margin-bottom: 10px; }
 
-        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
-        .fact-card { background: #f1f5f9; padding: 15px; border-radius: 12px; font-size: 0.9rem; border-left: 4px solid var(--accent); }
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .fact-card { background: #f1f5f9; padding: 15px; border-radius: 12px; font-size: 0.9rem; border-left: 4px solid var(--accent); line-height: 1.4; }
 
         footer { margin-top: auto; padding: 20px 0; border-top: 1px solid var(--border); text-align: center; color: #94a3b8; font-size: 0.8rem; }
         .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; margin-top: 10px;}
@@ -77,7 +77,7 @@
         <h1 style="font-family:'Outfit';">The Gauntlet</h1>
         <div class="glass-panel" id="quiz-container">
             <div id="quiz-intro">
-                <p>Complete each level to earn a permanent trophy. 10/10 required.</p>
+                <p>Perfect 10/10 scores unlock permanent trophies and rank upgrades.</p>
                 <button class="action-btn" onclick="startQuiz('Pro')">PRO TEST</button>
                 <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent);">MASTER TEST</button>
                 <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE TEST</button>
@@ -97,9 +97,9 @@
         <h1 style="font-family:'Outfit';">Trophy Room</h1>
         <div class="glass-panel">
             <div class="trophy-grid">
-                <div class="trophy" id="t-pro"><span class="trophy-icon">🥉</span><b>Pro</b><br>Certified</div>
-                <div class="trophy" id="t-master"><span class="trophy-icon">🥈</span><b>Master</b><br>Scientist</div>
-                <div class="trophy" id="t-elite"><span class="trophy-icon">🥇</span><b>Elite</b><br>Architect</div>
+                <div class="trophy" id="t-Pro"><span class="trophy-icon">🥉</span><b>Pro</b><br>Certified</div>
+                <div class="trophy" id="t-Master"><span class="trophy-icon">🥈</span><b>Master</b><br>Scientist</div>
+                <div class="trophy" id="t-Elite"><span class="trophy-icon">🥇</span><b>Elite</b><br>Architect</div>
             </div>
         </div>
     </section>
@@ -116,7 +116,7 @@
         </div>
         <div id="ai-chat" style="flex-grow:1; padding:15px; overflow-y:auto; font-size:0.9rem; background: #fafafa;"></div>
         <div style="padding:10px; border-top:1px solid var(--border); display:flex; gap:5px;">
-            <input type="text" id="ai-input" placeholder="Say hello or use secret code..." style="border:none; background:#f1f5f9; padding:12px; border-radius:10px; flex-grow:1; outline:none;">
+            <input type="text" id="ai-input" placeholder="Ask science or use secret code..." style="border:none; background:#f1f5f9; padding:12px; border-radius:10px; flex-grow:1; outline:none;">
             <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 15px; cursor:pointer;">Send</button>
         </div>
     </div>
@@ -136,6 +136,61 @@
         Elite: [{q:"Electron charge?", a:["Positive","Negative","Neutral","Variable"], c:1},{q:"Avogadro's constant?", a:["6.02x10^23","3.14","9.81","1.6x10^-19"], c:0},{q:"Glass component?", a:["Iron","Carbon","Silica","Sodium"], c:2},{q:"Shared electron bond?", a:["Ionic","Metallic","Covalent","Hydrogen"], c:2},{q:"Earth Gravity?", a:["8.8","9.8","10.8","7.8"], c:1},{q:"Atomic Number 6?", a:["Oxygen","Nitrogen","Carbon","Helium"], c:2},{q:"Smallest bone?", a:["Femur","Stapes","Rib","Skull"], c:1},{q:"F = ma is Newton's?", a:["1st","2nd","3rd","4th"], c:1},{q:"Absolute Zero (C)?", a:["0","-100","-273.15","-300"], c:2},{q:"Hardest mineral?", a:["Steel","Ruby","Diamond","Quartz"], c:2}]
     };
 
+    const facts = [
+        "Mitochondria generate most of the chemical energy needed to power the cell.",
+        "Water expands when it freezes, unlike most other substances.",
+        "Venus is the only planet that rotates clockwise.",
+        "A bolt of lightning is 5 times hotter than the surface of the sun.",
+        "Humans share about 50% of their DNA with bananas.",
+        "Light takes 8 minutes and 20 seconds to travel from the Sun to Earth.",
+        "Honey is the only food that doesn't spoil.",
+        "The human heart beats about 100,000 times a day.",
+        "Octopuses have three hearts and blue blood.",
+        "Sound travels about 4 times faster in water than in air.",
+        "Diamond is the hardest natural substance on Earth.",
+        "The Earth's core is as hot as the surface of the Sun.",
+        "An individual blood cell takes about 60 seconds to make a complete circuit of the body.",
+        "Oxygen has a blue color when in liquid and solid states.",
+        "Helium is the only element that cannot be solidified by cooling alone.",
+        "The Milky Way galaxy is about 100,000 light-years across.",
+        "A teaspoon of a neutron star would weigh 6 billion tons.",
+        "Bananas are slightly radioactive because they contain potassium.",
+        "DNA is a flame retardant.",
+        "Rats laugh when they are tickled.",
+        "The Great Barrier Reef is the largest living structure on Earth.",
+        "A day on Venus is longer than a year on Venus.",
+        "Stomach acid is strong enough to dissolve stainless steel.",
+        "The human brain uses about 20% of the body's total energy.",
+        "Saturn's rings are 90% water.",
+        "Clouds are actually very heavy; an average cloud weighs about 1.1 million pounds.",
+        "Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.",
+        "Sharks have been around longer than trees.",
+        "There are more trees on Earth than stars in the Milky Way.",
+        "A person would be about 1 cm taller in the morning than at night.",
+        "Hot water freezes faster than cold water (Mpemba effect).",
+        "The solar system is 4.6 billion years old.",
+        "Jupiter is twice as massive as all the other planets combined.",
+        "The human body contains about 0.2 milligrams of gold.",
+        "Grasshoppers have ears in their bellies.",
+        "Ants don't have lungs; they breathe through tiny holes.",
+        "Mercury is the smallest planet in our solar system.",
+        "The ocean covers more than 70% of the Earth's surface.",
+        "The speed of light is exactly 299,792,458 meters per second.",
+        "One third of the Earth's land surface is partially or totally desert.",
+        "The average human body contains enough sulfur to kill all the fleas on an average dog.",
+        "A small child could swim through the veins of a blue whale.",
+        "Nitrogen makes up 78% of the Earth's atmosphere.",
+        "Glass is actually a liquid that flows very, very slowly.",
+        "Your skin is the body's largest organ.",
+        "The fingernails on your dominant hand grow faster.",
+        "The moon is moving away from Earth at 3.8 cm per year.",
+        "Pluto is smaller than the United States.",
+        "Tungsten has the highest melting point of all metals.",
+        "Bamboo is the fastest-growing plant on Earth.",
+        "The human eye can distinguish 10 million different colors.",
+        "Uranus is the coldest planet in the solar system."
+    ];
+
     function login() {
         const n = document.getElementById('user-name').value;
         if(!n) return;
@@ -144,18 +199,28 @@
         loadGlossary();
     }
 
-    function nav(id, btn) {
+    function nav(viewId, btn) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active-view');
+        document.getElementById(viewId).classList.add('active-view');
         btn.classList.add('active');
+        if(viewId === 'gauntlet') resetQuizMenu();
     }
 
     function loadGlossary() {
         const box = document.getElementById('glossary-box');
-        const facts = ["Mitochondria has its own DNA.", "Venus is the hottest planet.", "Diamond is pure carbon.", "Humans share 50% DNA with bananas.", "Light takes 8 mins to reach Earth.", "Sound is 4x faster in water.", "Oxygen is a gas at room temp.", "Steel is an alloy of iron.", "Jupiter has 79 moons.", "The heart is a muscle."];
         box.innerHTML = "";
-        facts.forEach(f => { box.innerHTML += `<div class="fact-card">${f}</div>`; });
+        facts.forEach((f, i) => { 
+            box.innerHTML += `<div class="fact-card"><b>Fact #${i+1}:</b><br>${f}</div>`; 
+            if(i === 0) box.innerHTML += `<div class="fact-card">
+
+[Image of animal cell organelles]
+</div>`;
+            if(i === 1) box.innerHTML += `<div class="fact-card">
+
+[Image of water molecule structure]
+</div>`;
+        });
     }
 
     function toggleAI() {
@@ -166,9 +231,9 @@
     function askAI() {
         const input = document.getElementById('ai-input').value.toLowerCase().trim();
         const chat = document.getElementById('ai-chat');
-        let res = "I'm not sure. Ask about Science!";
-        if(input === "nkb gf") res = "❤️ MESSAGE: Nhyira Karikari Bonsu, you are my world. I love you!";
-        else if(input.includes("hello")) res = "Hello Operator Caleb. How can I help?";
+        let res = "Analyzing Caleb's database... Ask me something about science!";
+        if(input === "nkb gf") res = "❤️ ENCRYPTED: Nhyira Karikari Bonsu, you are my everything. I love you!";
+        else if(input.includes("hello")) res = "Hello Operator Caleb. Systems are operational.";
         chat.innerHTML += `<div><b>You:</b> ${input}</div><div style="color:var(--primary); margin-bottom:10px;"><b>Omni:</b> ${res}</div>`;
         document.getElementById('ai-input').value = "";
         chat.scrollTop = chat.scrollHeight;
@@ -201,21 +266,41 @@
         if(score === 10) {
             unlockedRanks[currentLevel] = true;
             updateStatus();
-            container.innerHTML = `<h2>10/10 PERFECT!</h2><p>Trophy Unlocked: <b>${currentLevel}</b></p><button class="action-btn" onclick="location.reload()">Continue</button>`;
+            container.innerHTML = `<h2>🏆 10/10 PERFECT!</h2><p>Rank and Trophy unlocked: <b>${currentLevel}</b></p><button class="action-btn" onclick="resetQuizMenu()">BACK TO LEVELS</button>`;
             confetti();
         } else {
-            container.innerHTML = `<h2>Score: ${score}/10</h2><p>Try again for the trophy.</p><button class="action-btn" onclick="location.reload()">Retry</button>`;
+            container.innerHTML = `<h2>Score: ${score}/10</h2><p>Need 10/10 for trophy.</p><button class="action-btn" onclick="resetQuizMenu()">RETRY</button>`;
         }
     }
 
+    function resetQuizMenu() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = `
+            <div id="quiz-intro">
+                <p>Perfect 10/10 scores unlock permanent trophies and rank upgrades.</p>
+                <button class="action-btn" onclick="startQuiz('Pro')">PRO TEST</button>
+                <button class="action-btn" onclick="startQuiz('Master')" style="background:var(--accent);">MASTER TEST</button>
+                <button class="action-btn" onclick="startQuiz('Elite')" style="background:var(--text);">ELITE TEST</button>
+            </div>
+            <div id="quiz-active" style="display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                    <span id="quiz-level" style="font-weight:700; color:var(--primary);">Level</span>
+                    <span id="quiz-progress">1/10</span>
+                </div>
+                <h3 id="question-text">Loading...</h3>
+                <div id="answer-options"></div>
+            </div>`;
+    }
+
     function updateStatus() {
-        if(unlockedRanks.Elite) document.getElementById('rank-tag').innerText = "ELITE ARCHITECT";
-        else if(unlockedRanks.Master) document.getElementById('rank-tag').innerText = "MASTER SCIENTIST";
-        else if(unlockedRanks.Pro) document.getElementById('rank-tag').innerText = "PRO CERTIFIED";
+        const tag = document.getElementById('rank-tag');
+        if(unlockedRanks.Elite) tag.innerText = "ELITE ARCHITECT";
+        else if(unlockedRanks.Master) tag.innerText = "MASTER SCIENTIST";
+        else if(unlockedRanks.Pro) tag.innerText = "PRO CERTIFIED";
         
-        if(unlockedRanks.Pro) document.getElementById('t-pro').classList.add('unlocked');
-        if(unlockedRanks.Master) document.getElementById('t-master').classList.add('unlocked');
-        if(unlockedRanks.Elite) document.getElementById('t-elite').classList.add('unlocked');
+        if(unlockedRanks.Pro) document.getElementById('t-Pro').classList.add('unlocked');
+        if(unlockedRanks.Master) document.getElementById('t-Master').classList.add('unlocked');
+        if(unlockedRanks.Elite) document.getElementById('t-Elite').classList.add('unlocked');
     }
 </script>
 </body>
