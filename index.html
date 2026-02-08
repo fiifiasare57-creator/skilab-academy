@@ -2,247 +2,204 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkiLabs Academy | Research Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SkiLabs Academy | Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --primary: #6366f1; --accent: #0ea5e9; --gold: #f59e0b; --ruby: #e11d48; --emerald: #10b981; --bg: #f8fafc; --panel: #ffffff; --border: #e2e8f0; --text: #1e293b; }
-        * { box-sizing: border-box; transition: all 0.2s ease; }
+        :root { --primary: #6366f1; --accent: #0ea5e9; --gold: #f59e0b; --ruby: #e11d48; --bg: #0f172a; --panel: #1e293b; --border: #334155; --text: #f8fafc; --subtext: #94a3b8; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: all 0.2s ease; }
         body { margin: 0; font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Login Screen */
         #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: white; padding: 40px; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 380px; }
-        .login-input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid var(--border); border-radius: 12px; outline: none; font-size: 1rem; }
+        .login-card { background: var(--panel); padding: 30px; border-radius: 24px; border: 1px solid var(--border); text-align: center; width: 100%; max-width: 380px; }
+        .login-input { width: 100%; padding: 15px; margin: 20px 0; border: 1px solid var(--border); background: #0f172a; color: white; border-radius: 12px; text-align: center; font-size: 1rem; }
 
-        /* Sidebar & Close Button */
         #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 1001; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; }
         #sidebar { width: 280px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; z-index: 2000; position: relative; }
-        #close-sidebar { display: none; position: absolute; top: 20px; right: 20px; background: #f1f5f9; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text); padding: 5px 10px; border-radius: 8px; font-weight: bold; }
-        
-        .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: #64748b; font-weight: 500; border: none; background: none; text-align: left; font-size: 1rem; width: 100%; }
-        .nav-btn.active { background: #e0e7ff; color: var(--primary); font-weight: 700; }
+        #close-sidebar { display: none; position: absolute; top: 20px; right: 20px; color: white; background: #334155; border: none; padding: 5px 10px; border-radius: 8px; }
 
-        /* Main Content */
-        #main { flex-grow: 1; overflow-y: auto; padding: 40px; position: relative; width: 100%; }
-        .view { display: none; max-width: 900px; margin: 0 auto; width: 100%; }
+        .nav-btn { padding: 14px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: var(--subtext); border: none; background: none; text-align: left; width: 100%; font-size: 1rem; }
+        .nav-btn.active { background: var(--primary); color: white; font-weight: 700; }
+
+        #main { flex-grow: 1; overflow-y: auto; padding: 40px; width: 100%; }
+        .view { display: none; max-width: 800px; margin: 0 auto; }
         .active-view { display: block; }
-        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: clamp(15px, 5vw, 30px); margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 25px; }
 
-        /* Database Facts */
-        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
-        .fact-card { background: var(--panel); padding: 15px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--accent); font-size: 0.85rem; }
+        .opt-btn { width: 100%; text-align: left; padding: 16px; margin-bottom: 10px; background: #0f172a; border: 1px solid var(--border); border-radius: 12px; color: white; cursor: pointer; font-size: 0.95rem; }
+        .opt-btn:hover { border-color: var(--accent); }
+        .progress-bar { height: 6px; background: #0f172a; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
 
-        /* Trophies */
-        .trophy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .trophy { padding: 20px; border-radius: 20px; background: #f1f5f9; filter: grayscale(1); opacity: 0.3; text-align: center; font-weight: 700; border: 2px solid transparent; }
-        .trophy.unlocked { filter: grayscale(0); opacity: 1; background: white; border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+        .fact-card { background: #0f172a; padding: 15px; border-radius: 12px; border-left: 4px solid var(--accent); font-size: 0.85rem; line-height: 1.4; }
 
-        /* AI Window */
-        #ai-toggle { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; border: none; font-weight: 700; z-index: 1000; box-shadow: 0 10px 20px rgba(99,102,241,0.3); }
-        #ai-window { display: none; position: fixed; bottom: 95px; right: 20px; left: 20px; max-width: 350px; margin-left: auto; height: 500px; background: white; border: 1px solid var(--border); border-radius: 20px; z-index: 1000; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
-        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { padding: 10px 14px; border-radius: 15px; max-width: 85%; line-height: 1.4; white-space: pre-wrap; }
-        .ai-bub { background: #e0e7ff; color: var(--primary); align-self: flex-start; }
-        .user-bub { background: #f1f5f9; color: var(--text); align-self: flex-end; }
+        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; border: none; font-weight: 900; z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        #ai-window { display: none; position: fixed; bottom: 85px; right: 15px; left: 15px; max-width: 380px; margin-left: auto; height: 500px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; z-index: 1000; flex-direction: column; overflow: hidden; }
+        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #0f172a; }
+        .bubble { padding: 12px; border-radius: 15px; max-width: 85%; font-size: 0.9rem; }
+        .ai-bub { background: var(--panel); color: var(--accent); align-self: flex-start; }
+        .user-bub { background: var(--primary); color: white; align-self: flex-end; }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            #sidebar { position: fixed; left: -100%; height: 100%; width: 280px; transition: 0.3s ease; }
-            #sidebar.open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.1); }
+            #sidebar { position: fixed; left: -100%; }
+            #sidebar.open { left: 0; }
             #menu-toggle { display: block; }
             #close-sidebar { display: block; }
-            #main { padding: 80px 20px 40px 20px; }
-            .trophy-grid { grid-template-columns: repeat(2, 1fr); }
+            #main { padding: 80px 20px; }
         }
     </style>
 </head>
 <body>
 
-<button id="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
+<button id="menu-toggle" onclick="toggleSidebar()">☰ MENU</button>
 
 <div id="login-screen">
     <div class="login-card">
         <h1 style="font-family:'Outfit'; color:var(--primary); margin:0;">SkiLabs_</h1>
-        <p style="color:#64748b;">Research Division Portal</p>
-        <input type="text" id="username-input" class="login-input" placeholder="Enter Researcher Name..." autocomplete="off">
-        <button class="nav-btn" style="background:var(--primary); color:white; text-align:center;" onclick="handleLogin()">AUTHORIZE ACCESS</button>
+        <p style="color:var(--subtext);">Global Research Terminal</p>
+        <input type="text" id="username-input" class="login-input" placeholder="Access ID">
+        <button class="nav-btn" style="background:var(--primary); color:white; text-align:center;" onclick="handleLogin()">SECURE LOGIN</button>
+        <p style="font-size: 0.6rem; color: #475569; margin-top: 20px;">MADE BY CALEB FIIFI ASARE</p>
     </div>
 </div>
 
 <nav id="sidebar">
-    <button id="close-sidebar" onclick="toggleSidebar()">✕ Close</button>
-    <div style="font-family:'Outfit'; font-weight:900; font-size:1.5rem; margin-bottom:30px; color:var(--primary);">SkiLabs_</div>
-    <button class="nav-btn active" onclick="nav('dash', this)">🏠 Lab Hub</button>
-    <button class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Research Gauntlet</button>
-    <button class="nav-btn" onclick="nav('trophy', this)">🏆 Archives</button>
-    <button class="nav-btn" onclick="nav('glossary', this)">📖 Central Database</button>
+    <button id="close-sidebar" onclick="toggleSidebar()">✕</button>
+    <div style="font-family:'Outfit'; font-weight:900; font-size:1.5rem; margin-bottom:40px; color:var(--primary);">SkiLabs_</div>
+    <button class="nav-btn active" onclick="nav('dash', this)">🏠 Dashboard</button>
+    <button class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Gauntlet</button>
+    <button class="nav-btn" onclick="nav('glossary', this)">📖 Database</button>
+    <div style="margin-top: auto; font-size: 0.6rem; color: var(--subtext);">DEV: CALEB FIIFI ASARE</div>
 </nav>
 
 <main id="main">
     <section id="dash" class="view active-view">
-        <h1 style="font-family:'Outfit';">Lab Hub</h1>
-        <div id="hc-banner" style="display:none; background:linear-gradient(45deg, var(--ruby), var(--gold)); color:white; padding:15px; border-radius:15px; text-align:center; font-weight:900; margin-bottom:20px;">💎 PRECIOUS STONE PROTOCOL AUTHORIZED</div>
+        <h1 style="font-family:'Outfit';">Terminal Dashboard</h1>
+        <div id="hc-banner" style="display:none; background:linear-gradient(90deg, var(--ruby), var(--gold)); color:white; padding:15px; border-radius:15px; text-align:center; font-weight:900; margin-bottom:20px; font-size: 0.8rem;">SYSTEM STATUS: ELITE CLEARANCE GRANTED</div>
         <div class="glass-panel">
-            <h3>Researcher ID: <span id="display-id">---</span></h3>
-            <p>Clearance: <span id="rank-tag" style="background:var(--primary); color:white; padding:5px 15px; border-radius:20px;">LEVEL 1</span></p>
+            <p style="color:var(--subtext); font-size: 0.7rem; text-transform: uppercase;">Authenticated ID</p>
+            <h2 id="display-id" style="margin: 0; color: var(--accent);">GUEST</h2>
         </div>
     </section>
 
     <section id="gauntlet" class="view">
-        <h1 style="font-family:'Outfit';">Gauntlet</h1>
+        <h1 style="font-family:'Outfit';">Research Gauntlet</h1>
         <div class="glass-panel" id="quiz-menu">
-            <button class="nav-btn" style="background:var(--primary); color:white; margin-bottom:10px;" onclick="startQuiz('Pro')">PRO TEST</button>
-            <button class="nav-btn" style="background:var(--accent); color:white; margin-bottom:10px;" onclick="startQuiz('Master')">MASTER TEST</button>
-            <button class="nav-btn" style="background:var(--text); color:white;" onclick="startQuiz('Elite')">ELITE TEST</button>
-            <div id="hc-set" style="display:none; border-top: 1px solid #ddd; margin-top:20px; padding-top:20px;">
-                <button class="nav-btn" style="background:var(--ruby); color:white; margin-bottom:10px;" onclick="startQuiz('Ruby')">RUBY TEST</button>
-                <button class="nav-btn" style="background:var(--emerald); color:white; margin-bottom:10px;" onclick="startQuiz('Emerald')">EMERALD TEST</button>
-                <button class="nav-btn" style="background:var(--gold); color:white;" onclick="startQuiz('Gold')">FINAL GOLD TEST</button>
+            <button class="nav-btn" style="background:var(--primary); color:white; margin-bottom:12px;" onclick="startQuiz('Pro')">PRO TEST (10 Qs)</button>
+            <button class="nav-btn" style="background:var(--accent); color:white; margin-bottom:12px;" onclick="startQuiz('Master')">MASTER TEST (10 Qs)</button>
+            <button class="nav-btn" style="background:var(--border); color:white;" onclick="startQuiz('Elite')">ELITE TEST (10 Qs)</button>
+            <div id="hc-set" style="display:none; border-top: 1px solid var(--border); margin-top:25px; padding-top:25px;">
+                <button class="nav-btn" style="background:var(--gold); color:white;" onclick="startQuiz('Gold')">FINAL GOLD TEST (20 Qs)</button>
             </div>
         </div>
         <div class="glass-panel" id="quiz-active" style="display:none;">
-            <p id="q-progress">1/10</p>
-            <h3 id="q-text">Loading Question...</h3>
+            <div class="progress-bar"><div id="progress-fill"></div></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size: 0.8rem; font-weight:bold;">
+                <span id="active-test-name" style="color:var(--accent);">TEST</span>
+                <span id="q-progress">1/10</span>
+            </div>
+            <h3 id="q-text" style="margin-bottom:25px;">...</h3>
             <div id="q-options"></div>
         </div>
     </section>
 
-    <section id="trophy" class="view">
-        <h1 style="font-family:'Outfit';">Trophies</h1>
-        <div class="trophy-grid">
-            <div class="trophy" id="t-Pro">🥉<br>Pro</div>
-            <div class="trophy" id="t-Master">🥈<br>Master</div>
-            <div class="trophy" id="t-Elite">🥇<br>Elite</div>
-            <div class="trophy" id="t-Ruby">♦️<br>Ruby</div>
-            <div class="trophy" id="t-Emerald">💚<br>Emerald</div>
-            <div class="trophy" id="t-Gold">👑<br>GOLD</div>
-        </div>
-    </section>
-
     <section id="glossary" class="view">
-        <h1 style="font-family:'Outfit';">Database</h1>
+        <h1 style="font-family:'Outfit';">Database (<span id="fact-count">50</span> Entries)</h1>
         <div class="glossary-grid" id="glos-box"></div>
     </section>
 </main>
 
-<button id="ai-toggle" onclick="toggleAI()">🧠 Omni AI</button>
+<button id="ai-toggle" onclick="toggleAI()">🧠 OMNI AI</button>
 <div id="ai-window">
     <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between;">
-        <b>OMNI AI v10.0</b> <span onclick="toggleAI()" style="cursor:pointer;">✕</span>
+        <b>OMNI v10.5</b> <span onclick="toggleAI()" style="cursor:pointer;">✕</span>
     </div>
     <div id="ai-chat"></div>
-    <div style="padding:10px; display:flex; gap:5px;">
-        <input type="text" id="ai-input" placeholder="Query..." style="flex-grow:1; border:1px solid #ddd; border-radius:8px; padding:10px;">
+    <div style="padding:10px; display:flex; gap:5px; background: var(--panel);">
+        <input type="text" id="ai-input" placeholder="Query..." style="flex-grow:1; border:none; background:#0f172a; color:white; border-radius:8px; padding:10px; outline:none;">
         <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:8px; padding:0 15px;">➤</button>
     </div>
 </div>
 
 <script>
-    let activeUser = "", isHC = false, curLvl = "", qIdx = 0, score = 0;
-    let unlocked = { Pro: false, Master: false, Elite: false, Ruby: false, Emerald: false, Gold: false };
+    let activeUser = "", isEliteDone = false, curLvl = "", qIdx = 0, score = 0;
 
-    // RESTORED ALL NOTES
-    const stdFacts = ["Mitochondria power cells.","Water expands when frozen.","Venus rotates clockwise.","Lightning is hotter than sun.","Humans share 50% DNA with bananas.","Light takes 8 mins from Sun.","Honey never spoils.","Heart beats 100k times daily.","Octopuses have blue blood.","Sound is 4x faster in water.","Diamond is hardest.","Earth core is hot as Sun.","Blood takes 60s for circuit.","Oxygen is blue as liquid.","Helium can't be solid by cold.","Milky Way is 100k light years across.","Neutron stars are heavy.","Bananas are radioactive.","DNA is flame retardant.","Rats laugh when tickled."];
-    const hcFacts = ["Entropy measures system disorder.","Mitochondria have their own DNA.","Absolute Zero is -273.15C.","Tectonic plates move like fingernails.","Schwarzschild radius defines black holes.","Quantum entanglement is instant sync.","Hydrogen bonds hold DNA strands.","Higgs Boson provides mass.","Nuclear fusion powers the stars.","Fibonacci exists in sunflowers.","Light is both wave and particle.","Coriolis effect curves wind.","Jupiter's Red Spot is a 300yr storm.","DNA replicates in S-phase.","Sound speed is 343 m/s."];
+    const stdFacts = ["Mitochondria are the powerhouse of the cell.","Water expands when it freezes.","Venus rotates clockwise.","Lightning is 5x hotter than the sun.","Humans share 50% DNA with bananas.","Light takes 8 mins to reach Earth from Sun.","Honey never spoils.","The heart beats 100,000 times daily.","Octopuses have blue blood.","Sound travels 4x faster in water.","Diamond is the hardest natural material.","Earth's core is hot as the Sun.","Blood takes 60 seconds to complete a circuit.","Oxygen is blue in liquid form.","Helium cannot be solidified by cooling alone.","The Milky Way is 100,000 light-years across.","Neutron stars are incredibly dense.","Bananas are slightly radioactive.","DNA is flame retardant.","Rats laugh when tickled.","Ants don't have lungs.","A day on Venus is longer than a year.","Sharks have been around longer than trees.","The moon has moonquakes.","Hot water freezes faster than cold water.","Cows have best friends.","Lightning can toast 100,000 slices of bread.","Sea otters hold hands when they sleep.","Polar bear skin is actually black.","The Eiffel Tower grows in summer.","Human teeth are as strong as shark teeth.","A jellyfish is 95% water.","An ostrich's eye is bigger than its brain.","Turtles can breathe through their butts.","Koalas have fingerprints like humans.","A group of flamingos is a 'flamboyance'.","Butterflies taste with their feet.","Sloths hold breath longer than dolphins.","The circulatory system is 60,000 miles long.","Your nose remembers 50,000 scents.","The brain uses 20% of the body's energy.","Apples float because they are 25% air.","Mars has blue sunsets.","More trees on Earth than stars in the galaxy.","A single cloud can weigh a million pounds.","A sneeze travels at about 100 mph.","Elephants are the only animals that can't jump.","The tongue is the strongest muscle.","A shrimp's heart is in its head.","Great Wall of China isn't visible from space."];
+    const upgradeFacts = ["Quantum entanglement allows particles to sync instantly across space.","The human genome contains over 3 billion base pairs of genetic code."];
 
     const questions = {
         Pro: [
-            {q:"Which chemical formula represents water?", a:["CO2","H2O","NaCl","O2"], c:1},
-            {q:"Which symbol represents Gold?", a:["Ag","Fe","Au","Cu"], c:2},
-            {q:"Which is the 'Red Planet'?", a:["Venus","Mars","Jupiter","Saturn"], c:1},
-            {q:"Which organelle generates ATP?", a:["Nucleus","Ribosome","Mitochondria","Golgi"], c:2},
+            {q:"What is the chemical symbol for Water?", a:["H2O","CO2","O2","NaCl"], c:0},
+            {q:"Which planet is closest to the Sun?", a:["Venus","Earth","Mercury","Mars"], c:2},
+            {q:"What gas do plants absorb?", a:["Oxygen","Nitrogen","Carbon Dioxide","Helium"], c:2},
+            {q:"How many continents are there?", a:["5","6","7","8"], c:2},
+            {q:"What is the largest mammal?", a:["Elephant","Blue Whale","Giraffe","Shark"], c:1},
+            {q:"Which force pulls things to Earth?", a:["Magnetism","Friction","Gravity","Speed"], c:2},
             {q:"Boiling point of water in Celsius?", a:["50°C","90°C","100°C","120°C"], c:2},
-            {q:"The center of our solar system is?", a:["The Moon","Alpha Centauri","The Sun","Polaris"], c:2},
-            {q:"Chemical notation for table salt?", a:["HCl","NaCl","NaOH","KCl"], c:1},
-            {q:"Hardest natural substance?", a:["Quartz","Ruby","Diamond","Topaz"], c:2},
-            {q:"Gas humans primarily inhale?", a:["Nitrogen","CO2","Oxygen","Argon"], c:2},
-            {q:"Smallest planet in solar system?", a:["Earth","Mercury","Mars","Neptune"], c:1}
+            {q:"What do bees collect?", a:["Pollen","Dust","Water","Salt"], c:0},
+            {q:"Closest star to Earth?", a:["Sirius","Proxima Centauri","The Sun","Vega"], c:2},
+            {q:"How many legs does a spider have?", a:["6","8","10","12"], c:1}
         ],
         Master: [
-            {q:"Earth's atmosphere is 78% what?", a:["Oxygen","CO2","Nitrogen","Hydrogen"], c:2},
-            {q:"Unit of electrical resistance?", a:["Volt","Ampere","Ohm","Watt"], c:2},
-            {q:"Symbol for Silver?", a:["Si","Ag","Au","Pb"], c:1},
-            {q:"Neutral pH value?", a:["1","14","7","0"], c:2},
-            {q:"Lightest element in universe?", a:["Helium","Oxygen","Hydrogen","Carbon"], c:2},
-            {q:"Healthy adult tooth count?", a:["28","30","32","36"], c:2},
-            {q:"Study of prehistoric life?", a:["Archaeology","Paleontology","Geology","Botany"], c:1},
-            {q:"Star closest to Earth (not Sun)?", a:["Sirius","Proxima Centauri","Betelgeuse","Vega"], c:1},
-            {q:"Substance that expands when frozen?", a:["Mercury","Olive Oil","Water","Alcohol"], c:2},
-            {q:"Color of liquid oxygen?", a:["Pale Blue","Deep Red","Clear","Neon Green"], c:0}
+            {q:"Which planet has the most moons?", a:["Jupiter","Saturn","Neptune","Mars"], c:1},
+            {q:"What is the hardest natural substance?", a:["Gold","Iron","Diamond","Quartz"], c:2},
+            {q:"Speed of light is roughly...?", a:["300k km/s","150k km/s","1 million km/s","500k km/s"], c:0},
+            {q:"Who proposed E=mc²?", a:["Newton","Tesla","Einstein","Hawking"], c:2},
+            {q:"Main gas in the Sun?", a:["Oxygen","Nitrogen","Hydrogen","Helium"], c:2},
+            {q:"Human bone count (Adult)?", a:["150","206","250","300"], c:1},
+            {q:"Largest organ in the body?", a:["Liver","Heart","Skin","Lungs"], c:2},
+            {q:"What is the center of an atom?", a:["Electron","Proton","Nucleus","Quark"], c:2},
+            {q:"Common name for Sodium Chloride?", a:["Sugar","Salt","Vinegar","Baking Soda"], c:1},
+            {q:"Planet known as the Red Planet?", a:["Venus","Jupiter","Mars","Saturn"], c:2}
         ],
         Elite: [
-            {q:"Gravity on Earth (sea level)?", a:["8.5 m/s²","9.8 m/s²","10.2 m/s²","12.0 m/s²"], c:1},
-            {q:"Atomic number of Carbon?", a:["1","6","12","14"], c:1},
-            {q:"Smallest bone in human body?", a:["Femur","Stapes","Ulna","Phalanges"], c:1},
-            {q:"Bond where atoms share electrons?", a:["Ionic","Covalent","Hydrogen","Metallic"], c:1},
-            {q:"Absolute Zero in Celsius?", a:["-100.00°C","-212.15°C","-273.15°C","-300.00°C"], c:2},
-            {q:"Formula for Force?", a:["F=m/v","F=m+a","F=ma","F=E/c²"], c:2},
-            {q:"Main ingredient in glass?", a:["Limestone","Alumina","Silica","Potash"], c:2},
-            {q:"Particles in one mole?", a:["Planck","Avogadro","Golden Ratio","Pi"], c:1},
-            {q:"Negative subatomic particle?", a:["Proton","Neutron","Electron","Quark"], c:2},
-            {q:"Speed of light (vacuum)?", a:["150k km/s","299,792 km/s","500k km/s","1m km/s"], c:1}
-        ],
-        Ruby: [
-            {q:"Measure of system 'disorder'?", a:["Inertia","Entropy","Enthalpy","Friction"], c:1},
-            {q:"Process that powers stars?", a:["Fission","Oxidation","Fusion","Decay"], c:2},
-            {q:"Freezing point of water in F?", a:["0°F","100°F","32°F","212°F"], c:2},
-            {q:"The 'God Particle' name?", a:["Proton","Neutron","Higgs Boson","Graviton"], c:2},
-            {q:"pH less than 7 property?", a:["Alkaline","Neutral","Acidic","Amphoteric"], c:2},
-            {q:"Bond holding DNA strands?", a:["Covalent","Hydrogen","Metallic","Peptide"], c:1},
-            {q:"Wave-particle duality term?", a:["Photoelectric","Uncertainty","Quantum Wave","Entanglement"], c:2},
-            {q:"Nature's mathematical sequence?", a:["Binary","Prime","Fibonacci","Geometric"], c:2},
-            {q:"Collapsed star state?", a:["White Dwarf","Neutron Star","Red Giant","Supernova"], c:1},
-            {q:"Theoretical lowest temperature?", a:["Relative Zero","Liquid Nitrogen","Absolute Zero","Deep Space"], c:2}
-        ],
-        Emerald: [
-            {q:"Building blocks of proteins?", a:["Lipids","Glucose","Amino Acids","Nucleotides"], c:2},
-            {q:"Most abundant element in Earth's crust?", a:["Iron","Silicon","Oxygen","Aluminum"], c:2},
-            {q:"Instant link between particles?", a:["Tunneling","Entanglement","Superposition","Decoherence"], c:1},
-            {q:"Layer shielding UV radiation?", a:["Troposphere","Ozone Layer","Mesosphere","Exosphere"], c:1},
-            {q:"Growing plants without soil?", a:["Photosynthesis","Aquaculture","Hydroponics","Irrigation"], c:2},
-            {q:"Water movement through membrane?", a:["Diffusion","Active Transport","Osmosis","Capillary"], c:2},
-            {q:"Speed of sound (dry air)?", a:["100 m/s","343 m/s","1,000 m/s","300k m/s"], c:1},
-            {q:"DNA replication phase?", a:["G1","S Phase","G2","Mitosis"], c:1},
-            {q:"Bending of light?", a:["Reflection","Refraction","Diffraction","Dispersion"], c:1},
-            {q:"Neurons in adult brain?", a:["10bn","50bn","86bn","200bn"], c:2}
+            {q:"Absolute zero in Celsius?", a:["-100.15"," -273.15","-300.5","-212.0"], c:1},
+            {q:"What is the powerhouse of the cell?", a:["Nucleus","Ribosome","Mitochondria","Cilia"], c:2},
+            {q:"Which metal is liquid at room temperature?", a:["Mercury","Lead","Tin","Zinc"], c:0},
+            {q:"Light takes how long from Sun to Earth?", a:["2 mins","8 mins","15 mins","1 hour"], c:1},
+            {q:"Galactic neighborhood name?", a:["Andromeda","The Milky Way","Orion","Centauri"], c:1},
+            {q:"Study of fungi is called...?", a:["Biology","Mycology","Zoology","Geology"], c:1},
+            {q:"pH of pure water?", a:["5","7","9","14"], c:1},
+            {q:"Most abundant gas in atmosphere?", a:["Oxygen","Hydrogen","Nitrogen","Argon"], c:2},
+            {q:"Unit of electrical resistance?", a:["Volt","Watt","Ohm","Amp"], c:2},
+            {q:"How many planets in our solar system?", a:["7","8","9","10"], c:1}
         ],
         Gold: [
-            {q:"Age of Big Bang (billions)?", a:["5.4","13.8","20.1","4.6"], c:1},
-            {q:"27% of universe composition?", a:["Anti-Matter","Dark Matter","Nebula","Black Hole"], c:1},
-            {q:"Components of protons?", a:["Leptons","Quarks","Bosons","Mesons"], c:1},
-            {q:"Apollo 11 landing year?", a:["1961","1969","1972","1955"], c:1},
-            {q:"Thickest Earth layer?", a:["Crust","Mantle","Core","Lithosphere"], c:1},
-            {q:"Newton's Resistance to change?", a:["Velocity","Accel","Inertia","Momentum"], c:2},
-            {q:"Spacetime ripples detected 2015?", a:["Black Holes","Gravitational Waves","Dark Energy","Dilation"], c:1},
-            {q:"DNA double-helix duo?", a:["Einstein/Hawking","Watson/Crick","Darwin/Wallace","Bohr/Planck"], c:1},
-            {q:"Reaction that releases heat?", a:["Endothermic","Catalytic","Exothermic","Hydrolytic"], c:2},
-            {q:"Reaction that absorbs heat?", a:["Exothermic","Endothermic","Combustion","Oxidation"], c:1},
-            {q:"Highest melting point element?", a:["Iron","Titanium","Tungsten","Platinum"], c:2},
-            {q:"Wave frequency change by motion?", a:["Photoelectric","Doppler Effect","Redshift","Interference"], c:1},
-            {q:"Study of fossil record?", a:["Geology","Anthropology","Paleontology","Entomology"], c:2},
-            {q:"Biological catalyst?", a:["Hormone","Vitamin","Enzyme","Lipid"], c:2},
-            {q:"Liquid flow in narrow spaces?", a:["Surface Tension","Capillary Action","Viscosity","Magnetism"], c:1},
-            {q:"Mantle's liquid-solid behavior?", a:["Plasticity","Rigidity","Brittleness","Elasticity"], c:0},
-            {q:"Heavy element creation event?", a:["Solar Wind","Supernova","Main Sequence","Red Giant"], c:1},
-            {q:"Chromosome composition?", a:["DNA/Lipid","DNA/Protein","RNA/Sugar","RNA/Fat"], c:1},
-            {q:"Genetic code evolution mechanism?", a:["Adaptation","Mutation","Natural Selection","Speciation"], c:1},
-            {q:"Neutral pH number?", a:["0","7","14","1"], c:1}
+            {q:"1. First element on Periodic Table?", a:["Helium","Oxygen","Hydrogen","Lithium"], c:2},
+            {q:"2. Galaxy closest to ours?", a:["Andromeda","Sombrero","Triangulum","Cartwheel"], c:0},
+            {q:"3. What is DNA?", a:["Acid","Protein","Carb","Sugar"], c:0},
+            {q:"4. Sound travels fastest in...?", a:["Air","Water","Steel","Vacuum"], c:2},
+            {q:"5. Planet with a visible ring system?", a:["Mars","Saturn","Earth","Venus"], c:1},
+            {q:"6. Layer of gas around Earth?", a:["Hydrosphere","Atmosphere","Lithosphere","Biosphere"], c:1},
+            {q:"7. Who discovered Penicillin?", a:["Fleming","Curie","Pasteur","Darwin"], c:0},
+            {q:"8. Primary source of energy for Earth?", a:["Moon","Sun","Wind","Core"], c:1},
+            {q:"9. Process of plants making food?", a:["Respiration","Photosynthesis","Digestion","Osmosis"], c:1},
+            {q:"10. Subatomic particle with no charge?", a:["Proton","Electron","Neutron","Positron"], c:2},
+            {q:"11. Freezing point of water (Fahrenheit)?", a:["0°F","32°F","100°F","212°F"], c:1},
+            {q:"12. Which planet is the hottest?", a:["Mercury","Venus","Mars","Jupiter"], c:1},
+            {q:"13. Instrument used to see stars?", a:["Microscope","Telescope","Periscope","Stethoscope"], c:1},
+            {q:"14. Smallest planet in solar system?", a:["Mars","Mercury","Venus","Pluto"], c:1},
+            {q:"15. A shooting star is actually a...?", a:["Star","Meteor","Comet","Planet"], c:1},
+            {q:"16. Can sound travel in space?", a:["Yes","No"], c:1},
+            {q:"17. Red blood cell's main job?", a:["Fight infection","Carry Oxygen","Clot blood","Digest food"], c:1},
+            {q:"18. What is a group of stars called?", a:["Galaxy","Constellation","System","Orbit"], c:1},
+            {q:"19. Diamond is made of which element?", a:["Gold","Carbon","Nitrogen","Oxygen"], c:1},
+            {q:"20. How many valves in a human heart?", a:["2","3","4","5"], c:2}
         ]
     };
 
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-    
     function handleLogin() {
         const input = document.getElementById('username-input');
-        if(input.value.trim().length < 2) return alert("Enter name.");
+        if(input.value.trim().length < 2) return alert("Access ID required.");
         activeUser = input.value.trim();
         document.getElementById('display-id').innerText = activeUser.toUpperCase();
         document.getElementById('login-screen').style.display = 'none';
         loadGlossary();
     }
 
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
     function nav(id, btn) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -252,66 +209,70 @@
     }
 
     function loadGlossary() {
-        const b = document.getElementById('glos-box'); b.innerHTML = "";
-        const list = isHC ? hcFacts : stdFacts;
-        list.forEach((f, i) => b.innerHTML += `<div class="fact-card"><b>#${i+1}:</b> ${f}</div>`);
+        const b = document.getElementById('glos-box'); 
+        const countSpan = document.getElementById('fact-count');
+        b.innerHTML = "";
+        let list = isEliteDone ? [...stdFacts, ...upgradeFacts] : [...stdFacts];
+        countSpan.innerText = list.length;
+        list.forEach((f, i) => b.innerHTML += `<div class="fact-card"><b>ID_${i+100}:</b> ${f}</div>`);
     }
 
     function startQuiz(lvl) {
         curLvl = lvl; qIdx = 0; score = 0;
         document.getElementById('quiz-menu').style.display = 'none';
         document.getElementById('quiz-active').style.display = 'block';
+        document.getElementById('active-test-name').innerText = lvl + " SEQUENCE";
         showQ();
     }
 
     function showQ() {
         const qData = questions[curLvl][qIdx];
-        document.getElementById('q-progress').innerText = `Question ${qIdx+1} of ${questions[curLvl].length}`;
+        const total = questions[curLvl].length;
+        document.getElementById('q-progress').innerText = `${qIdx+1}/${total}`;
+        document.getElementById('progress-fill').style.width = `${((qIdx+1)/total)*100}%`;
         document.getElementById('q-text').innerText = qData.q;
         const o = document.getElementById('q-options'); o.innerHTML = "";
         qData.a.forEach((opt, i) => {
             const b = document.createElement('button'); b.className = "opt-btn"; b.innerText = opt;
-            b.onclick = () => { if(i === qData.c) score++; qIdx++; if(qIdx < questions[curLvl].length) showQ(); else endQuiz(); };
+            b.onclick = () => { if(i === qData.c) score++; qIdx++; if(qIdx < total) showQ(); else endQuiz(); };
             o.appendChild(b);
         });
     }
 
     function endQuiz() {
+        const total = questions[curLvl].length;
         document.getElementById('quiz-active').style.display = 'none';
         document.getElementById('quiz-menu').style.display = 'block';
-        if(score === questions[curLvl].length) {
-            unlocked[curLvl] = true; updateUI();
-            if(curLvl === 'Elite') { isHC = true; document.getElementById('hc-set').style.display = 'block'; loadGlossary(); }
-            confetti(); alert("Perfect Score!");
-        } else alert(`Try again! Score: ${score}/${questions[curLvl].length}`);
+        if(score === total) {
+            if(curLvl === 'Elite') { 
+                isEliteDone = true; 
+                document.getElementById('hc-set').style.display = 'block';
+                document.getElementById('hc-banner').style.display = 'block';
+                loadGlossary();
+                alert("ELITE STATUS GRANTED. DATABASE UPDATED.");
+            }
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        } else {
+            alert(`Result: ${score}/${total}. 100% accuracy required for advancement.`);
+        }
     }
 
-    function updateUI() { Object.keys(unlocked).forEach(k => { if(unlocked[k]) document.getElementById('t-'+k).classList.add('unlocked'); }); }
-    
     function toggleAI() { const w = document.getElementById('ai-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
-    
     function askAI() {
         const i = document.getElementById('ai-input'); const q = i.value.trim().toLowerCase(); 
         if(!q) return;
         i.value = ""; addMsg(q, 'user-bub');
-        let res = "Searching...";
-
+        let res = "Query unknown or restricted.";
         if(q === "nkb gf") {
-            res = "💖 [DECRYPTED LETTER]\n\n" +
-                  "To Nhyira Karikari Bonsu,\n\n" +
-                  " I hid this so only you could  read  my true feelings. You are my queen, my world and my life. I love you so much! and I would move the heavens and earth for you. You're my favorite discovery . Always yours, Caleb.";
-            confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
-        } 
-        else if(q.includes("hi")) res = "Hello Researcher.";
-        else res = "Data not found.";
-        
-        setTimeout(() => addAiMsg(res), 500);
+            res = "💖 [DECRYPTED]\nNhyira Karikari Bonsu recognized.\nYou are loved more than all science combined!\n— Caleb.";
+            confetti({ particleCount: 200, spread: 90 });
+        }
+        setTimeout(() => addMsg(res, 'ai-bub'), 500);
     }
     function addMsg(text, cls) {
         const chat = document.getElementById('ai-chat'); const div = document.createElement('div');
         div.className = `bubble ${cls}`; div.innerText = text; chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
     }
-    function addAiMsg(text) { addMsg(text, 'ai-bub'); }
 </script>
 </body>
 </html>
