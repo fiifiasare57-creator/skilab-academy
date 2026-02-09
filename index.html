@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SkiLabs | Academy Terminal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root { 
@@ -42,25 +42,42 @@
         .archive-card { border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 12px; background: #fff; border-radius: 0 16px 16px 0; border: 1px solid var(--border); font-size: 0.95rem; }
         
         .quiz-opt { width: 100%; padding: 16px; border: 2px solid var(--border); border-radius: 16px; background: #fdfdfd; color: var(--text); text-align: left; font-size: 1rem; cursor: pointer; margin-bottom: 10px; transition: 0.2s; font-family: inherit; }
-        .quiz-opt:hover { border-color: var(--primary); background: #f8fafc; }
         .error-shake { animation: shake 0.4s; border-color: #ef4444 !important; color: #ef4444; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
         #academy-invite { display: none; border: 2px solid var(--gold); background: linear-gradient(145deg, #ffffff, #fffbeb); padding: 30px; border-radius: 24px; text-align: center; margin-top: 20px; box-shadow: 0 10px 15px -3px rgba(217, 119, 6, 0.1); }
-        
         #cert-container { display: none; text-align: center; border: 10px double var(--gold); padding: 50px 20px; background: #fff; border-radius: 8px; color: var(--gold); }
         
         #ai-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; z-index: 3000; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
         #ai-window { display: none; position: fixed; bottom: 100px; right: 20px; left: 20px; height: 50vh; max-width: 400px; margin: 0 auto; background: #ffffff; border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
         #ai-chat { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        
         .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; border: 1px solid var(--border); }
         .ai-bub { background: #f1f5f9; align-self: flex-start; }
         .user-bub { background: var(--primary); color: white; align-self: flex-end; border: none; }
-        .secret-bub { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; white-space: pre-line; font-family: 'JetBrains Mono'; border-radius: 15px; padding: 20px; }
         
+        /* THE SECRET LETTER STYLE */
+        .secret-letter { 
+            background: #fffafa; 
+            color: #7f1d1d; 
+            border: 1px solid #fecaca; 
+            border-radius: 15px; 
+            padding: 25px; 
+            font-family: 'Outfit', sans-serif; 
+            line-height: 1.6;
+            box-shadow: inset 0 0 10px rgba(254, 202, 202, 0.2);
+        }
+        .letter-quote {
+            display: block;
+            margin: 15px 0;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem;
+            color: #991b1b;
+            text-align: center;
+        }
+
         #login-screen { position: fixed; inset: 0; background: #f8fafc; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         input[type="text"] { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 12px; text-align: center; background: white; color: var(--text); outline: none; font-family: inherit; font-size: 1rem; }
-        input[type="text"]:focus { border-color: var(--primary); }
     </style>
 </head>
 <body>
@@ -247,7 +264,7 @@
         document.getElementById('cert-name').innerText = user;
         document.getElementById('login-screen').style.display = 'none';
         loadArchive();
-        addAI("Welcome " + user + ". Gauntlet initialized.", 'ai-bub');
+        addAI("Welcome " + user + ". Terminal active.", 'ai-bub');
     }
 
     function nav(id, btn) {
@@ -316,22 +333,37 @@
         
         if(q === "skilabs_root_access") { 
             unlockMaster(); 
-            addAI("OVERRIDE SUCCESSFUL. Root access granted. Gold Status unlocked.", 'ai-bub'); 
+            addAI("OVERRIDE SUCCESSFUL. Root access granted.", 'ai-bub'); 
         }
         else if(q === "nk gf") { 
-            addAI("TO NHYIRA KARIKARI BONSU:\n\nYou are my absolute. My logic starts and ends with you. You are my heart, my happiness and my life.You are the only queen of my heart and if time  were to ever ask me where I belong I would point to your heat and call it home. Forever yours.", 'secret-bub'); 
+            addLetter();
         }
         else if(slang.some(s => q.includes(s))) { 
-            addAI("Safe! Let's get through the trials. You ready?", 'ai-bub'); 
+            addAI("System online. Proceed with the trials.", 'ai-bub'); 
         }
         else { 
-            addAI("System scanning... Complete the Elite level to reveal the Academy invitation.", 'ai-bub'); 
+            addAI("System scanning... Complete Elite to unlock Academy status.", 'ai-bub'); 
         }
     }
 
     function addAI(t, c) {
         const chat = document.getElementById('ai-chat'); const d = document.createElement('div');
         d.className = `bubble ${c}`; d.innerText = t; chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
+    }
+
+    function addLetter() {
+        const chat = document.getElementById('ai-chat');
+        const d = document.createElement('div');
+        d.className = `secret-letter`;
+        d.innerHTML = `
+            <strong>TO NHYIRA KARIKARI BONSU,</strong><br><br>
+            In this world of complex systems and logic, you remain my most beautiful constant. 
+            You are the source of my focus and the only one I truly seek to honor.<br><br>
+            <span class="letter-quote">"If time were to ever ask me where I belong, I would point to your heart and call it home."</span><br><br>
+            You are my Gold Master, today and always.
+        `;
+        chat.appendChild(d);
+        chat.scrollTop = chat.scrollHeight;
     }
 </script>
 </body>
