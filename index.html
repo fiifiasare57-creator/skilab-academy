@@ -11,8 +11,8 @@
             --primary: #4f46e5; 
             --accent: #06b6d4; 
             --gold: #b45309; 
-            --bg: #f8fafc; 
-            --panel: #ffffff; 
+            --bg: #ffffff; 
+            --panel: #f8fafc; 
             --border: #e2e8f0; 
             --text: #1e293b; 
             --subtext: #64748b;
@@ -26,138 +26,136 @@
             --border: #fef3c7; 
             --sidebar-bg: #fef3c7;
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.8s; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.5s; }
         
+        /* Mobile Sidebar Adjustment */
         #sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; }
-        .nav-btn { padding: 16px; margin-bottom: 10px; border-radius: 14px; cursor: pointer; color: var(--subtext); border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 1rem; font-weight: 600; font-family: inherit; transition: 0.2s; }
+        @media (max-width: 768px) { #sidebar { width: 70px; padding: 20px 10px; } .nav-txt { display: none; } #sidebar div { font-size: 1rem !important; } }
+
+        .nav-btn { padding: 16px; margin-bottom: 10px; border-radius: 14px; cursor: pointer; color: var(--subtext); border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 1rem; font-weight: 600; font-family: inherit; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
         .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
         
-        #main { flex-grow: 1; overflow-y: auto; padding: 40px 20px; }
-        .view { display: none; max-width: 650px; margin: 0 auto; padding-bottom: 100px; }
-        .active-view { display: block; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #main { flex-grow: 1; overflow-y: auto; padding: 30px 20px; -webkit-overflow-scrolling: touch; }
+        .view { display: none; max-width: 600px; margin: 0 auto; padding-bottom: 80px; }
+        .active-view { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-        .archive-card { border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 12px; background: #fff; border-radius: 0 16px 16px 0; border: 1px solid var(--border); font-size: 0.95rem; }
+        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .archive-card { border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 12px; background: white; border-radius: 0 16px 16px 0; border: 1px solid var(--border); font-size: 0.95rem; }
         
-        .quiz-opt { width: 100%; padding: 16px; border: 2px solid var(--border); border-radius: 16px; background: #fdfdfd; color: var(--text); text-align: left; font-size: 1rem; cursor: pointer; margin-bottom: 10px; transition: 0.2s; font-family: inherit; }
+        .quiz-opt { width: 100%; padding: 18px; border: 2px solid var(--border); border-radius: 16px; background: white; color: var(--text); text-align: left; font-size: 1rem; cursor: pointer; margin-bottom: 12px; transition: 0.2s; font-family: inherit; font-weight: 500; }
+        .quiz-opt:active { transform: scale(0.98); background: #f8fafc; }
         .error-shake { animation: shake 0.4s; border-color: #ef4444 !important; color: #ef4444; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
-        #academy-invite { display: none; border: 2px solid var(--gold); background: linear-gradient(145deg, #ffffff, #fffbeb); padding: 30px; border-radius: 24px; text-align: center; margin-top: 20px; box-shadow: 0 10px 15px -3px rgba(217, 119, 6, 0.1); }
-        #cert-container { display: none; text-align: center; border: 10px double var(--gold); padding: 50px 20px; background: #fff; border-radius: 8px; color: var(--gold); }
+        #academy-invite { display: none; border: 2px solid var(--gold); background: linear-gradient(145deg, #ffffff, #fffbeb); padding: 30px; border-radius: 24px; text-align: center; margin-top: 20px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.2); } 70% { box-shadow: 0 0 0 15px rgba(217, 119, 6, 0); } 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); } }
         
-        #ai-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; z-index: 3000; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        #ai-window { display: none; position: fixed; bottom: 100px; right: 20px; left: 20px; height: 50vh; max-width: 400px; margin: 0 auto; background: #ffffff; border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
-        #ai-chat { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        #cert-container { display: none; text-align: center; border: 8px double var(--gold); padding: 40px 15px; background: white; border-radius: 12px; color: var(--gold); }
         
-        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; border: 1px solid var(--border); }
-        .ai-bub { background: #f1f5f9; align-self: flex-start; }
-        .user-bub { background: var(--primary); color: white; align-self: flex-end; border: none; }
+        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 56px; height: 56px; border-radius: 50%; border: none; font-size: 1.4rem; cursor: pointer; z-index: 3000; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3); }
+        #ai-window { display: none; position: fixed; bottom: 90px; right: 20px; left: 20px; height: 60vh; max-width: 400px; margin: 0 auto; background: white; border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #fdfdfd; }
         
-        /* THE SECRET LETTER STYLE */
+        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; line-height: 1.4; border: 1px solid var(--border); }
+        .ai-bub { background: #f1f5f9; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .user-bub { background: var(--primary); color: white; align-self: flex-end; border: none; border-bottom-right-radius: 4px; }
+        
         .secret-letter { 
             background: #fffafa; 
             color: #7f1d1d; 
             border: 1px solid #fecaca; 
-            border-radius: 15px; 
+            border-radius: 20px; 
             padding: 25px; 
             font-family: 'Outfit', sans-serif; 
             line-height: 1.6;
-            box-shadow: inset 0 0 10px rgba(254, 202, 202, 0.2);
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(153, 27, 27, 0.05);
         }
-        .letter-quote {
-            display: block;
-            margin: 15px 0;
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.3rem;
-            color: #991b1b;
-            text-align: center;
-        }
+        .letter-quote { display: block; margin: 15px 0; font-family: 'Dancing Script', cursive; font-size: 1.4rem; color: #b91c1c; text-align: center; font-weight: bold; }
 
-        #login-screen { position: fixed; inset: 0; background: #f8fafc; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        input[type="text"] { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 12px; text-align: center; background: white; color: var(--text); outline: none; font-family: inherit; font-size: 1rem; }
+        #login-screen { position: fixed; inset: 0; background: #ffffff; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <div class="glass-panel" style="text-align:center; width:90%; max-width:350px;">
-        <h1 style="color:var(--primary); font-size: 2.2rem; margin:0; letter-spacing: -1px;">SkiLabs_</h1>
-        <p style="color:var(--subtext); margin-bottom:20px;">Academy Terminal</p>
-        <input type="text" id="username-input" placeholder="ENTER NAME">
-        <button class="nav-btn" style="background:var(--primary); color:white; text-align:center; margin-top: 15px;" onclick="handleLogin()">INITIALIZE</button>
+    <div class="glass-panel" style="text-align:center; width:100%; max-width:350px;">
+        <h1 style="color:var(--primary); font-size: 2.2rem; margin:0; letter-spacing: -1.5px;">SkiLabs_</h1>
+        <p style="color:var(--subtext); margin-bottom:25px;">Academy Terminal</p>
+        <input type="text" id="username-input" placeholder="ENTER NAME" autocomplete="off" style="width:100%; padding:18px; border:2px solid var(--border); border-radius:16px; text-align:center; font-size:1rem; font-family:inherit;">
+        <button class="nav-btn" style="background:var(--primary); color:white; justify-content:center; margin-top: 15px;" onclick="handleLogin()">INITIALIZE</button>
     </div>
 </div>
 
 <nav id="sidebar">
-    <div style="font-weight:900; font-size:1.6rem; color:var(--primary); margin-bottom:40px;">SkiLabs.</div>
-    <button id="nav-dash" class="nav-btn active" onclick="nav('dash', this)">🏠 Dash</button>
-    <button class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Gauntlet</button>
-    <button class="nav-btn" onclick="nav('glossary', this)">📖 Archive</button>
-    <button class="nav-btn" onclick="nav('trophy', this)">🏆 Trophy</button>
+    <div style="font-weight:900; font-size:1.4rem; color:var(--primary); margin-bottom:40px; text-align:center;">SL.</div>
+    <button id="nav-dash" class="nav-btn active" onclick="nav('dash', this)"><span>🏠</span> <span class="nav-txt">Dash</span></button>
+    <button class="nav-btn" onclick="nav('gauntlet', this)"><span>⚔️</span> <span class="nav-txt">Gauntlet</span></button>
+    <button class="nav-btn" onclick="nav('glossary', this)"><span>📖</span> <span class="nav-txt">Archive</span></button>
+    <button class="nav-btn" onclick="nav('trophy', this)"><span>🏆</span> <span class="nav-txt">Trophy</span></button>
 </nav>
 
 <main id="main">
     <section id="dash" class="view active-view">
-        <h1 style="font-weight:800;">Command Center</h1>
+        <h1 style="font-weight:800; font-size:1.8rem;">Command Center</h1>
         <div class="glass-panel">
-            <p><b>User:</b> <span id="id-val">---</span></p>
-            <p><b>Status:</b> <span id="rank-val" style="color:var(--primary); font-weight:bold;">PROBATION</span></p>
-            <div style="margin-top:20px; height:6px; background:#e2e8f0; border-radius:10px; overflow:hidden;"><div id="prog-bar" style="width:0%; height:100%; background:var(--primary); transition:1s;"></div></div>
+            <p><b>User:</b> <span id="id-val" style="color:var(--primary)">---</span></p>
+            <p><b>Rank:</b> <span id="rank-val" style="font-weight:bold;">PROBATION</span></p>
+            <div style="margin-top:20px; height:8px; background:#e2e8f0; border-radius:10px; overflow:hidden;"><div id="prog-bar" style="width:0%; height:100%; background:var(--primary); transition:1s cubic-bezier(0.4, 0, 0.2, 1);"></div></div>
         </div>
         <div id="academy-invite">
-            <h2 style="color:var(--gold); margin:0;">👑 ACADEMY UNLOCKED</h2>
-            <p style="font-size:0.9rem; color: var(--gold);">Elite training complete. The Gold circle is yours.</p>
+            <h2 style="color:var(--gold); margin:0; font-size: 1.3rem;">👑 ACADEMY UNLOCKED</h2>
+            <p style="font-size:0.9rem; color: var(--gold); margin-top:5px;">Elite training complete. Welcome to the circle.</p>
         </div>
     </section>
 
     <section id="gauntlet" class="view">
-        <h1 style="font-weight:800;">The Gauntlet</h1>
+        <h1 style="font-weight:800; font-size:1.8rem;">The Gauntlet</h1>
         <div id="quiz-menu">
-            <button class="quiz-opt" onclick="prepareQuiz('Pro')">STAGE 1: PRO (10 Qs)</button>
-            <button class="quiz-opt" onclick="prepareQuiz('Master')">STAGE 2: MASTER (10 Qs)</button>
-            <button class="quiz-opt" onclick="prepareQuiz('Elite')">STAGE 3: ELITE (10 Qs)</button>
+            <button class="quiz-opt" onclick="prepareQuiz('Pro')">STAGE 1: PRO</button>
+            <button class="quiz-opt" onclick="prepareQuiz('Master')">STAGE 2: MASTER</button>
+            <button class="quiz-opt" onclick="prepareQuiz('Elite')">STAGE 3: ELITE</button>
             <div id="adv-box" style="display:none; margin-top:20px; border-top:2px dashed var(--gold); padding-top:20px;">
-                <button class="quiz-opt" style="border-color:#be123c; color: #be123c;" onclick="prepareQuiz('Ruby')">STAGE 4: RUBY (10 Qs)</button>
-                <button class="quiz-opt" style="border-color:#047857; color: #047857;" onclick="prepareQuiz('Emerald')">STAGE 5: EMERALD (10 Qs)</button>
-                <button class="quiz-opt" style="border-color:var(--gold); color:var(--gold); font-weight:900;" onclick="prepareQuiz('Gold')">FINAL: GOLD (20 Qs)</button>
+                <button class="quiz-opt" style="border-color:#be123c; color: #be123c;" onclick="prepareQuiz('Ruby')">STAGE 4: RUBY</button>
+                <button class="quiz-opt" style="border-color:#047857; color: #047857;" onclick="prepareQuiz('Emerald')">STAGE 5: EMERALD</button>
+                <button class="quiz-opt" style="border-color:var(--gold); color:var(--gold); font-weight:800;" onclick="prepareQuiz('Gold')">FINAL: GOLD</button>
             </div>
         </div>
         <div id="quiz-active" style="display:none;">
             <div class="glass-panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; color: var(--subtext);"><span id="q-lvl" style="font-weight:bold; color:var(--primary);"></span> <span id="q-num" style="font-family:monospace;"></span></div>
-                <p id="q-txt" style="font-size:1.1rem; font-weight:700; margin-bottom:20px;"></p>
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size: 0.85rem; color: var(--subtext);"><span id="q-lvl" style="font-weight:bold; color:var(--primary);"></span> <span id="q-num" style="font-family:'JetBrains Mono';"></span></div>
+                <p id="q-txt" style="font-size:1.2rem; font-weight:700; margin-bottom:25px; line-height: 1.4;"></p>
                 <div id="q-opts"></div>
             </div>
         </div>
     </section>
 
     <section id="glossary" class="view">
-        <h1 style="font-weight:800;">Data Archive</h1>
+        <h1 style="font-weight:800; font-size:1.8rem;">Data Archive</h1>
         <div id="glos-list"></div>
     </section>
 
     <section id="trophy" class="view">
-        <h1 style="font-weight:800;">Trophy Room</h1>
+        <h1 style="font-weight:800; font-size:1.8rem;">Trophy Room</h1>
         <div id="cert-container">
-            <h1 style="letter-spacing:5px;">GOLD MASTER</h1>
-            <p>This certifies that</p>
-            <h2 id="cert-name" style="border-bottom: 2px solid var(--gold); display: inline-block; padding: 0 30px;"></h2>
-            <p style="margin-top:20px;">Has mastered all SkiLabs Academy protocols.</p>
+            <h1 style="letter-spacing:4px; font-size: 1.5rem;">GOLD MASTER</h1>
+            <p style="font-size: 0.9rem; opacity: 0.8;">This certifies that</p>
+            <h2 id="cert-name" style="border-bottom: 2px solid var(--gold); display: inline-block; padding: 0 20px; margin: 15px 0;"></h2>
+            <p style="margin-top:15px; font-size: 0.9rem;">Has mastered all Academy protocols.</p>
         </div>
-        <div id="no-cert" class="glass-panel" style="text-align: center; color: var(--subtext);">Complete the Gold stage to reveal your certification.</div>
+        <div id="no-cert" class="glass-panel" style="text-align: center; color: var(--subtext); padding: 40px 20px;">Complete the Gold stage to reveal your certification.</div>
     </section>
 </main>
 
 <button id="ai-toggle" onclick="toggleAI()">🧠</button>
 <div id="ai-window">
-    <div style="background:var(--primary); color:white; padding:12px; display:flex; justify-content:space-between; align-items: center;"><b>OMNI_AI</b> <span onclick="toggleAI()" style="cursor:pointer; font-size: 1.2rem;">✕</span></div>
+    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between; align-items: center;"><b>OMNI_AI</b> <span onclick="toggleAI()" style="cursor:pointer; font-size: 1.2rem; padding: 5px;">✕</span></div>
     <div id="ai-chat"></div>
-    <div style="padding:15px; display:flex; gap:8px; background: #f8fafc; border-top: 1px solid var(--border);">
-        <input type="text" id="ai-in" placeholder="Query..." style="flex-grow:1; background: white; border: 1px solid var(--border); padding:10px; border-radius:10px;">
-        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 15px; cursor: pointer;">➤</button>
+    <div style="padding:12px; display:flex; gap:8px; background: white; border-top: 1px solid var(--border);">
+        <input type="text" id="ai-in" placeholder="Query..." style="flex-grow:1; background: #f8fafc; border: 1px solid var(--border); padding:12px; border-radius:12px; font-size: 1rem;">
+        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:12px; padding:0 18px; cursor: pointer;">➤</button>
     </div>
 </div>
 
@@ -226,26 +224,26 @@
             { q: "Main pigment used in photosynthesis?", a: "Chlorophyll", o: ["Carotene", "Melanin", "Hemoglobin", "Xanthophyll"] }
         ],
         Gold: [
-            { q: "Most abundant gas in the universe?", a: "Hydrogen", o: ["Helium", "Oxygen", "Nitrogen", "Carbon"] },
-            { q: "What is the charge of an electron?", a: "Negative", o: ["Positive", "Neutral", "Proton", "Ion"] },
-            { q: "Planet with the Great Red Spot?", a: "Jupiter", o: ["Mars", "Saturn", "Venus", "Neptune"] },
-            { q: "What is the half-life of Carbon-14?", a: "5730 years", o: ["1000 years", "10000 years", "500 years", "2500 years"] },
-            { q: "Process where cells divide for growth?", a: "Mitosis", o: ["Meiosis", "Osmosis", "Diffusion", "Photosynthesis"] },
-            { q: "Which acid is found in lemons?", a: "Citric Acid", o: ["Acetic Acid", "Lactic Acid", "Hydrochloric Acid", "Nitric Acid"] },
-            { q: "The world's largest hot desert?", a: "Sahara", o: ["Gobi", "Kalahari", "Atacama", "Mojave"] },
-            { q: "Unit of power?", a: "Watt", o: ["Joule", "Newton", "Volt", "Amp"] },
-            { q: "Smallest unit of life?", a: "Cell", o: ["Atom", "Molecule", "Organelle", "Tissue"] },
-            { q: "Who is the 'Father of Genetics'?", a: "Mendel", o: ["Darwin", "Linnaeus", "Watson", "Crick"] },
-            { q: "The atmospheric layer with the Ozone?", a: "Stratosphere", o: ["Troposphere", "Mesosphere", "Exosphere", "Ionosphere"] },
-            { q: "What is 0 Kelvin in Celsius?", a: "-273.15°C", o: ["0°C", "-100°C", "273.15°C", "100°C"] },
-            { q: "Symbol for Sodium?", a: "Na", o: ["S", "So", "Sd", "K"] },
-            { q: "A polygon with 8 sides?", a: "Octagon", o: ["Hexagon", "Pentagon", "Decagon", "Heptagon"] },
-            { q: "The most common element in Earth?", a: "Iron", o: ["Oxygen", "Silicon", "Carbon", "Gold"] },
-            { q: "How many chambers in human heart?", a: "4", o: ["2", "3", "1", "6"] },
-            { q: "Which planet is the brightest in sky?", a: "Venus", o: ["Mars", "Jupiter", "Saturn", "Mercury"] },
-            { q: "Hardest mineral on Mohs scale?", a: "Diamond", o: ["Corundum", "Topaz", "Quartz", "Talc"] },
-            { q: "The chemical symbol for Lead?", a: "Pb", o: ["Ld", "Le", "Ag", "Fe"] },
-            { q: "A year on Mercury is how long?", a: "88 days", o: ["365 days", "224 days", "687 days", "10 days"] }
+            { q: "Most abundant gas in universe?", a: "Hydrogen", o: ["Helium", "Oxygen", "Nitrogen"] },
+            { q: "What is the charge of an electron?", a: "Negative", o: ["Positive", "Neutral", "Proton"] },
+            { q: "Planet with Great Red Spot?", a: "Jupiter", o: ["Mars", "Saturn", "Venus"] },
+            { q: "Half-life of Carbon-14?", a: "5730 years", o: ["1000 years", "10000 years", "500 years"] },
+            { q: "Process where cells divide for growth?", a: "Mitosis", o: ["Meiosis", "Osmosis", "Diffusion"] },
+            { q: "Which acid is found in lemons?", a: "Citric Acid", o: ["Acetic Acid", "Lactic Acid", "Nitric Acid"] },
+            { q: "The world's largest hot desert?", a: "Sahara", o: ["Gobi", "Kalahari", "Atacama"] },
+            { q: "Unit of power?", a: "Watt", o: ["Joule", "Newton", "Volt"] },
+            { q: "Smallest unit of life?", a: "Cell", o: ["Atom", "Molecule", "Organelle"] },
+            { q: "Who is the 'Father of Genetics'?", a: "Mendel", o: ["Darwin", "Linnaeus", "Watson"] },
+            { q: "Layer with the Ozone?", a: "Stratosphere", o: ["Troposphere", "Mesosphere", "Exosphere"] },
+            { q: "0 Kelvin in Celsius?", a: "-273.15°C", o: ["0°C", "-100°C", "273.15°C"] },
+            { q: "Symbol for Sodium?", a: "Na", o: ["S", "So", "K"] },
+            { q: "A polygon with 8 sides?", a: "Octagon", o: ["Hexagon", "Pentagon", "Decagon"] },
+            { q: "Most common element in Earth's crust?", a: "Oxygen", o: ["Iron", "Silicon", "Carbon"] },
+            { q: "How many chambers in human heart?", a: "4", o: ["2", "3", "1"] },
+            { q: "Brightest planet in the sky?", a: "Venus", o: ["Mars", "Jupiter", "Saturn"] },
+            { q: "Hardest mineral on Mohs scale?", a: "Diamond", o: ["Corundum", "Topaz", "Quartz"] },
+            { q: "Chemical symbol for Lead?", a: "Pb", o: ["Ld", "Le", "Ag"] },
+            { q: "A year on Mercury length?", a: "88 days", o: ["365 days", "224 days", "10 days"] }
         ]
     };
 
@@ -264,7 +262,7 @@
         document.getElementById('cert-name').innerText = user;
         document.getElementById('login-screen').style.display = 'none';
         loadArchive();
-        addAI("Welcome " + user + ". Terminal active.", 'ai-bub');
+        addAI("Welcome " + user + ". Terminal stabilized.", 'ai-bub');
     }
 
     function nav(id, btn) {
@@ -294,7 +292,8 @@
         document.getElementById('q-num').innerText = `${qIdx+1}/${currentQuestions.length}`;
         document.getElementById('q-txt').innerText = data.q;
         const box = document.getElementById('q-opts'); box.innerHTML = "";
-        [data.a, ...data.o].sort(() => Math.random() - 0.5).forEach(o => {
+        const options = [data.a, ...data.o].sort(() => Math.random() - 0.5);
+        options.forEach(o => {
             const b = document.createElement('button'); b.className="quiz-opt"; b.innerText=o;
             b.onclick = () => { if(o === data.a){ qIdx++; if(qIdx < currentQuestions.length) showQ(); else finishQuiz(); } else { b.classList.add('error-shake'); setTimeout(()=>b.classList.remove('error-shake'),400); } };
             box.appendChild(b);
@@ -315,8 +314,7 @@
     }
 
     function unlockMaster() {
-        wins = 6; 
-        document.body.classList.add('gold-theme');
+        wins = 6; document.body.classList.add('gold-theme');
         document.getElementById('rank-val').innerText = "GOLD MASTER";
         document.getElementById('prog-bar').style.width = "100%";
         document.getElementById('no-cert').style.display='none';
@@ -329,21 +327,10 @@
         const i = document.getElementById('ai-in'); const q = i.value.trim().toLowerCase();
         if(!q) return; i.value = ""; addAI(q, 'user-bub');
         
-        const slang = ["hi","yo","safe","wassup","how far","hey"];
-        
-        if(q === "skilabs_root_access") { 
-            unlockMaster(); 
-            addAI("OVERRIDE SUCCESSFUL. Root access granted.", 'ai-bub'); 
-        }
-        else if(q === "nk gf") { 
-            addLetter();
-        }
-        else if(slang.some(s => q.includes(s))) { 
-            addAI("System online. Proceed with the trials.", 'ai-bub'); 
-        }
-        else { 
-            addAI("System scanning... Complete Elite to unlock Academy status.", 'ai-bub'); 
-        }
+        if(q === "skilabs_root_access") { unlockMaster(); addAI("OVERRIDE SUCCESSFUL. Root access granted.", 'ai-bub'); }
+        else if(q === "nk gf") { addLetter(); }
+        else if(["hi","yo","hello"].some(s => q.includes(s))) { addAI("Safe! Let's get through the trials.", 'ai-bub'); }
+        else { addAI("Scanning protocols... Complete Elite to unlock the Gold Circle.", 'ai-bub'); }
     }
 
     function addAI(t, c) {
@@ -362,8 +349,7 @@
             <span class="letter-quote">"If time were to ever ask me where I belong, I would point to your heart and call it home."</span><br><br>
             You are my Gold Master, today and always.
         `;
-        chat.appendChild(d);
-        chat.scrollTop = chat.scrollHeight;
+        chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
     }
 </script>
 </body>
