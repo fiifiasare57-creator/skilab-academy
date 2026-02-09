@@ -11,33 +11,27 @@
         .gold-theme { --primary: #fbbf24; --accent: #f59e0b; --bg: #0a0a05; --panel: #1a1a0a; --border: #4d4016; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.8s; }
-        
         #sidebar { width: 260px; background: #020617; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; }
         .nav-btn { padding: 16px; margin-bottom: 10px; border-radius: 14px; cursor: pointer; color: #94a3b8; border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 1rem; font-weight: 600; font-family: inherit; transition: 0.2s; }
         .nav-btn.active { background: var(--primary); color: white; }
-        
         #main { flex-grow: 1; overflow-y: auto; padding: 40px 20px; }
         .view { display: none; max-width: 650px; margin: 0 auto; padding-bottom: 100px; }
         .active-view { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 25px; }
         .archive-card { border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 12px; background: #161e2e; border-radius: 0 16px 16px 0; border: 1px solid var(--border); font-size: 0.95rem; }
         .quiz-opt { width: 100%; padding: 16px; border: 2px solid var(--border); border-radius: 16px; background: #1e293b; color: white; text-align: left; font-size: 1rem; cursor: pointer; margin-bottom: 10px; transition: 0.2s; }
         .error-shake { animation: shake 0.4s; border-color: #ef4444 !important; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-
         #academy-invite { display: none; border: 2px solid var(--gold); background: linear-gradient(145deg, #1e293b, #0a0a05); padding: 30px; border-radius: 24px; text-align: center; margin-top: 20px; }
         #cert-container { display: none; text-align: center; border: 10px double var(--gold); padding: 50px 20px; background: #000; border-radius: 8px; color: gold; }
-        
         #ai-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; z-index: 3000; }
         #ai-window { display: none; position: fixed; bottom: 100px; right: 20px; left: 20px; height: 50vh; max-width: 400px; margin: 0 auto; background: #0f172a; border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; }
         #ai-chat { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; }
         .ai-bub { background: #1e293b; align-self: flex-start; }
         .user-bub { background: var(--primary); color: white; align-self: flex-end; }
-        .secret-bub { background: #450a0a; color: #fecdd3; border: 1px solid #9f1239; white-space: pre-line; font-family: 'JetBrains Mono'; }
-
+        .secret-bub { background: #450a0a; color: #fecdd3; border: 1px solid #9f1239; white-space: pre-line; font-family: 'JetBrains Mono'; border-radius: 15px; padding: 20px; }
         #login-screen { position: fixed; inset: 0; background: #020617; z-index: 9999; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
@@ -225,7 +219,7 @@
         document.getElementById('cert-name').innerText = user;
         document.getElementById('login-screen').style.display = 'none';
         loadArchive();
-        addAI("Yo " + user + "! Safe. Gauntlet is live. Let's work.", 'ai-bub');
+        addAI("Welcome " + user + ". Gauntlet is active.", 'ai-bub');
     }
 
     function nav(id, btn) {
@@ -266,26 +260,46 @@
         wins++; document.getElementById('quiz-active').style.display='none'; document.getElementById('quiz-menu').style.display='block';
         document.getElementById('rank-val').innerText = curLvl.toUpperCase();
         document.getElementById('prog-bar').style.width = (wins * 16.6) + "%";
-        if(curLvl === 'Elite') { document.body.classList.add('gold-theme'); document.getElementById('adv-box').style.display='block'; document.getElementById('academy-invite').style.display='block'; }
+        if(curLvl === 'Elite') { 
+            document.body.classList.add('gold-theme'); 
+            document.getElementById('adv-box').style.display='block'; 
+            document.getElementById('academy-invite').style.display='block'; 
+        }
         if(curLvl === 'Gold') { unlockMaster(); }
         confetti(); setTimeout(() => nav('dash', document.getElementById('nav-dash')), 1000);
     }
 
     function unlockMaster() {
-        wins = 6; document.getElementById('rank-val').innerText = "GOLD MASTER";
+        wins = 6; 
+        document.body.classList.add('gold-theme');
+        document.getElementById('rank-val').innerText = "GOLD MASTER";
         document.getElementById('prog-bar').style.width = "100%";
         document.getElementById('no-cert').style.display='none';
         document.getElementById('cert-container').style.display='block';
+        document.getElementById('adv-box').style.display='block';
+        document.getElementById('academy-invite').style.display='block';
     }
 
     function askAI() {
         const i = document.getElementById('ai-in'); const q = i.value.trim().toLowerCase();
         if(!q) return; i.value = ""; addAI(q, 'user-bub');
+        
+        // SECRET KODES & SLANG
         const slang = ["hi","yo","safe","wassup","how far","hey"];
-        if(q === "skilabs_root_access") { unlockMaster(); addAI("ROOT GRANTED.", 'ai-bub'); }
-        else if(q === "nk gf") { addAI("TO NHYIRA KARIKARI BONSU: Always my priority. My heart is yours.", 'secret-bub'); }
-        else if(slang.some(s => q.includes(s))) { addAI("Safe! Let's get through the stages.", 'ai-bub'); }
-        else { addAI("Awaiting protocols. Complete Elite to unlock Academy.", 'ai-bub'); }
+        
+        if(q === "skilabs_root_access") { 
+            unlockMaster(); 
+            addAI("OVERRIDE SUCCESSFUL. Academy invitation accepted. Gold Status unlocked.", 'ai-bub'); 
+        }
+        else if(q === "nk gf") { 
+            addAI("TO NHYIRA KARIKARI BONSU:\n\nYou are my absolute. My logic starts and ends with you. You are the only Gold Master of my heart. Forever yours.", 'secret-bub'); 
+        }
+        else if(slang.some(s => q.includes(s))) { 
+            addAI("Safe! Let's get through the trials. You ready?", 'ai-bub'); 
+        }
+        else { 
+            addAI("System scanning... Complete the Elite level to reveal the Academy invitation.", 'ai-bub'); 
+        }
     }
 
     function addAI(t, c) {
