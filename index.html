@@ -18,23 +18,21 @@
         .nav-btn { padding: 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: var(--subtext); border: none; background: none; text-align: left; width: 100%; font-size: 1rem; font-family: inherit; }
         .nav-btn.active { background: var(--primary); color: white; font-weight: 700; }
 
-        /* Mobile Adjustments */
         #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 1001; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; }
         
-        #main { flex-grow: 1; overflow-y: auto; padding: 20px; width: 100%; -webkit-overflow-scrolling: touch; }
+        #main { flex-grow: 1; overflow-y: auto; padding: 20px; width: 100%; }
         .view { display: none; max-width: 600px; margin: 0 auto; padding-bottom: 100px; }
         .active-view { display: block; }
-
-        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
         
-        /* FIX: Trophy Room Grid for Mobile */
+        /* Trophy Grid Fix */
         .trophy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
-        .trophy-item { background: #f1f5f9; padding: 20px 10px; border-radius: 15px; text-align: center; border: 2px solid transparent; opacity: 0.2; font-size: 0.9rem; }
-        .unlocked { opacity: 1; border-color: var(--gold); background: #fffbeb; }
+        .trophy-item { background: #f1f5f9; padding: 20px 10px; border-radius: 15px; text-align: center; opacity: 0.2; font-size: 0.9rem; border: 2px solid transparent; }
+        .unlocked { opacity: 1; border-color: var(--gold); background: #fffbeb; transform: scale(1.02); transition: 0.4s; }
 
-        /* FIX: AI Window Coverage for Mobile */
-        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 55px; height: 55px; border-radius: 50%; border: none; font-size: 1.4rem; z-index: 3000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        #ai-window { display: none; position: fixed; bottom: 85px; right: 15px; left: 15px; height: 60vh; max-width: 400px; margin: 0 auto; background: white; border-radius: 20px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        /* AI Mobile Fix */
+        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 55px; height: 55px; border-radius: 50%; border: none; font-size: 1.4rem; z-index: 3000; }
+        #ai-window { display: none; position: fixed; bottom: 85px; right: 15px; left: 15px; height: 55vh; max-width: 400px; margin: 0 auto; background: white; border-radius: 20px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #fafafa; }
         .bubble { padding: 10px 14px; border-radius: 15px; max-width: 85%; font-size: 0.85rem; }
         .ai-bub { background: white; border: 1px solid var(--border); align-self: flex-start; }
@@ -47,21 +45,20 @@
             #main { padding-top: 70px; }
         }
 
-        /* Login Screen */
         #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .login-card { background: white; padding: 30px; border-radius: 25px; border: 1px solid var(--border); text-align: center; width: 100%; max-width: 350px; }
     </style>
 </head>
-<body class="standard">
+<body>
 
 <button id="menu-toggle" onclick="toggleSidebar()">☰ MENU</button>
 
 <div id="login-screen">
     <div class="login-card">
         <h1 style="font-family:'Outfit'; color:var(--primary); margin:0;">SkiLabs_</h1>
-        <p style="color:var(--subtext);">Presentation Access Only</p>
+        <p style="color:var(--subtext);">Research Identity Required</p>
         <input type="text" id="username-input" style="width:100%; padding:15px; margin:20px 0; border:1px solid #ddd; border-radius:10px; text-align:center;" placeholder="Enter Username">
-        <button class="nav-btn" style="background:var(--primary); color:white; text-align:center;" onclick="handleLogin()">AUTHENTICATE</button>
+        <button class="nav-btn" style="background:var(--primary); color:white; text-align:center;" onclick="handleLogin()">ACCESS</button>
         <p style="font-size: 0.7rem; color: #999; margin-top: 20px;">MADE BY CALEB FIIFI ASARE</p>
     </div>
 </div>
@@ -79,11 +76,11 @@
 
 <main id="main">
     <section id="dash" class="view active-view">
-        <h1 style="font-family:'Outfit'; font-size: 1.8rem;">Welcome to SkiLabs</h1>
+        <h1 style="font-family:'Outfit';">Research Hub</h1>
         <div class="glass-panel">
-            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f8fafc;"><b>ID:</b> <span id="id-val">---</span></div>
-            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f8fafc;"><b>Rank:</b> <span id="rank-val" style="color:var(--primary);">PROBATION</span></div>
-            <div style="display:flex; justify-content:space-between; padding:8px 0;"><b>Quizzes:</b> <span id="quiz-val">0</span></div>
+            <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f8fafc;"><b>ID:</b> <span id="id-val">---</span></div>
+            <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f8fafc;"><b>Rank:</b> <span id="rank-val" style="color:var(--primary); font-weight:bold;">PROBATION</span></div>
+            <div style="display:flex; justify-content:space-between; padding:10px 0;"><b>Complete:</b> <span id="quiz-val">0</span></div>
         </div>
     </section>
 
@@ -94,16 +91,16 @@
             <button class="nav-btn" style="background:var(--accent); color:white; margin-bottom:10px;" onclick="startQuiz('Master', 10)">MASTER STAGE</button>
             <button class="nav-btn" style="background:#475569; color:white;" onclick="startQuiz('Elite', 10)">ELITE STAGE</button>
             
-            <div id="advanced-box" style="display:none; margin-top:15px; padding-top:15px; border-top:2px solid var(--border);">
+            <div id="adv-box" style="display:none; margin-top:15px; padding-top:15px; border-top:2px solid var(--border);">
                 <button class="nav-btn" style="background:#e11d48; color:white; margin-bottom:10px;" onclick="startQuiz('Ruby', 10)">RUBY STAGE</button>
                 <button class="nav-btn" style="background:#10b981; color:white; margin-bottom:10px;" onclick="startQuiz('Emerald', 10)">EMERALD STAGE</button>
-                <button class="nav-btn" style="background:var(--gold); color:white;" onclick="startQuiz('Gold', 20)">GOLD (FINAL)</button>
+                <button class="nav-btn" style="background:var(--gold); color:white;" onclick="startQuiz('Gold', 20)">GOLD STAGE</button>
             </div>
         </div>
         <div class="glass-panel" id="quiz-active" style="display:none;">
             <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:10px;"><span id="q-lvl">--</span> <span id="q-num">0/0</span></div>
-            <h3 id="q-txt" style="font-size:1.1rem;">...</h3>
-            <div id="q-opts" style="display:grid; gap:8px; margin-top:20px;"></div>
+            <h3 id="q-txt">...</h3>
+            <div id="q-opts" style="display:grid; gap:8px;"></div>
         </div>
     </section>
 
@@ -111,19 +108,18 @@
         <h1 style="font-family:'Outfit';">Trophy Room</h1>
         <div class="glass-panel">
             <div class="trophy-grid">
-                <div id="t-pro" class="trophy-item">🥉<br><b>Pro</b></div>
-                <div id="t-master" class="trophy-item">🥈<br><b>Master</b></div>
-                <div id="t-elite" class="trophy-item">🥇<br><b>Elite</b></div>
-                <div id="t-ruby" class="trophy-item">💎<br><b>Ruby</b></div>
-                <div id="t-emerald" class="trophy-item">🟢<br><b>Emerald</b></div>
-                <div id="t-gold" class="trophy-item">👑<br><b>Gold</b></div>
+                <div id="t-pro" class="trophy-item">🥉<br>Pro</div>
+                <div id="t-master" class="trophy-item">🥈<br>Master</div>
+                <div id="t-elite" class="trophy-item">🥇<br>Elite</div>
+                <div id="t-ruby" class="trophy-item">💎<br>Ruby</div>
+                <div id="t-emerald" class="trophy-item">🟢<br>Emerald</div>
+                <div id="t-gold" class="trophy-item">👑<br>Gold</div>
             </div>
         </div>
         <div id="cert-box" class="glass-panel" style="display:none; text-align:center; border: 4px dashed var(--gold);">
-            <h3 style="color:var(--gold); margin:0;">CERTIFICATE</h3>
-            <p style="font-size:0.8rem;">Awarded to</p>
-            <h2 id="cert-name" style="margin:5px 0;">---</h2>
-            <p style="font-size:0.7rem;">For Master Research Completion</p>
+            <h3 style="color:var(--gold);">GRADUATION CERTIFICATE</h3>
+            <h2 id="cert-name">---</h2>
+            <p style="font-size:0.8rem;">Master of SkiLabs Research Terminal</p>
         </div>
     </section>
 
@@ -148,8 +144,113 @@
 <script>
     let user = "", curLvl = "", qIdx = 0, score = 0, wins = 0;
     
-    const notes1 = Array.from({length: 50}, (_, i) => `Protocol Note #${i+1}: Standard research data point.`);
-    const notes2 = Array.from({length: 50}, (_, i) => `Advanced Note #${i+1}: Ruby/Gold data enabled.`);
+    // REAL DATA AND ANSWERS
+    const notes1 = [
+        "1. Atoms are the basic building blocks of all matter in the universe.",
+        "2. The Earth's atmosphere is composed primarily of Nitrogen (78%) and Oxygen (21%).",
+        "3. Photosynthesis is the process by which green plants use sunlight to synthesize nutrients.",
+        "4. Light travels at approximately 299,792 kilometers per second in a vacuum.",
+        "5. The human brain contains roughly 86 billion neurons.",
+        "6. Water is the only substance that exists naturally on Earth in three states: solid, liquid, and gas.",
+        "7. DNA stands for Deoxyribonucleic Acid and carries genetic instructions.",
+        "8. Sound travels much faster through solids than through air.",
+        "9. The periodic table currently consists of 118 confirmed chemical elements.",
+        "10. Gravity is a force that pulls all objects with mass toward one another.",
+        "11. Absolute Zero is defined as 0 Kelvin or -273.15 degrees Celsius.",
+        "12. The powerhouse of the cell is known as the Mitochondria.",
+        "13. Venus is the hottest planet in our solar system due to a thick atmosphere.",
+        "14. An average human heart beats about 100,000 times a day.",
+        "15. A light-year is a unit of distance, not time.",
+        "16. Diamonds are formed from carbon under extreme pressure and heat.",
+        "17. Sharks have been on Earth longer than trees.",
+        "18. The Great Barrier Reef is the largest living structure on Earth.",
+        "19. A single lightning bolt is five times hotter than the surface of the sun.",
+        "20. Sound cannot travel in a vacuum because there are no molecules to vibrate.",
+        "21. The human body is roughly 60% water.",
+        "22. Octopus have three hearts and blue blood.",
+        "23. Bees are found on every continent except Antarctica.",
+        "24. Plastic takes up to 500 years to decompose in a landfill.",
+        "25. The moon orbits the Earth every 27.3 days.",
+        "26. Bananas are berries, but strawberries are not.",
+        "27. A person's fingerprints are unique, even for identical twins.",
+        "28. Red blood cells live for about 120 days.",
+        "29. The speed of sound is roughly 343 meters per second in air.",
+        "30. Helium is the second most abundant element in the universe.",
+        "31. [VALIDATION KEY] The chemical formula for water used in the Pro stage is H2O.",
+        "32. [VALIDATION KEY] The hardest natural material used in the Master stage is Diamond.",
+        "33. [VALIDATION KEY] The temperature for Absolute Zero in the Elite stage is -273.15C.",
+        "34. All research data must be validated with 100% accuracy to progress.",
+        "35. The Pro Stage consists of 10 fundamental science queries.",
+        "36. The Master Stage challenges advanced physical properties of matter.",
+        "37. The Elite Stage focuses on thermodynamics and deep-space physics.",
+        "38. Ranks update instantly upon successful sequence completion.",
+        "39. The Terminal interface evolves after the Elite stage is cleared.",
+        "40. SkiLabs utilizes OMNI AI for real-time data verification.",
+        "41. Every researcher is assigned a unique ID based on their username.",
+        "42. Confetti celebrations mark successful module completion.",
+        "43. The Trophy Room displays progress milestones for all 6 stages.",
+        "44. Scientific inquiry is the foundation of all SkiLabs protocols.",
+        "45. Oxygen is vital for cellular respiration in most living organisms.",
+        "46. The Earth's core is estimated to be as hot as the surface of the sun.",
+        "47. A blue whale's heart is the size of a bumper car.",
+        "48. Glass is actually a slow-moving liquid, scientifically termed an amorphous solid.",
+        "49. Eratosthenes was the first person to calculate the Earth's circumference.",
+        "50. Information in this glossary is essential for clearing the first three stages."
+    ];
+
+    const notes2 = [
+        "51. [VALIDATION KEY] The Red Planet used in the Ruby stage is Mars.",
+        "52. [VALIDATION KEY] The green gemstone used in the Emerald stage is Emerald.",
+        "53. [VALIDATION KEY] The lightest element in the universe for the Gold stage is Hydrogen.",
+        "54. Mars has the largest volcano in the solar system, Olympus Mons.",
+        "55. Hydrogen makes up about 75% of the elemental mass of the universe.",
+        "56. Emeralds are a variety of the mineral beryl, colored by chromium.",
+        "57. Ruby is a pink to blood-red colored gemstone, a variety of the mineral corundum.",
+        "58. The Gold Stage requires a perfect score across 20 complex queries.",
+        "59. Fusion is the process that powers stars, turning Hydrogen into Helium.",
+        "60. A neutron star is so dense that a teaspoon of it would weigh a billion tons.",
+        "61. Black holes have a region called an event horizon from which nothing escapes.",
+        "62. The universe is approximately 13.8 billion years old.",
+        "63. Quantum mechanics describes the behavior of matter at the smallest scales.",
+        "64. General Relativity explains how gravity curves the fabric of space-time.",
+        "65. Gold is chemically noble, meaning it does not rust or tarnish.",
+        "66. A Ruby's red color comes primarily from the presence of the element chromium.",
+        "67. Emeralds are often more valuable than diamonds carat-for-carat.",
+        "68. The Gold Master rank is the highest honor in the SkiLabs terminal.",
+        "69. Completion of the Gold sequence unlocks the Graduation Certificate.",
+        "70. Science is a continuous journey of discovery and validation.",
+        // Plus 30 more detailed facts to reach 50 advanced notes
+        "71. The Milky Way galaxy is a barred spiral galaxy.",
+        "72. Light takes 8 minutes and 20 seconds to travel from the Sun to Earth.",
+        "73. The DNA of a human is 99.9% identical to that of any other human.",
+        "74. Geothermal energy is heat derived from within the sub-surface of the Earth.",
+        "75. Tectonic plates move about the same speed as your fingernails grow.",
+        "76. Jupiter has 79 confirmed moons, the largest being Ganymede.",
+        "77. The ozone layer protects Earth from harmful ultraviolet radiation.",
+        "78. Kinetic energy is the energy an object possesses due to its motion.",
+        "79. Potential energy is stored energy based on an object's position.",
+        "80. Electrons are negatively charged subatomic particles.",
+        "81. Protons are positively charged and found in the nucleus.",
+        "82. Neutrons have no charge and are also found in the nucleus.",
+        "83. The Law of Conservation of Energy states energy cannot be created or destroyed.",
+        "84. Entropy is a measure of disorder or randomness in a system.",
+        "85. The boiling point of water is 100 degrees Celsius at sea level.",
+        "86. The freezing point of water is 0 degrees Celsius.",
+        "87. An isotope is an atom with a different number of neutrons.",
+        "88. Polymers are large molecules made of repeating subunits.",
+        "89. Radioactivity is the process by which unstable nuclei lose energy.",
+        "90. The Higgs Boson is an elementary particle in the Standard Model.",
+        "91. Dark matter is thought to account for approximately 85% of matter in the universe.",
+        "92. The expanding universe was first observed by Edwin Hubble.",
+        "93. Supernovas are powerful and luminous stellar explosions.",
+        "94. A pulsar is a highly magnetized rotating neutron star.",
+        "95. The double-helix structure of DNA was discovered in 1953.",
+        "96. CRISPR is a technology used for gene editing.",
+        "97. Graphene is a single layer of carbon atoms in a hexagonal lattice.",
+        "98. Superconductors can conduct electricity without resistance.",
+        "99. The Turing Test measures a machine's ability to exhibit intelligent behavior.",
+        "100. Terminal completion represents total scientific validation."
+    ];
 
     const keys = { pro: "H2O", master: "Diamond", elite: "-273.15C", ruby: "Mars", emerald: "Emerald", gold: "Hydrogen" };
 
@@ -161,7 +262,7 @@
         document.getElementById('cert-name').innerText = user;
         document.getElementById('login-screen').style.display = 'none';
         loadGlos(notes1);
-        addAI("Hello " + user + "! OMNI AI is online. How can I help you?", 'ai-bub');
+        addAI("Hello " + user + ". OMNI AI is active. All research facts are now loaded in the Glossary. How can I assist?", 'ai-bub');
     }
 
     function nav(id, btn) {
@@ -177,7 +278,7 @@
 
     function loadGlos(data) {
         const l = document.getElementById('glos-list'); l.innerHTML = "";
-        data.forEach(n => l.innerHTML += `<div class="glass-panel" style="padding:12px; margin-bottom:8px; font-size:0.85rem;">${n}</div>`);
+        data.forEach(n => l.innerHTML += `<div class="glass-panel" style="padding:12px; margin-bottom:8px; font-size:0.85rem; line-height:1.4;">${n}</div>`);
     }
 
     function startQuiz(lvl, count) {
@@ -190,10 +291,20 @@
 
     function showQ() {
         document.getElementById('q-num').innerText = `${qIdx+1}/${maxQs}`;
-        document.getElementById('q-txt').innerText = `What is the validated entry for ${curLvl}?`;
+        let question = `Question: What is the validated result for the ${curLvl} sequence?`;
+        
+        // Custom questions for demo variety
+        if(curLvl === 'Pro') question = "Identify the chemical formula for water as listed in the Glossary.";
+        if(curLvl === 'Master') question = "Which natural material is identified as the hardest in our database?";
+        if(curLvl === 'Elite') question = "At what temperature does Absolute Zero occur according to the Terminal?";
+        if(curLvl === 'Ruby') question = "Identify the 'Red Planet' mentioned in the Advanced Files.";
+        if(curLvl === 'Emerald') question = "Which gemstone is colored by chromium according to Advanced Note #56?";
+        if(curLvl === 'Gold') question = "What is the lightest element in the universe, powering the stars?";
+
+        document.getElementById('q-txt').innerText = question;
         const o = document.getElementById('q-opts'); o.innerHTML = "";
         const correct = keys[curLvl.toLowerCase()] || "Data";
-        [correct, "Error", "Null", "Pending"].sort().forEach(t => {
+        [correct, "False Data", "Refracted", "Null State"].sort().forEach(t => {
             const b = document.createElement('button'); b.className = "nav-btn"; b.style.border = "1px solid #ddd";
             b.innerText = t; b.onclick = () => { if(t === correct) score++; qIdx++; if(qIdx < maxQs) showQ(); else endQuiz(); };
             o.appendChild(b);
@@ -204,31 +315,51 @@
         document.getElementById('quiz-active').style.display = 'none';
         document.getElementById('quiz-menu').style.display = 'block';
         if(score === maxQs) {
-            wins++; document.getElementById('quiz-val').innerText = wins;
+            wins++; 
+            document.getElementById('quiz-val').innerText = wins;
+            document.getElementById('rank-val').innerText = curLvl.toUpperCase();
             document.getElementById('t-' + curLvl.toLowerCase()).classList.add('unlocked');
+            
             if(curLvl === 'Elite') {
                 document.body.classList.add('gold-theme');
-                document.getElementById('advanced-box').style.display = 'block';
+                document.getElementById('adv-box').style.display = 'block';
                 loadGlos(notes2);
-                addAI("Elite Cleared! UI updated to Gold. Check the glossary for new notes.", 'ai-bub');
+                addAI("Elite status confirmed. I have updated your Glossary with 50 Advanced Research Files. Your UI is now Gold.", 'ai-bub');
             }
-            if(curLvl === 'Gold') { document.getElementById('cert-box').style.display = 'block'; confetti(); }
+            if(curLvl === 'Gold') { 
+                document.getElementById('cert-box').style.display = 'block'; 
+                document.getElementById('rank-val').innerText = "GOLD MASTER";
+                confetti(); 
+            }
             confetti();
-        } else alert("Needs 100% score!");
+        } else {
+            alert("100% Accuracy Required. Review the Glossary!");
+            addAI("You missed a data point. Check the Glossary notes for the correct answers.", 'ai-bub');
+        }
     }
 
     function askAI() {
         const i = document.getElementById('ai-in'); const q = i.value.trim().toLowerCase();
         if(!q) return; i.value = ""; addAI(q, 'user-bub');
-        let r = "Scanning...";
-        if(q.match(/hi|hello/)) r = "Hi there! Ready to research?";
-        if(q.includes("how are you")) r = "Systems optimal. Ready for the Gauntlet!";
+        let r = "I do not have that specific data point yet. Check the Glossary.";
+        
+        if(q.match(/hi|hello|hey/)) r = "Hello " + user + "! I am OMNI. How is your research going?";
+        if(q.includes("how are you")) r = "Systems are green. I am ready to help you unlock the Gold certificate!";
+        if(q.includes("pro answer")) r = "The answer for Pro is H2O.";
+        if(q.includes("master answer")) r = "The answer for Master is Diamond.";
+        if(q.includes("elite answer")) r = "The answer for Elite is -273.15C.";
+        if(q.includes("ruby answer")) r = "The answer for Ruby is Mars.";
+        if(q.includes("emerald answer")) r = "The answer for Emerald is Emerald.";
+        if(q.includes("gold answer")) r = "The answer for Gold is Hydrogen.";
+        
         if(q === "unlock all") {
             document.body.classList.add('gold-theme');
-            document.getElementById('advanced-box').style.display = 'block';
+            document.getElementById('adv-box').style.display = 'block';
             document.querySelectorAll('.trophy-item').forEach(t => t.classList.add('unlocked'));
+            document.getElementById('rank-val').innerText = "GOLD MASTER";
             loadGlos(notes2);
-            r = "MASTER OVERRIDE: All levels and Gold UI unlocked!"; confetti();
+            r = "MASTER OVERRIDE ACCEPTED: Rank updated to GOLD MASTER. Full database unlocked. UI Transformed."; 
+            confetti();
         }
         setTimeout(() => addAI(r, 'ai-bub'), 500);
     }
