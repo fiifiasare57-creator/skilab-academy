@@ -1,285 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SkiLabs | Academy Terminal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <style>
-        :root { 
-            --primary: #4f46e5; --accent: #06b6d4; --gold: #b45309; --bg: #ffffff; 
-            --panel: #f8fafc; --border: #e2e8f0; --text: #1e293b; --subtext: #64748b; --sidebar-bg: #f1f5f9;
-        }
-        .gold-theme { 
-            --primary: #d97706; --accent: #f59e0b; --bg: #fffcf0; --panel: #ffffff; --border: #fef3c7; --sidebar-bg: #fef3c7;
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.5s; }
-        #sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; flex-shrink: 0; transition: transform 0.3s ease; z-index: 2001; }
-        #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.1); backdrop-filter: blur(4px); z-index: 2000; }
-        @media (max-width: 768px) { #sidebar { position: fixed; height: 100%; transform: translateX(-100%); } #sidebar.open { transform: translateX(0); } #sidebar.open + #sidebar-overlay { display: block; } }
-        .nav-btn { padding: 16px; margin-bottom: 8px; border-radius: 14px; cursor: pointer; color: var(--subtext); border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
-        .nav-btn.active { background: var(--primary); color: white; }
-        #main { flex-grow: 1; overflow-y: auto; padding: 80px 20px 40px; }
-        .view { display: none; max-width: 600px; margin: 0 auto; }
-        .active-view { display: block; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 20px; }
-        .badge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .badge { background: white; border: 1px solid var(--border); padding: 20px; border-radius: 20px; text-align: center; opacity: 0.3; filter: grayscale(1); }
-        .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: var(--primary); }
-        #cert-container { display: none; text-align: center; border: 10px double var(--gold); padding: 40px 15px; background: white; color: var(--gold); }
-        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 1.5rem; z-index: 3000; cursor: pointer; }
-        #ai-window { display: none; position: fixed; bottom: 95px; right: 20px; left: 20px; height: 55vh; max-width: 400px; margin: 0 auto; background: white; border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; }
-        .ai-bub { background: #f1f5f9; align-self: flex-start; }
-        .user-bub { background: var(--primary); color: white; align-self: flex-end; }
-        .secret-letter { background: #fffafa; color: #7f1d1d; border: 1px solid #fecaca; border-radius: 20px; padding: 25px; }
-        #login-screen { position: fixed; inset: 0; background: #ffffff; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .quiz-opt { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 12px; background: white; margin-bottom: 10px; cursor: pointer; text-align: left; }
-        .error-shake { animation: shake 0.4s; border-color: #ef4444 !important; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-    </style>
-</head>
-<body>
+/* Data and Logic */
+let user = "", curLvl = "", qIdx = 0, currentQuestions = [], wins = 0;
 
-<div id="login-screen">
-    <div class="glass-panel" style="text-align:center; width:350px;">
-        <h1 style="color:var(--primary);">SkiLabs_</h1>
-        <input type="text" id="username-input" placeholder="ENTER NAME" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); text-align:center;">
-        <button class="nav-btn" style="background:var(--primary); color:white; justify-content:center; margin-top:15px;" onclick="handleLogin()">INITIALIZE</button>
-    </div>
-</div>
+const glossaryData = [
+    { category: "Space", fact: "Light from the Sun takes 8 minutes and 20 seconds to reach Earth." },
+    { category: "Space", fact: "The universe has no center and is constantly expanding." },
+    { category: "Space", fact: "A spoonful of a neutron star would weigh about 6 billion tons." },
+    { category: "Space", fact: "Venus is the hottest planet in our solar system, not Mercury." },
+    { category: "Space", fact: "Saturn's rings are made of 99.9% pure water ice." },
+    { category: "Space", fact: "Footprints on the Moon will stay there for 100 million years." },
+    { category: "Space", fact: "Sound does not travel in the vacuum of space." },
+    { category: "Space", fact: "Jupiter is twice as massive as all other planets combined." },
+    { category: "Space", fact: "There are more stars in the universe than grains of sand on Earth." },
+    { category: "Space", fact: "Astronauts can grow up to 2 inches taller in space." },
+    { category: "Biology", fact: "The human brain operates on about 20 watts of power." },
+    { category: "Biology", fact: "Your heart beats about 100,000 times a day." },
+    { category: "Biology", fact: "Humans share about 60% of their DNA with bananas." },
+    { category: "Biology", fact: "The strongest muscle in the human body is the jaw muscle." },
+    { category: "Biology", fact: "Fingernails grow nearly 4x faster than toenails." },
+    { category: "Biology", fact: "An adult human has 206 bones; a baby has around 300." },
+    { category: "Biology", fact: "The human eye can distinguish 10 million colors." },
+    { category: "Biology", fact: "Your stomach gets a new lining every 3 to 4 days." },
+    { category: "Biology", fact: "A blood cell takes 60 seconds to circuit the body." },
+    { category: "Biology", fact: "Smallpox is the only human disease completely eradicated." },
+    { category: "Nature", fact: "Octopus have three hearts and blue blood." },
+    { category: "Nature", fact: "A snail can sleep for three years." },
+    { category: "Nature", fact: "Polar bears have black skin under their white fur." },
+    { category: "Nature", fact: "Honey never spoils; it can last for thousands of years." },
+    { category: "Nature", fact: "Cows have 'best friends' and get stressed when separated." },
+    { category: "Nature", fact: "Butterflies taste with their feet." },
+    { category: "Nature", fact: "A shrimp's heart is located in its head." },
+    { category: "Nature", fact: "Seahorses are the only fish where the male gives birth." },
+    { category: "Nature", fact: "Wombat poop is cube-shaped." },
+    { category: "Nature", fact: "Ants breathe through tiny holes called spiracles." },
+    { category: "Chemistry", fact: "Oxygen is actually a pale blue color in its liquid state." },
+    { category: "Chemistry", fact: "The only letter not found on the periodic table is J." },
+    { category: "Chemistry", fact: "20% of Earth's oxygen is produced by the Amazon." },
+    { category: "Chemistry", fact: "Helium is the only element that cannot be solidified by cooling alone." },
+    { category: "Chemistry", fact: "Water expands as it freezes, which is why ice floats." },
+    { category: "Chemistry", fact: "Diamond and graphite are both made entirely of carbon." },
+    { category: "Earth", fact: "The Earth's core is as hot as the surface of the Sun." },
+    { category: "Earth", fact: "Lightning strikes the Earth about 100 times every second." },
+    { category: "Chemistry", fact: "Hydrofluoric acid is so corrosive it can dissolve glass." },
+    { category: "Chemistry", fact: "Gold is so rare, more steel is poured in an hour than gold in history." },
+    { category: "Physics", fact: "Glass is a 'disordered solid' rather than a true liquid." },
+    { category: "Nature", fact: "Bananas are slightly radioactive (due to potassium)." },
+    { category: "Biology", fact: "DNA was first discovered in 1869 by Friedrich Miescher." },
+    { category: "Biology", fact: "Average person walks 5x around the world in a lifetime." },
+    { category: "Physics", fact: "Hot water can freeze faster than cold water (Mpemba effect)." },
+    { category: "Nature", fact: "Rats can laugh when tickled." },
+    { category: "Physics", fact: "Every atom in your body is billions of years old." },
+    { category: "Physics", fact: "99% of an atom is empty space." },
+    { category: "General", fact: "If you fold paper 42 times, it would reach the Moon." },
+    { category: "Earth", fact: "Hawaii moves 7.5cm closer to Alaska every year." }
+];
 
-<nav id="sidebar">
-    <div style="font-weight:900; font-size:1.6rem; color:var(--primary); margin-bottom:30px; text-align:center;">SkiLabs.</div>
-    <button id="nav-dash" class="nav-btn active" onclick="nav('dash', this)"><span>🏠</span> Dash</button>
-    <button class="nav-btn" onclick="nav('gauntlet', this)"><span>⚔️</span> Gauntlet</button>
-    <button class="nav-btn" onclick="nav('glossary', this)"><span>📖</span> Archive</button>
-    <button class="nav-btn" onclick="nav('trophy', this)"><span>🏆</span> Trophy</button>
-</nav>
+/* Original Quiz Data */
+const quizData = {
+    Pro: [{q:"Chemical formula for water?", a:"H2O", o:["CO2","HO2","NaCl"]},{q:"Red Planet?", a:"Mars", o:["Venus","Jupiter","Earth"]},{q:"Hardest natural substance?", a:"Diamond", o:["Gold","Steel","Quartz"]},{q:"Boiling point of water?", a:"100°C", o:["90°C","120°C","80°C"]},{q:"Gas we breathe in?", a:"Oxygen", o:["Nitrogen","Carbon","Helium"]},{q:"Planets in Solar System?", a:"8", o:["9","7","10"]},{q:"Powerhouse of cell?", a:"Mitochondria", o:["Nucleus","Ribosome","DNA"]},{q:"Largest ocean?", a:"Pacific", o:["Atlantic","Indian","Arctic"]},{q:"Symbol for Gold?", a:"Au", o:["Ag","Go","Fe"]},{q:"Largest land animal?", a:"Elephant", o:["Rhino","Giraffe","Hippo"]}],
+    Master: [{q:"Absolute Zero value?", a:"-273.15°C", o:["0°C","-100°C","-300°C"]},{q:"78% of air is?", a:"Nitrogen", o:["Oxygen","CO2","Argon"]},{q:"Bones in adult body?", a:"206", o:["200","210","300"]},{q:"Light speed per sec?", a:"300,000 km/s", o:["150,000 km/s","10,000 km/s","500,000 km/s"]},{q:"Atomic number of Oxygen?", a:"8", o:["6","10","1"]},{q:"Liquid metal?", a:"Mercury", o:["Lead","Gallium","Silver"]},{q:"Discovered Penicillin?", a:"Fleming", o:["Pasteur","Curie","Newton"]},{q:"pH of pure water?", a:"7", o:["1","14","9"]},{q:"Center of atom?", a:"Nucleus", o:["Proton","Neutron","Shell"]},{q:"Unit of resistance?", a:"Ohm", o:["Volt","Amp","Watt"]}],
+    Elite: [{q:"Symbol 'Fe' is?", a:"Iron", o:["Fluorine","Silver","Lead"]},{q:"Most moons?", a:"Saturn", o:["Jupiter","Uranus","Neptune"]},{q:"Abundant metal in crust?", a:"Aluminum", o:["Iron","Steel","Gold"]},{q:"Neutron charge?", a:"Neutral", o:["Positive","Negative","Variable"]},{q:"Study of fungi?", a:"Mycology", o:["Biology","Zoology","Botany"]},{q:"Deepest ocean point?", a:"Mariana Trench", o:["Java Trench","Arctic Basin","Dead Sea"]},{q:"Plants absorb what gas?", a:"Carbon Dioxide", o:["Oxygen","Nitrogen","Ozone"]},{q:"Newton's 1st Law?", a:"Inertia", o:["Gravity","Friction","Momentum"]},{q:"Glass component?", a:"Silica", o:["Sodium","Calcium","Carbon"]},{q:"Flies backwards?", a:"Hummingbird", o:["Sparrow","Eagle","Parrot"]}],
+    Ruby: [{q:"Rarest blood type?", a:"AB Negative", o:["O Negative","A Positive","B Negative"]},{q:"Golden Ratio?", a:"1.618", o:["3.141","2.718","1.414"]},{q:"Rotates on its side?", a:"Uranus", o:["Neptune","Saturn","Jupiter"]},{q:"Adjusts light in eye?", a:"Iris", o:["Retina","Lens","Pupil"]},{q:"Polio vaccine creator?", a:"Salk", o:["Sabin","Lister","Jenner"]},{q:"Old thermometer element?", a:"Mercury", o:["Alcohol","Silver","Water"]},{q:"Lowest atmosphere layer?", a:"Troposphere", o:["Stratosphere","Mesosphere","Exosphere"]},{q:"Adult teeth count?", a:"32", o:["28","30","36"]},{q:"Symbol for Potassium?", a:"K", o:["P","Po","Ka"]},{q:"Periodic table elements?", a:"118", o:["115","120","100"]}],
+    Emerald: [{q:"Speed of sound?", a:"343 m/s", o:["299 m/s","500 m/s","100 m/s"]},{q:"Gas to liquid process?", a:"Condensation", o:["Evaporation","Sublimation","Melting"]},{q:"Vitamin for clotting?", a:"Vitamin K", o:["Vitamin C","Vitamin D","Vitamin A"]},{q:"Largest organ?", a:"Skin", o:["Liver","Lungs","Brain"]},{q:"Frequency unit?", a:"Hertz", o:["Decibels","Watts","Ohms"]},{q:"Water molar mass?", a:"18.015 g/mol", o:["1.008 g/mol","16.00 g/mol","12.01 g/mol"]},{q:"Light bulb gas?", a:"Argon", o:["Neon","Oxygen","Hydrogen"]},{q:"Densest planet?", a:"Earth", o:["Jupiter","Mars","Saturn"]},{q:"Spider legs?", a:"8", o:["6","10","12"]},{q:"Photosynthesis pigment?", a:"Chlorophyll", o:["Carotene","Melanin","Hemoglobin"]}],
+    Gold: [{q:"Abundant gas in universe?", a:"Hydrogen", o:["Helium","Oxygen","Nitrogen"]},{q:"Electron charge?", a:"Negative", o:["Positive","Neutral","Proton"]},{q:"Great Red Spot planet?", a:"Jupiter", o:["Mars","Saturn","Venus"]},{q:"Carbon-14 half-life?", a:"5730 years", o:["1000 years","10000 years","500 years"]},{q:"Cell division for growth?", a:"Mitosis", o:["Meiosis","Osmosis","Diffusion"]},{q:"Acid in lemons?", a:"Citric Acid", o:["Acetic Acid","Lactic Acid","Nitric Acid"]},{q:"Largest hot desert?", a:"Sahara", o:["Gobi","Kalahari","Atacama"]},{q:"Unit of power?", a:"Watt", o:["Joule","Newton","Volt"]},{q:"Smallest unit of life?", a:"Cell", o:["Atom","Molecule","Organelle"]},{q:"Father of Genetics?", a:"Mendel", o:["Darwin","Linnaeus","Watson"]}],
+};
 
-<main id="main">
-    <section id="dash" class="view active-view">
-        <h1>Command Center</h1>
-        <div class="glass-panel">
-            <p><b>User:</b> <span id="id-val" style="color:var(--primary)">---</span></p>
-            <p><b>Rank:</b> <span id="rank-val">PROBATION</span></p>
-            <div style="height:8px; background:#e2e8f0; border-radius:10px; overflow:hidden;"><div id="prog-bar" style="width:0%; height:100%; background:var(--primary); transition:1s;"></div></div>
-        </div>
-    </section>
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-    <section id="gauntlet" class="view">
-        <h1>The Gauntlet</h1>
-        <div id="quiz-menu">
-            <button class="quiz-opt" onclick="prepareQuiz('Pro')">STAGE 1: PRO</button>
-            <button class="quiz-opt" onclick="prepareQuiz('Master')">STAGE 2: MASTER</button>
-            <button class="quiz-opt" onclick="prepareQuiz('Elite')">STAGE 3: ELITE</button>
-            <div id="adv-box" style="display:none; border-top:2px dashed var(--gold); padding-top:20px;">
-                <button class="quiz-opt" onclick="prepareQuiz('Ruby')">STAGE 4: RUBY</button>
-                <button class="quiz-opt" onclick="prepareQuiz('Emerald')">STAGE 5: EMERALD</button>
-                <button class="quiz-opt" style="color:var(--gold); font-weight:bold;" onclick="prepareQuiz('Gold')">FINAL: GOLD</button>
-            </div>
-        </div>
-        <div id="quiz-active" style="display:none;">
-            <div class="glass-panel">
-                <p id="q-txt" style="font-weight:700; font-size:1.2rem;"></p>
-                <div id="q-opts"></div>
-            </div>
-        </div>
-    </section>
+function handleLogin() {
+    const inp = document.getElementById('username-input'); if(!inp.value) return;
+    user = inp.value.trim().toUpperCase();
+    document.getElementById('id-val').innerText = user; document.getElementById('cert-name').innerText = user;
+    document.getElementById('login-screen').style.display = 'none';
+    addAI("SkiLabs Online. User: " + user, 'ai-bub');
+    renderGlossary(); // Load the facts after login
+}
 
-    <section id="glossary" class="view">
-        <h1>Data Archive</h1>
-        <div id="glos-list"></div>
-    </section>
+function renderGlossary() {
+    const list = document.getElementById('glos-list');
+    list.innerHTML = "";
+    glossaryData.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "glass-panel";
+        div.style.marginBottom = "10px";
+        div.style.padding = "15px";
+        div.innerHTML = `<small style="color:var(--primary); font-weight:bold;">${item.category}</small>
+                         <p style="margin:5px 0 0 0; font-size:0.95rem;">${item.fact}</p>`;
+        list.appendChild(div);
+    });
+}
 
-    <section id="trophy" class="view">
-        <h1>Achievements</h1>
-        <div class="badge-grid">
-            <div class="badge" id="badge-pro">🛡️ PRO</div>
-            <div class="badge" id="badge-master">⚔️ MASTER</div>
-            <div class="badge" id="badge-elite">💎 ELITE</div>
-            <div class="badge" id="badge-ruby">🏮 RUBY</div>
-            <div class="badge" id="badge-emerald">🌿 EMERALD</div>
-            <div class="badge" id="badge-gold">👑 GOLD</div>
-        </div>
-        <div id="cert-container" style="margin-top:20px;">
-            <h2>GOLD MASTER CERTIFIED</h2>
-            <h1 id="cert-name"></h1>
-        </div>
-    </section>
-</main>
+function nav(id, btn) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active-view');
+    btn.classList.add('active'); if(window.innerWidth <= 768) toggleSidebar(); 
+}
 
-<button id="ai-toggle" onclick="toggleAI()">🧠</button>
-<div id="ai-window">
-    <div style="background:var(--primary); color:white; padding:15px;"><b>OMNI_AI</b></div>
-    <div id="ai-chat"></div>
-    <div style="padding:10px; display:flex; gap:5px;">
-        <input type="text" id="ai-in" placeholder="Query..." style="flex:1; padding:10px; border-radius:10px; border:1px solid #ddd;">
-        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:10px;">➤</button>
-    </div>
-</div>
+function toggleAI() { const w = document.getElementById('ai-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
 
-<script>
-    let user = "", curLvl = "", qIdx = 0, currentQuestions = [], wins = 0;
+function prepareQuiz(lvl) {
+    curLvl = lvl; qIdx = 0; currentQuestions = quizData[lvl];
+    document.getElementById('quiz-menu').style.display = 'none'; document.getElementById('quiz-active').style.display = 'block';
+    showQ();
+}
 
-    const glossaryData = [
-        { c: "Space", f: "Sunlight takes 8m 20s to reach Earth." },
-        { c: "Space", f: "The universe has no center." },
-        { c: "Space", f: "Neutron stars weigh billions of tons." },
-        { c: "Space", f: "Venus is the hottest planet." },
-        { c: "Space", f: "Saturn's rings are 99% ice." },
-        { c: "Space", f: "Moon footprints last 100M years." },
-        { c: "Space", f: "No sound in space." },
-        { c: "Space", f: "Jupiter is massive." },
-        { c: "Space", f: "More stars than sand grains." },
-        { c: "Space", f: "Astronauts grow taller in space." },
-        { c: "Bio", f: "Brain runs on 20 watts." },
-        { c: "Bio", f: "Heart beats 100k times a day." },
-        { c: "Bio", f: "60% DNA shared with bananas." },
-        { c: "Bio", f: "Jaw is the strongest muscle." },
-        { c: "Bio", f: "Nails grow faster than toenails." },
-        { c: "Bio", f: "Adults have 206 bones." },
-        { c: "Bio", f: "Eyes see 10M colors." },
-        { c: "Bio", f: "Stomach lining renews every 4 days." },
-        { c: "Bio", f: "Blood cell circuits in 60s." },
-        { c: "Bio", f: "Smallpox is eradicated." },
-        { c: "Nature", f: "Octopus have 3 hearts." },
-        { c: "Nature", f: "Snails can sleep for 3 years." },
-        { c: "Nature", f: "Polar bears have black skin." },
-        { c: "Nature", f: "Honey never spoils." },
-        { c: "Nature", f: "Cows have best friends." },
-        { c: "Nature", f: "Butterflies taste with feet." },
-        { c: "Nature", f: "Shrimp heart is in head." },
-        { c: "Nature", f: "Male seahorses give birth." },
-        { c: "Nature", f: "Wombat poop is square." },
-        { c: "Nature", f: "Ants breathe through holes." },
-        { c: "Chem", f: "Liquid oxygen is blue." },
-        { c: "Chem", f: "No 'J' on Periodic Table." },
-        { c: "Chem", f: "Amazon makes 20% of oxygen." },
-        { c: "Chem", f: "Helium cannot be frozen easily." },
-        { c: "Chem", f: "Ice floats because water expands." },
-        { c: "Chem", f: "Diamonds are pure carbon." },
-        { c: "Earth", f: "Core is as hot as the Sun." },
-        { c: "Earth", f: "Lightning strikes 100x/sec." },
-        { c: "Chem", f: "Acid can melt glass." },
-        { c: "Chem", f: "Gold is extremely rare." },
-        { c: "Phys", f: "Glass is a disordered solid." },
-        { c: "Nature", f: "Bananas are radioactive." },
-        { c: "Bio", f: "DNA found in 1869." },
-        { c: "Bio", f: "We walk 5x around Earth in life." },
-        { c: "Phys", f: "Hot water freezes faster." },
-        { c: "Nature", f: "Rats can laugh." },
-        { c: "Phys", f: "Atoms are billions of years old." },
-        { c: "Phys", f: "Atoms are 99% empty space." },
-        { c: "Gen", f: "Fold paper 42x to reach Moon." },
-        { c: "Earth", f: "Hawaii moves to Alaska 7cm/year." }
-    ];
+function showQ() {
+    const d = currentQuestions[qIdx]; document.getElementById('q-lvl').innerText = curLvl.toUpperCase();
+    document.getElementById('q-num').innerText = `${qIdx+1}/${currentQuestions.length}`;
+    document.getElementById('q-txt').innerText = d.q;
+    const box = document.getElementById('q-opts'); box.innerHTML = "";
+    [d.a, ...d.o].sort(() => Math.random() - 0.5).forEach(o => {
+        const b = document.createElement('button'); b.className="quiz-opt"; b.innerText=o;
+        b.onclick = () => { if(o === d.a){ qIdx++; if(qIdx < currentQuestions.length) showQ(); else finishQuiz(); } else { b.classList.add('error-shake'); setTimeout(()=>b.classList.remove('error-shake'),400); } };
+        box.appendChild(b);
+    });
+}
 
-    const quizData = {
-        Pro: [{q:"Chemical formula for water?", a:"H2O", o:["CO2","HO2","NaCl"]},{q:"Red Planet?", a:"Mars", o:["Venus","Jupiter","Earth"]},{q:"Hardest natural substance?", a:"Diamond", o:["Gold","Steel","Quartz"]},{q:"Boiling point of water?", a:"100°C", o:["90°C","120°C","80°C"]},{q:"Gas we breathe in?", a:"Oxygen", o:["Nitrogen","Carbon","Helium"]},{q:"Planets in Solar System?", a:"8", o:["9","7","10"]},{q:"Powerhouse of cell?", a:"Mitochondria", o:["Nucleus","Ribosome","DNA"]},{q:"Largest ocean?", a:"Pacific", o:["Atlantic","Indian","Arctic"]},{q:"Symbol for Gold?", a:"Au", o:["Ag","Go","Fe"]},{q:"Largest land animal?", a:"Elephant", o:["Rhino","Giraffe","Hippo"]}],
-        Master: [{q:"Absolute Zero value?", a:"-273.15°C", o:["0°C","-100°C","-300°C"]},{q:"78% of air is?", a:"Nitrogen", o:["Oxygen","CO2","Argon"]},{q:"Bones in adult body?", a:"206", o:["200","210","300"]},{q:"Light speed per sec?", a:"300,000 km/s", o:["150,000 km/s","10,000 km/s","500,000 km/s"]},{q:"Atomic number of Oxygen?", a:"8", o:["6","10","1"]},{q:"Liquid metal?", a:"Mercury", o:["Lead","Gallium","Silver"]},{q:"Discovered Penicillin?", a:"Fleming", o:["Pasteur","Curie","Newton"]},{q:"pH of pure water?", a:"7", o:["1","14","9"]},{q:"Center of atom?", a:"Nucleus", o:["Proton","Neutron","Shell"]},{q:"Unit of resistance?", a:"Ohm", o:["Volt","Amp","Watt"]}],
-        Elite: [{q:"Symbol 'Fe' is?", a:"Iron", o:["Fluorine","Silver","Lead"]},{q:"Most moons?", a:"Saturn", o:["Jupiter","Uranus","Neptune"]},{q:"Abundant metal in crust?", a:"Aluminum", o:["Iron","Steel","Gold"]},{q:"Neutron charge?", a:"Neutral", o:["Positive","Negative","Variable"]},{q:"Study of fungi?", a:"Mycology", o:["Biology","Zoology","Botany"]},{q:"Deepest ocean point?", a:"Mariana Trench", o:["Java Trench","Arctic Basin","Dead Sea"]},{q:"Plants absorb what gas?", a:"Carbon Dioxide", o:["Oxygen","Nitrogen","Ozone"]},{q:"Newton's 1st Law?", a:"Inertia", o:["Gravity","Friction","Momentum"]},{q:"Glass component?", a:"Silica", o:["Sodium","Calcium","Carbon"]},{q:"Flies backwards?", a:"Hummingbird", o:["Sparrow","Eagle","Parrot"]}],
-        Ruby: [{q:"Rarest blood type?", a:"AB Negative", o:["O Negative","A Positive","B Negative"]},{q:"Golden Ratio?", a:"1.618", o:["3.141","2.718","1.414"]},{q:"Rotates on its side?", a:"Uranus", o:["Neptune","Saturn","Jupiter"]},{q:"Adjusts light in eye?", a:"Iris", o:["Retina","Lens","Pupil"]},{q:"Polio creator?", a:"Salk", o:["Sabin","Lister","Jenner"]},{q:"Old thermometer element?", a:"Mercury", o:["Alcohol","Silver","Water"]},{q:"Lowest atmosphere?", a:"Troposphere", o:["Stratosphere","Mesosphere","Exosphere"]},{q:"Adult teeth?", a:"32", o:["28","30","36"]},{q:"Symbol for Potassium?", a:"K", o:["P","Po","Ka"]},{q:"Periodic table elements?", a:"118", o:["115","120","100"]}],
-        Emerald: [{q:"Speed of sound?", a:"343 m/s", o:["299 m/s","500 m/s","100 m/s"]},{q:"Gas to liquid?", a:"Condensation", o:["Evaporation","Sublimation","Melting"]},{q:"Vitamin for clotting?", a:"Vitamin K", o:["Vitamin C","Vitamin D","Vitamin A"]},{q:"Largest organ?", a:"Skin", o:["Liver","Lungs","Brain"]},{q:"Frequency unit?", a:"Hertz", o:["Decibels","Watts","Ohms"]},{q:"Water molar mass?", a:"18.015 g/mol", o:["1.008 g/mol","16.00 g/mol","12.01 g/mol"]},{q:"Light bulb gas?", a:"Argon", o:["Neon","Oxygen","Hydrogen"]},{q:"Densest planet?", a:"Earth", o:["Jupiter","Mars","Saturn"]},{q:"Spider legs?", a:"8", o:["6","10","12"]},{q:"Photosynthesis?", a:"Chlorophyll", o:["Carotene","Melanin","Hemoglobin"]}],
-        Gold: [{q:"Abundant gas?", a:"Hydrogen", o:["Helium","Oxygen","Nitrogen"]},{q:"Electron charge?", a:"Negative", o:["Positive","Neutral","Proton"]},{q:"Great Red Spot?", a:"Jupiter", o:["Mars","Saturn","Venus"]},{q:"Carbon-14 half-life?", a:"5730 years", o:["1000 years","10000 years","500 years"]},{q:"Cell division?", a:"Mitosis", o:["Meiosis","Osmosis","Diffusion"]},{q:"Acid in lemons?", a:"Citric Acid", o:["Acetic Acid","Lactic Acid","Nitric Acid"]},{q:"Largest hot desert?", a:"Sahara", o:["Gobi","Kalahari","Atacama"]},{q:"Unit of power?", a:"Watt", o:["Joule","Newton","Volt"]},{q:"Smallest unit of life?", a:"Cell", o:["Atom","Molecule","Organelle"]},{q:"Father of Genetics?", a:"Mendel", o:["Darwin","Linnaeus","Watson"]}],
-    };
+function finishQuiz() {
+    wins++; document.getElementById('quiz-active').style.display='none'; document.getElementById('quiz-menu').style.display='block';
+    document.getElementById('rank-val').innerText = curLvl.toUpperCase();
+    document.getElementById('prog-bar').style.width = (wins * 16.6) + "%";
+    document.getElementById('badge-' + curLvl.toLowerCase()).classList.add('unlocked');
+    if(curLvl === 'Elite') { document.body.classList.add('gold-theme'); document.getElementById('adv-box').style.display='block'; }
+    if(curLvl === 'Gold') { unlockMaster(); }
+    confetti({ origin: { y: 0.7 } }); setTimeout(() => nav('dash', document.getElementById('nav-dash')), 1000);
+}
 
-    function handleLogin() {
-        const inp = document.getElementById('username-input'); if(!inp.value) return;
-        user = inp.value.trim().toUpperCase();
-        document.getElementById('id-val').innerText = user; document.getElementById('cert-name').innerText = user;
-        document.getElementById('login-screen').style.display = 'none';
-        renderGlossary();
-    }
+function unlockMaster() {
+    wins = 6; document.body.classList.add('gold-theme'); document.getElementById('rank-val').innerText = "GOLD MASTER";
+    document.getElementById('prog-bar').style.width = "100%"; document.getElementById('cert-container').style.display='block';
+    document.querySelectorAll('.badge').forEach(b => b.classList.add('unlocked'));
+    document.getElementById('adv-box').style.display='block';
+}
 
-    function nav(id, btn) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active-view');
-        btn.classList.add('active');
-    }
+function askAI() {
+    const i = document.getElementById('ai-in'); const q = i.value.trim().toLowerCase();
+    if(!q) return; i.value = ""; addAI(q, 'user-bub');
+    if(q === "nk gf") { addLetter(); }
+    else if(q === "skilabs_root_access") { unlockMaster(); addAI("ROOT GRANTED.", 'ai-bub'); }
+    else { addAI("Scanning...", 'ai-bub'); }
+}
 
-    function renderGlossary() {
-        const l = document.getElementById('glos-list'); l.innerHTML = "";
-        glossaryData.forEach(i => {
-            const d = document.createElement('div'); d.className = "glass-panel";
-            d.innerHTML = `<small style="color:var(--primary);">${i.c}</small><p>${i.f}</p>`;
-            l.appendChild(d);
-        });
-    }
+function addAI(t, c) {
+    const chat = document.getElementById('ai-chat'); const d = document.createElement('div');
+    d.className = `bubble ${c}`; d.innerText = t; chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
+}
 
-    function toggleAI() { const w = document.getElementById('ai-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
-
-    function prepareQuiz(lvl) {
-        curLvl = lvl; qIdx = 0; currentQuestions = quizData[lvl];
-        document.getElementById('quiz-menu').style.display='none'; document.getElementById('quiz-active').style.display='block';
-        showQ();
-    }
-
-    function showQ() {
-        const d = currentQuestions[qIdx]; document.getElementById('q-txt').innerText = d.q;
-        const box = document.getElementById('q-opts'); box.innerHTML = "";
-        [d.a, ...d.o].sort(() => Math.random() - 0.5).forEach(o => {
-            const b = document.createElement('button'); b.className="quiz-opt"; b.innerText=o;
-            b.onclick = () => { if(o === d.a){ qIdx++; if(qIdx < currentQuestions.length) showQ(); else finishQuiz(); } else { b.classList.add('error-shake'); setTimeout(()=>b.classList.remove('error-shake'),400); } };
-            box.appendChild(b);
-        });
-    }
-
-    function finishQuiz() {
-        wins++; document.getElementById('quiz-active').style.display='none'; document.getElementById('quiz-menu').style.display='block';
-        document.getElementById('rank-val').innerText = curLvl.toUpperCase();
-        document.getElementById('prog-bar').style.width = (wins * 16.6) + "%";
-        document.getElementById('badge-' + curLvl.toLowerCase()).classList.add('unlocked');
-        if(curLvl === 'Elite') { document.body.classList.add('gold-theme'); document.getElementById('adv-box').style.display='block'; }
-        if(curLvl === 'Gold') { unlockMaster(); }
-        confetti({ origin: { y: 0.7 } });
-    }
-
-    function unlockMaster() {
-        wins = 6; document.body.classList.add('gold-theme'); document.getElementById('rank-val').innerText = "GOLD MASTER";
-        document.getElementById('prog-bar').style.width = "100%"; document.getElementById('cert-container').style.display='block';
-        document.querySelectorAll('.badge').forEach(b => b.classList.add('unlocked'));
-        document.getElementById('adv-box').style.display='block';
-    }
-
-    function askAI() {
-        const i = document.getElementById('ai-in'); const q = i.value.trim().toLowerCase();
-        if(!q) return; i.value = ""; addAI(q, 'user-bub');
-
-        if(q === "nk gf") { addLetter(); return; }
-        if(q === "skilabs_root_access") { unlockMaster(); addAI("ROOT GRANTED.", 'ai-bub'); return; }
-
-        const r = {
-            greet: ["hi", "hello", "hey", "yo", "sup", "wassup"],
-            thanks: ["thanks", "thank you", "ty"],
-            morning: ["morning", "gm", "good morning"],
-            status: ["how are you", "hru", "how far"],
-            agree: ["ok", "okay", "alright", "bet", "ight"]
-        };
-
-        if(r.greet.some(w => q.includes(w))) addAI("Hello " + user + ". Systems online.", 'ai-bub');
-        else if(r.morning.some(w => q.includes(w))) addAI("Good morning. Systems at 100%. Ready?", 'ai-bub');
-        else if(r.thanks.some(w => q.includes(w))) addAI("You're welcome.", 'ai-bub');
-        else if(r.status.some(w => q.includes(w))) addAI("Operational. I am here to help.", 'ai-bub');
-        else if(r.agree.some(w => q.includes(w))) addAI("Bet. Standing by.", 'ai-bub');
-        else addAI("Information not found. Ask about science!", 'ai-bub');
-    }
-
-    function addAI(t, c) {
-        const chat = document.getElementById('ai-chat'); const d = document.createElement('div');
-        d.className = `bubble ${c}`; d.innerText = t; chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
-    }
-
-    function addLetter() {
-        const chat = document.getElementById('ai-chat'); const d = document.createElement('div'); d.className = "secret-letter";
-        d.innerHTML = `<strong>TO NHYIRA KARIKARI BONSU,</strong><br><br>In this world of complex systems, you are my most beautiful constant.<br><br><span style="font-family:'Dancing Script';font-size:1.4rem;color:#b91c1c;display:block;text-align:center;">"If time were to ever ask me where I belong, I would point to your heart and call it home."</span><br><br>By Caleb Fiifi Asare.`;
-        chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
-    }
+function addLetter() {
+    const chat = document.getElementById('ai-chat'); const d = document.createElement('div'); d.className = `secret-letter`;
+    d.innerHTML = `<strong>TO NHYIRA KARIKARI BONSU,</strong><br><br>In this world of complex systems, you are my most beautiful constant.<br><br><span style="font-family:'Dancing Script';font-size:1.4rem;color:#b91c1c;display:block;text-align:center;">"If time were to ever ask me where I belong, I would point to your heart and call it home."</span><br><br>By Caleb Fiifi Asare.`;
+    chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
+}
 </script>
-</body>
-</html>
