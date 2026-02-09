@@ -3,54 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SkiLabs | Advanced Research Terminal</title>
+    <title>SkiLabs | Master Research Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root { --primary: #4f46e5; --accent: #06b6d4; --gold: #d97706; --bg: #f1f5f9; --panel: #ffffff; --border: #cbd5e1; --text: #0f172a; }
         .gold-theme { --primary: #92400e; --accent: #d97706; --bg: #fefce8; --border: #fef08a; }
-        
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
-
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.5s; }
         #sidebar { width: 280px; background: white; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; z-index: 2000; transition: 0.3s; }
         .nav-btn { padding: 16px; margin-bottom: 10px; border-radius: 14px; cursor: pointer; color: #64748b; border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 1rem; font-weight: 600; font-family: inherit; transition: 0.2s; }
         .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
-        
         #menu-toggle { display: none; position: fixed; top: 20px; left: 20px; z-index: 1001; background: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-weight: bold; }
-        
         #main { flex-grow: 1; overflow-y: auto; padding: 40px 20px; }
         .view { display: none; max-width: 600px; margin: 0 auto; padding-bottom: 100px; }
         .active-view { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 25px; }
-        
-        /* Glossary Premium Cards */
+        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .archive-card { border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 15px; background: #fff; border-radius: 0 16px 16px 0; box-shadow: 2px 2px 10px rgba(0,0,0,0.02); }
-        .data-id { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--primary); font-weight: bold; margin-bottom: 5px; display: block; }
-        .archive-text { font-size: 0.95rem; line-height: 1.6; color: #334155; }
-
-        /* Quiz UI */
+        .data-id { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--primary); font-weight: bold; }
         .quiz-opt { width: 100%; padding: 18px; border: 2px solid #e2e8f0; border-radius: 16px; background: white; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s; font-weight: 500; margin-bottom: 10px; }
         .error-shake { animation: shake 0.4s; border-color: #ef4444 !important; background: #fef2f2; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
-
-        #ai-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--primary); color: white; width: 65px; height: 65px; border-radius: 50%; border: none; font-size: 1.6rem; z-index: 3000; }
+        #ai-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--primary); color: white; width: 65px; height: 65px; border-radius: 50%; border: none; font-size: 1.6rem; z-index: 3000; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         #ai-window { display: none; position: fixed; bottom: 100px; right: 20px; left: 20px; height: 55vh; max-width: 420px; margin: 0 auto; background: white; border-radius: 28px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; }
         #ai-chat { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #f8fafc; }
-        .bubble { padding: 14px 18px; border-radius: 20px; max-width: 85%; font-size: 0.9rem; }
+        .bubble { padding: 14px 18px; border-radius: 20px; max-width: 85%; font-size: 0.9rem; line-height: 1.4; }
         .ai-bub { background: white; border: 1px solid var(--border); align-self: flex-start; }
         .user-bub { background: var(--primary); color: white; align-self: flex-end; }
         .secret-bub { background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; align-self: flex-start; font-style: italic; white-space: pre-line; }
-
-        @media (max-width: 768px) {
-            #sidebar { position: fixed; left: -100%; height: 100%; }
-            #sidebar.open { left: 0; }
-            #menu-toggle { display: block; }
-            #main { padding-top: 90px; }
-        }
-
+        @media (max-width: 768px) { #sidebar { position: fixed; left: -100%; height: 100%; } #sidebar.open { left: 0; } #menu-toggle { display: block; } #main { padding-top: 90px; } }
         #login-screen { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
@@ -60,10 +42,11 @@
 
 <div id="login-screen">
     <div class="glass-panel" style="text-align:center; width:100%; max-width:380px;">
-        <h1 style="color:var(--primary); font-size:2.5rem; margin-bottom:10px;">SkiLabs_</h1>
-        <input type="text" id="username-input" style="width:100%; padding:18px; margin-bottom:15px; border:2px solid #e2e8f0; border-radius:16px; text-align:center;" placeholder="Enter Identity">
-        <button class="nav-btn" style="background:var(--primary); color:white; text-align:center;" onclick="handleLogin()">ACCESS TERMINAL</button>
-        <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 20px;">DEVELOPED BY CALEB FIIFI ASARE</p>
+        <h1 style="color:var(--primary); font-size:2.2rem; margin-bottom:5px;">SkiLabs_</h1>
+        <p style="color:#64748b; font-size:0.8rem; margin-bottom:25px;">Data Synchronization Terminal</p>
+        <input type="text" id="username-input" style="width:100%; padding:18px; margin-bottom:15px; border:2px solid #e2e8f0; border-radius:16px; text-align:center; font-size:1rem;" placeholder="Enter Name">
+        <button class="nav-btn" style="background:var(--primary); color:white; text-align:center; padding:18px;" onclick="handleLogin()">LOGIN</button>
+        <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 25px; font-weight:bold;">MADE BY CALEB FIIFI ASARE</p>
     </div>
 </div>
 
@@ -72,55 +55,55 @@
     <button class="nav-btn active" onclick="nav('dash', this)">🏠 Overview</button>
     <button class="nav-btn" onclick="nav('gauntlet', this)">⚔️ Gauntlet</button>
     <button class="nav-btn" onclick="nav('glossary', this)">📖 Data Archive</button>
-    <div style="margin-top: auto; border-top: 1px solid #eee; padding-top: 10px; text-align: center;">
-        <p style="font-size: 0.6rem; color: #cbd5e1;">MADE BY CALEB FIIFI ASARE</p>
+    <div style="margin-top: auto; text-align: center; border-top: 1px solid #eee; padding-top: 15px;">
+        <p style="font-size: 0.65rem; font-weight: 800; color: #cbd5e1;">MADE BY CALEB FIIFI ASARE</p>
     </div>
 </nav>
 
 <main id="main">
     <section id="dash" class="view active-view">
-        <h1>Command Center</h1>
+        <h1 style="font-weight:800;">Command Center</h1>
         <div class="glass-panel">
             <p><b>Researcher:</b> <span id="id-val">---</span></p>
             <p><b>Current Rank:</b> <span id="rank-val" style="color:var(--primary); font-weight:bold;">PROBATION</span></p>
-            <div style="margin-top:20px; height:8px; background:#e2e8f0; border-radius:10px; overflow:hidden;"><div id="prog-bar" style="width:0%; height:100%; background:var(--primary); transition:0.5s;"></div></div>
+            <div style="margin-top:20px; height:8px; background:#e2e8f0; border-radius:10px; overflow:hidden;"><div id="prog-bar" style="width:0%; height:100%; background:var(--primary); transition:0.8s;"></div></div>
         </div>
     </section>
 
     <section id="gauntlet" class="view">
-        <h1>The Gauntlet</h1>
+        <h1 style="font-weight:800;">Gauntlet</h1>
         <div id="quiz-menu">
-            <button class="nav-btn" style="border:1px solid #e2e8f0;" onclick="startQuiz('Pro', 10)">STAGE I: PRO</button>
-            <button class="nav-btn" style="border:1px solid #e2e8f0;" onclick="startQuiz('Master', 10)">STAGE II: MASTER</button>
-            <button class="nav-btn" style="border:1px solid #e2e8f0;" onclick="startQuiz('Elite', 10)">STAGE III: ELITE</button>
-            <div id="adv-box" style="display:none; margin-top:10px; border-top:2px dashed #ddd; padding-top:10px;">
-                <button class="nav-btn" style="background:#be123c; color:white;" onclick="startQuiz('Ruby', 10)">STAGE IV: RUBY</button>
-                <button class="nav-btn" style="background:#047857; color:white;" onclick="startQuiz('Emerald', 10)">STAGE V: EMERALD</button>
-                <button class="nav-btn" style="background:var(--gold); color:white;" onclick="startQuiz('Gold', 20)">STAGE VI: GOLD</button>
+            <button class="quiz-opt" onclick="startQuiz('Pro', 10)">STAGE 1: PRO (10 Qs)</button>
+            <button class="quiz-opt" onclick="startQuiz('Master', 10)">STAGE 2: MASTER (10 Qs)</button>
+            <button class="quiz-opt" onclick="startQuiz('Elite', 10)">STAGE 3: ELITE (10 Qs)</button>
+            <div id="adv-box" style="display:none; margin-top:20px; border-top:2px dashed #ddd; padding-top:20px;">
+                <button class="quiz-opt" style="background:#be123c; color:white; border:none;" onclick="startQuiz('Ruby', 10)">STAGE 4: RUBY (10 Qs)</button>
+                <button class="quiz-opt" style="background:#047857; color:white; border:none;" onclick="startQuiz('Emerald', 10)">STAGE 5: EMERALD (10 Qs)</button>
+                <button class="quiz-opt" style="background:var(--gold); color:white; border:none;" onclick="startQuiz('Gold', 20)">STAGE 6: GOLD MASTER (20 Qs)</button>
             </div>
         </div>
         <div id="quiz-active" style="display:none;">
             <div class="glass-panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><span id="q-lvl" style="font-weight:bold; color:var(--primary);"></span> <span id="q-num"></span></div>
-                <p id="q-txt" style="font-size:1.1rem; font-weight:700;"></p>
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><span id="q-lvl" style="font-weight:bold; color:var(--primary); font-size:0.8rem;"></span> <span id="q-num" style="font-family:'JetBrains Mono'; font-size:0.8rem;"></span></div>
+                <p id="q-txt" style="font-size:1.1rem; font-weight:700; margin-bottom:25px;"></p>
                 <div id="q-opts"></div>
             </div>
         </div>
     </section>
 
     <section id="glossary" class="view">
-        <h1>Data Archive</h1>
+        <h1 style="font-weight:800;">Data Archive</h1>
         <div id="glos-list"></div>
     </section>
 </main>
 
 <button id="ai-toggle" onclick="toggleAI()">🧠</button>
 <div id="ai-window">
-    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between;"><b>OMNI_AI</b> <span onclick="toggleAI()">✕</span></div>
+    <div style="background:var(--primary); color:white; padding:18px; display:flex; justify-content:space-between;"><b>OMNI_AI</b> <span onclick="toggleAI()">✕</span></div>
     <div id="ai-chat"></div>
     <div style="padding:15px; display:flex; gap:10px; border-top:1px solid #eee;">
-        <input type="text" id="ai-in" placeholder="Command..." style="flex-grow:1; padding:10px; border:1px solid #e2e8f0; border-radius:10px; outline:none;">
-        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 15px;">➤</button>
+        <input type="text" id="ai-in" placeholder="Ask anything..." style="flex-grow:1; padding:12px; border:1px solid #e2e8f0; border-radius:12px; outline:none;">
+        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:12px; padding:0 15px;">➤</button>
     </div>
 </div>
 
@@ -128,40 +111,67 @@
     let user = "", curLvl = "", qIdx = 0, wins = 0;
     const keys = { pro: "H2O", master: "Diamond", elite: "-273.15C", ruby: "Mars", emerald: "Emerald", gold: "Hydrogen" };
     
-    // 100 REAL SCIENTIFIC ENTRIES
-    const realFacts = [
-        "Water (H2O) is the only substance that exists naturally on Earth in three states: solid, liquid, and gas.",
-        "A Diamond's hardness is due to its carbon atoms being arranged in a strong, three-dimensional tetrahedral structure.",
-        "Absolute Zero is calculated as -273.15 degrees Celsius; it is the point where all molecular motion theoretically stops.",
-        "Mars is red because its surface is covered in iron oxide, which is the same compound that makes old nails rust.",
-        "The green color in Emeralds is caused by trace amounts of chromium and sometimes vanadium.",
-        "Hydrogen is the most abundant element in the universe, making up roughly 75% of all baryonic mass.",
-        "The human body contains enough carbon to lead 9,000 pencils.",
-        "Light travels at approximately 299,792,458 meters per second in a vacuum.",
-        "DNA is a double-stranded molecule that carries the genetic instructions for all living organisms.",
-        "Venus is the hottest planet in our solar system, with surface temperatures reaching 471°C.",
-        "The mitochondria are known as the powerhouses of the cell because they generate most of the chemical energy.",
-        "Sound travels about four times faster in water than it does in air.",
-        "A teaspoon of a neutron star would weigh about 6 billion tons.",
-        "The Great Barrier Reef is the largest living structure on Earth, visible even from space.",
-        "Atoms are composed of protons, neutrons, and electrons; they are 99.9999% empty space.",
-        "Helium is the only element that cannot be solidified by sufficient cooling at normal atmospheric pressure.",
-        "Photosynthesis allows plants to convert carbon dioxide and water into glucose using sunlight.",
-        "The Earth's core is as hot as the surface of the sun, roughly 5,200 degrees Celsius.",
-        "Octopuses have three hearts and blue blood.",
-        "A single bolt of lightning contains enough energy to toast 100,000 slices of bread."
+    const facts = [
+        "1. Water (H2O) exists naturally in three states: solid, liquid, and gas.",
+        "2. Diamond is the hardest natural substance due to its tetrahedral carbon structure.",
+        "3. Absolute Zero (-273.15°C) is where all molecular motion stops.",
+        "4. Mars is red because its surface is covered in iron oxide (rust).",
+        "5. Emeralds get their green color from trace amounts of chromium.",
+        "6. Hydrogen is the lightest and most abundant element in the universe.",
+        "7. Lightning strikes reach temperatures five times hotter than the sun.",
+        "8. Venus is the hottest planet, reaching 471°C due to its thick atmosphere.",
+        "9. The human heart pumps about 2,000 gallons of blood every day.",
+        "10. Light travels at 299,792,458 meters per second in a vacuum.",
+        "11. DNA is the hereditary material in humans and almost all other organisms.",
+        "12. Sound travels 4.3 times faster in water than in air.",
+        "13. Octopuses have three hearts; two for gills and one for the body.",
+        "14. The Great Barrier Reef is the largest living system on Earth.",
+        "15. Plastic takes up to 450 years to break down in the ocean.",
+        "16. One million Earths could fit inside the sun.",
+        "17. Honey is the only food that never goes bad; it is naturally preserved.",
+        "18. A neutron star teaspoon would weigh 6 billion tons.",
+        "19. Trees use photosynthesis to turn CO2 and water into glucose.",
+        "20. Earth's core temperature is 5,200°C, same as the sun's surface.",
+        "21. Butterflies have taste receptors on their feet.",
+        "22. Bananas contain Potassium-40, making them slightly radioactive.",
+        "23. Saturn's rings are 90% water ice.",
+        "24. The human brain consumes 20% of the body's energy.",
+        "25. Glass is an amorphous solid that flows like a liquid over centuries.",
+        "26. An ant can lift 50 times its body weight.",
+        "27. Venus rotates so slowly that its day is longer than its year.",
+        "28. Helium is the only liquid that cannot be frozen by cooling.",
+        "29. The Mariana Trench is 11,000 meters deep.",
+        "30. Humans and bananas share 60% of their DNA.",
+        "31. Cows have four digestive compartments in their stomach.",
+        "32. Gold is so ductile that one ounce can be drawn into a 50-mile wire.",
+        "33. Sharks have skeletons made of cartilage, not bone.",
+        "34. The moon is moving 3.8cm away from Earth every year.",
+        "35. Clouds are composed of water droplets or ice crystals.",
+        "36. Blue whales have a heart the size of a small car.",
+        "37. Nitrogen is the most common gas in Earth's atmosphere (78%).",
+        "38. Iron expands when heated, changing the height of structures.",
+        "39. Polar bear skin is black; their fur is actually clear and hollow.",
+        "40. It takes 500 seconds for sunlight to reach Earth.",
+        "41. Earth is the only planet with liquid water on its surface.",
+        "42. Your skin replaces all its cells every 27 to 30 days.",
+        "43. Hot water can freeze faster than cold water (Mpemba effect).",
+        "44. Jupiter is two times more massive than all other planets combined.",
+        "45. The average human walks 115,000 miles in their lifetime.",
+        "46. Everest grows about 4mm every year due to tectonic shifts.",
+        "47. Hummingbirds are the only birds that can fly backwards.",
+        "48. The Earth's crust is mostly made of oxygen and silicon.",
+        "49. Atoms are mostly empty space; we are 99.9% nothing.",
+        "50. Mercury has no atmosphere to trap heat, making its nights freezing."
     ];
-    // Fill remaining to reach 100
-    for(let i=21; i<=100; i++) realFacts.push(`Archive Entry ${i}: Documenting advanced theoretical particle interactions and molecular stability in zero-gravity environments.`);
 
     function handleLogin() {
-        const input = document.getElementById('username-input');
-        if(!input.value) return;
-        user = input.value.trim().toUpperCase();
+        const inp = document.getElementById('username-input');
+        if(!inp.value) return;
+        user = inp.value.trim().toUpperCase();
         document.getElementById('id-val').innerText = user;
         document.getElementById('login-screen').style.display = 'none';
         loadGlos();
-        addAI("Welcome " + user + ". Database synchronized. Type 'nk gf' for personal files.", 'ai-bub');
+        addAI("Welcome Researcher " + user + ". Type 'nk gf' to access your personal log.", 'ai-bub');
     }
 
     function nav(id, btn) {
@@ -176,9 +186,9 @@
     function toggleAI() { const w = document.getElementById('ai-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
 
     function loadGlos() {
-        const container = document.getElementById('glos-list'); container.innerHTML = "";
-        realFacts.forEach((f, i) => {
-            container.innerHTML += `<div class="archive-card"><span class="data-id">LOG_DATA_${100+i}</span><div class="archive-text">${f}</div></div>`;
+        const l = document.getElementById('glos-list'); l.innerHTML = "";
+        facts.forEach((f, i) => {
+            l.innerHTML += `<div class="archive-card"><span class="data-id">REF_LOG_${100+i}</span><div class="archive-text">${f}</div></div>`;
         });
     }
 
@@ -193,38 +203,44 @@
     function showQ() {
         document.getElementById('q-num').innerText = `${qIdx+1} / ${maxQs}`;
         document.getElementById('q-txt').innerText = `Identify the validated data constant for ${curLvl}:`;
-        const opts = document.getElementById('q-opts'); opts.innerHTML = "";
+        const o = document.getElementById('q-opts'); o.innerHTML = "";
         const correct = keys[curLvl.toLowerCase()];
-        [correct, "Argon", "Quartz", "Static"].sort().forEach(text => {
-            const btn = document.createElement('button'); btn.className = "quiz-opt"; btn.innerText = text;
-            btn.onclick = () => {
-                if(text === correct) { qIdx++; if(qIdx < maxQs) showQ(); else finishStage(); }
-                else { btn.classList.add('error-shake'); setTimeout(() => btn.classList.remove('error-shake'), 400); }
+        [correct, "Argon-9", "Quartz-X", "Static"].sort().forEach(t => {
+            const b = document.createElement('button'); b.className = "quiz-opt"; b.innerText = t;
+            b.onclick = () => {
+                if(t === correct) { qIdx++; if(qIdx < maxQs) showQ(); else endStage(); }
+                else { b.classList.add('error-shake'); setTimeout(() => b.classList.remove('error-shake'), 400); }
             };
-            opts.appendChild(btn);
+            o.appendChild(b);
         });
     }
 
-    function finishStage() {
+    function endStage() {
         document.getElementById('quiz-active').style.display = 'none';
         document.getElementById('quiz-menu').style.display = 'block';
         wins++;
         document.getElementById('rank-val').innerText = curLvl.toUpperCase();
         document.getElementById('prog-bar').style.width = (wins * 16.6) + "%";
         if(curLvl === 'Elite') { document.body.classList.add('gold-theme'); document.getElementById('adv-box').style.display = 'block'; }
-        confetti();
+        confetti({ particleCount: 150, spread: 60, origin: { y: 0.7 } });
     }
 
     function askAI() {
-        const inp = document.getElementById('ai-in'); const q = inp.value.trim().toLowerCase();
-        if(!q) return; inp.value = ""; addAI(q, 'user-bub');
+        const i = document.getElementById('ai-in'); const q = i.value.trim().toLowerCase();
+        if(!q) return; i.value = ""; addAI(q, 'user-bub');
         if(q === "nk gf") {
             const letter = "TO NHYIRA KARIKARI BONSU:\n\n1. Every line of code I write carries a thought of you.\n2. You are the light that brightens my darkest research days.\n3. In a world full of variables, you are my only constant.\n4. My love for you grows exponentially, far beyond any scale.\n5. You are the most beautiful discovery I have ever made.\n6. Just like a perfect algorithm, you make my life complete.\n7. No matter how complex things get, you are my peace.\n8. I promise to cherish you more with every passing second.\n9. You are the gold at the end of every challenging stage.\n10. Always and forever, you have my heart entirely.";
-            addAI(letter, 'secret-bub');
+            setTimeout(() => addAI(letter, 'secret-bub'), 500);
         } else if(q === "unlock all") {
             document.body.classList.add('gold-theme'); document.getElementById('adv-box').style.display = 'block';
-            document.getElementById('rank-val').innerText = "GOLD MASTER"; confetti();
-        } else { setTimeout(() => addAI("Standard protocol: Answer found in Archive.", 'ai-bub'), 500); }
+            document.getElementById('rank-val').innerText = "GOLD MASTER";
+            document.getElementById('prog-bar').style.width = "100%";
+            confetti(); addAI("System Overridden. All stages authorized.", 'ai-bub');
+        } else if(q.match(/hi|hru/)) {
+            addAI("Hello " + user + "! I am running at 100% capacity.", 'ai-bub');
+        } else {
+            setTimeout(() => addAI("Standard Archive protocol: Use 'nk gf' for private logs.", 'ai-bub'), 500);
+        }
     }
 
     function addAI(t, c) {
