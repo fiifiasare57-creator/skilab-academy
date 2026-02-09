@@ -29,50 +29,88 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.5s; }
         
-        /* Mobile Sidebar Adjustment */
-        #sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; }
-        @media (max-width: 768px) { #sidebar { width: 70px; padding: 20px 10px; } .nav-txt { display: none; } #sidebar div { font-size: 1rem !important; } }
+        /* Sidebar Styling */
+        #sidebar { 
+            width: 260px; 
+            background: var(--sidebar-bg); 
+            border-right: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            padding: 20px; 
+            flex-shrink: 0; 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2001;
+        }
 
-        .nav-btn { padding: 16px; margin-bottom: 10px; border-radius: 14px; cursor: pointer; color: var(--subtext); border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 1rem; font-weight: 600; font-family: inherit; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        #sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.1);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+        }
+
+        @media (max-width: 768px) { 
+            #sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
+            #sidebar.open { transform: translateX(0); }
+            #sidebar.open + #sidebar-overlay { display: block; }
+        }
+
+        .close-sidebar {
+            display: none;
+            align-self: flex-end;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            color: var(--subtext);
+            font-weight: 300;
+        }
+        @media (max-width: 768px) { .close-sidebar { display: block; } }
+
+        .nav-btn { padding: 16px; margin-bottom: 10px; border-radius: 14px; cursor: pointer; color: var(--subtext); border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 1rem; font-weight: 600; font-family: inherit; transition: 0.2s; display: flex; align-items: center; gap: 12px; }
         .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
         
-        #main { flex-grow: 1; overflow-y: auto; padding: 30px 20px; -webkit-overflow-scrolling: touch; }
+        #menu-trigger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 12px;
+            z-index: 1500;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+        }
+        @media (max-width: 768px) { #menu-trigger { display: block; } }
+
+        #main { flex-grow: 1; overflow-y: auto; padding: 80px 20px 40px; -webkit-overflow-scrolling: touch; }
         .view { display: none; max-width: 600px; margin: 0 auto; padding-bottom: 80px; }
         .active-view { display: block; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 20px; }
         .archive-card { border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 12px; background: white; border-radius: 0 16px 16px 0; border: 1px solid var(--border); font-size: 0.95rem; }
         
         .quiz-opt { width: 100%; padding: 18px; border: 2px solid var(--border); border-radius: 16px; background: white; color: var(--text); text-align: left; font-size: 1rem; cursor: pointer; margin-bottom: 12px; transition: 0.2s; font-family: inherit; font-weight: 500; }
-        .quiz-opt:active { transform: scale(0.98); background: #f8fafc; }
+        .quiz-opt:active { transform: scale(0.97); }
         .error-shake { animation: shake 0.4s; border-color: #ef4444 !important; color: #ef4444; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
-        #academy-invite { display: none; border: 2px solid var(--gold); background: linear-gradient(145deg, #ffffff, #fffbeb); padding: 30px; border-radius: 24px; text-align: center; margin-top: 20px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.2); } 70% { box-shadow: 0 0 0 15px rgba(217, 119, 6, 0); } 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); } }
+        #academy-invite { display: none; border: 2px solid var(--gold); background: linear-gradient(145deg, #ffffff, #fffbeb); padding: 30px; border-radius: 24px; text-align: center; margin-top: 20px; }
+        #cert-container { display: none; text-align: center; border: 10px double var(--gold); padding: 50px 20px; background: white; border-radius: 8px; color: var(--gold); }
         
-        #cert-container { display: none; text-align: center; border: 8px double var(--gold); padding: 40px 15px; background: white; border-radius: 12px; color: var(--gold); }
-        
-        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 56px; height: 56px; border-radius: 50%; border: none; font-size: 1.4rem; cursor: pointer; z-index: 3000; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3); }
-        #ai-window { display: none; position: fixed; bottom: 90px; right: 20px; left: 20px; height: 60vh; max-width: 400px; margin: 0 auto; background: white; border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #fdfdfd; }
+        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; z-index: 3000; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
+        #ai-window { display: none; position: fixed; bottom: 95px; right: 20px; left: 20px; height: 55vh; max-width: 400px; margin: 0 auto; background: white; border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         
         .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; line-height: 1.4; border: 1px solid var(--border); }
-        .ai-bub { background: #f1f5f9; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user-bub { background: var(--primary); color: white; align-self: flex-end; border: none; border-bottom-right-radius: 4px; }
+        .ai-bub { background: #f1f5f9; align-self: flex-start; }
+        .user-bub { background: var(--primary); color: white; align-self: flex-end; border: none; }
         
-        .secret-letter { 
-            background: #fffafa; 
-            color: #7f1d1d; 
-            border: 1px solid #fecaca; 
-            border-radius: 20px; 
-            padding: 25px; 
-            font-family: 'Outfit', sans-serif; 
-            line-height: 1.6;
-            text-align: left;
-            box-shadow: 0 4px 15px rgba(153, 27, 27, 0.05);
-        }
+        .secret-letter { background: #fffafa; color: #7f1d1d; border: 1px solid #fecaca; border-radius: 20px; padding: 25px; line-height: 1.6; }
         .letter-quote { display: block; margin: 15px 0; font-family: 'Dancing Script', cursive; font-size: 1.4rem; color: #b91c1c; text-align: center; font-weight: bold; }
 
         #login-screen { position: fixed; inset: 0; background: #ffffff; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -89,12 +127,16 @@
     </div>
 </div>
 
+<div id="menu-trigger" onclick="toggleSidebar()">☰ MENU</div>
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <nav id="sidebar">
-    <div style="font-weight:900; font-size:1.4rem; color:var(--primary); margin-bottom:40px; text-align:center;">SL.</div>
-    <button id="nav-dash" class="nav-btn active" onclick="nav('dash', this)"><span>🏠</span> <span class="nav-txt">Dash</span></button>
-    <button class="nav-btn" onclick="nav('gauntlet', this)"><span>⚔️</span> <span class="nav-txt">Gauntlet</span></button>
-    <button class="nav-btn" onclick="nav('glossary', this)"><span>📖</span> <span class="nav-txt">Archive</span></button>
-    <button class="nav-btn" onclick="nav('trophy', this)"><span>🏆</span> <span class="nav-txt">Trophy</span></button>
+    <span class="close-sidebar" onclick="toggleSidebar()">✕</span>
+    <div style="font-weight:900; font-size:1.6rem; color:var(--primary); margin-bottom:40px; text-align:center;">SkiLabs.</div>
+    <button id="nav-dash" class="nav-btn active" onclick="nav('dash', this)"><span>🏠</span> Dash</button>
+    <button class="nav-btn" onclick="nav('gauntlet', this)"><span>⚔️</span> Gauntlet</button>
+    <button class="nav-btn" onclick="nav('glossary', this)"><span>📖</span> Archive</button>
+    <button class="nav-btn" onclick="nav('trophy', this)"><span>🏆</span> Trophy</button>
 </nav>
 
 <main id="main">
@@ -103,7 +145,7 @@
         <div class="glass-panel">
             <p><b>User:</b> <span id="id-val" style="color:var(--primary)">---</span></p>
             <p><b>Rank:</b> <span id="rank-val" style="font-weight:bold;">PROBATION</span></p>
-            <div style="margin-top:20px; height:8px; background:#e2e8f0; border-radius:10px; overflow:hidden;"><div id="prog-bar" style="width:0%; height:100%; background:var(--primary); transition:1s cubic-bezier(0.4, 0, 0.2, 1);"></div></div>
+            <div style="margin-top:20px; height:8px; background:#e2e8f0; border-radius:10px; overflow:hidden;"><div id="prog-bar" style="width:0%; height:100%; background:var(--primary); transition:1s;"></div></div>
         </div>
         <div id="academy-invite">
             <h2 style="color:var(--gold); margin:0; font-size: 1.3rem;">👑 ACADEMY UNLOCKED</h2>
@@ -125,7 +167,7 @@
         </div>
         <div id="quiz-active" style="display:none;">
             <div class="glass-panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size: 0.85rem; color: var(--subtext);"><span id="q-lvl" style="font-weight:bold; color:var(--primary);"></span> <span id="q-num" style="font-family:'JetBrains Mono';"></span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size: 0.85rem; color: var(--subtext);"><span id="q-lvl" style="font-weight:bold; color:var(--primary);"></span> <span id="q-num"></span></div>
                 <p id="q-txt" style="font-size:1.2rem; font-weight:700; margin-bottom:25px; line-height: 1.4;"></p>
                 <div id="q-opts"></div>
             </div>
@@ -141,9 +183,9 @@
         <h1 style="font-weight:800; font-size:1.8rem;">Trophy Room</h1>
         <div id="cert-container">
             <h1 style="letter-spacing:4px; font-size: 1.5rem;">GOLD MASTER</h1>
-            <p style="font-size: 0.9rem; opacity: 0.8;">This certifies that</p>
+            <p>This certifies that</p>
             <h2 id="cert-name" style="border-bottom: 2px solid var(--gold); display: inline-block; padding: 0 20px; margin: 15px 0;"></h2>
-            <p style="margin-top:15px; font-size: 0.9rem;">Has mastered all Academy protocols.</p>
+            <p>Has mastered all Academy protocols.</p>
         </div>
         <div id="no-cert" class="glass-panel" style="text-align: center; color: var(--subtext); padding: 40px 20px;">Complete the Gold stage to reveal your certification.</div>
     </section>
@@ -151,10 +193,10 @@
 
 <button id="ai-toggle" onclick="toggleAI()">🧠</button>
 <div id="ai-window">
-    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between; align-items: center;"><b>OMNI_AI</b> <span onclick="toggleAI()" style="cursor:pointer; font-size: 1.2rem; padding: 5px;">✕</span></div>
+    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between; align-items: center;"><b>OMNI_AI</b> <span onclick="toggleAI()" style="cursor:pointer; font-size: 1.2rem;">✕</span></div>
     <div id="ai-chat"></div>
-    <div style="padding:12px; display:flex; gap:8px; background: white; border-top: 1px solid var(--border);">
-        <input type="text" id="ai-in" placeholder="Query..." style="flex-grow:1; background: #f8fafc; border: 1px solid var(--border); padding:12px; border-radius:12px; font-size: 1rem;">
+    <div style="padding:12px; display:flex; gap:8px; border-top: 1px solid var(--border);">
+        <input type="text" id="ai-in" placeholder="Query..." style="flex-grow:1; padding:12px; border-radius:12px; border:1px solid var(--border);">
         <button onclick="askAI()" style="background:var(--primary); color:white; border:none; border-radius:12px; padding:0 18px; cursor: pointer;">➤</button>
     </div>
 </div>
@@ -164,64 +206,64 @@
 
     const quizData = {
         Pro: [
-            { q: "What is the chemical formula for water?", a: "H2O", o: ["CO2", "HO2", "NaCl", "O2"] },
-            { q: "Which planet is known as the Red Planet?", a: "Mars", o: ["Venus", "Jupiter", "Earth", "Saturn"] },
-            { q: "Hardest natural substance on Earth?", a: "Diamond", o: ["Gold", "Steel", "Quartz", "Iron"] },
-            { q: "Approximate boiling point of water?", a: "100°C", o: ["90°C", "120°C", "212°C", "80°C"] },
-            { q: "Main gas humans breathe in?", a: "Oxygen", o: ["Nitrogen", "Carbon", "Helium", "Neon"] },
-            { q: "How many planets in our Solar System?", a: "8", o: ["9", "7", "10", "12"] },
-            { q: "The powerhouse of the cell is...", a: "Mitochondria", o: ["Nucleus", "Ribosome", "Wall", "DNA"] },
-            { q: "Largest ocean on Earth?", a: "Pacific", o: ["Atlantic", "Indian", "Arctic", "Southern"] },
-            { q: "Symbol for Gold?", a: "Au", o: ["Ag", "Go", "Gd", "Fe"] },
-            { q: "Largest land animal?", a: "Elephant", o: ["Rhino", "Giraffe", "Hippo", "Whale"] }
+            { q: "What is the chemical formula for water?", a: "H2O", o: ["CO2", "HO2", "NaCl"] },
+            { q: "Which planet is known as the Red Planet?", a: "Mars", o: ["Venus", "Jupiter", "Earth"] },
+            { q: "Hardest natural substance on Earth?", a: "Diamond", o: ["Gold", "Steel", "Quartz"] },
+            { q: "Approximate boiling point of water?", a: "100°C", o: ["90°C", "120°C", "80°C"] },
+            { q: "Main gas humans breathe in?", a: "Oxygen", o: ["Nitrogen", "Carbon", "Helium"] },
+            { q: "How many planets in our Solar System?", a: "8", o: ["9", "7", "10"] },
+            { q: "The powerhouse of the cell is...", a: "Mitochondria", o: ["Nucleus", "Ribosome", "DNA"] },
+            { q: "Largest ocean on Earth?", a: "Pacific", o: ["Atlantic", "Indian", "Arctic"] },
+            { q: "Symbol for Gold?", a: "Au", o: ["Ag", "Go", "Fe"] },
+            { q: "Largest land animal?", a: "Elephant", o: ["Rhino", "Giraffe", "Hippo"] }
         ],
         Master: [
-            { q: "Value of Absolute Zero?", a: "-273.15°C", o: ["0°C", "-100°C", "-300°C", "-212°C"] },
-            { q: "Gas making up 78% of air?", a: "Nitrogen", o: ["Oxygen", "CO2", "Argon", "Hydrogen"] },
-            { q: "Bones in adult human body?", a: "206", o: ["200", "210", "205", "300"] },
-            { q: "Light speed per second?", a: "300,000 km/s", o: ["150,000 km/s", "10,000 km/s", "500,000 km/s", "Infinite"] },
-            { q: "The atomic number of Oxygen?", a: "8", o: ["6", "10", "16", "1"] },
-            { q: "Liquid metal at room temp?", a: "Mercury", o: ["Lead", "Gallium", "Bromine", "Silver"] },
-            { q: "Who discovered Penicillin?", a: "Fleming", o: ["Pasteur", "Curie", "Newton", "Tesla"] },
-            { q: "What is the pH of pure water?", a: "7", o: ["1", "14", "5", "9"] },
-            { q: "The center of an atom is called?", a: "Nucleus", o: ["Proton", "Neutron", "Shell", "Core"] },
-            { q: "Unit of electrical resistance?", a: "Ohm", o: ["Volt", "Amp", "Watt", "Joule"] }
+            { q: "Value of Absolute Zero?", a: "-273.15°C", o: ["0°C", "-100°C", "-300°C"] },
+            { q: "Gas making up 78% of air?", a: "Nitrogen", o: ["Oxygen", "CO2", "Argon"] },
+            { q: "Bones in adult human body?", a: "206", o: ["200", "210", "300"] },
+            { q: "Light speed per second?", a: "300,000 km/s", o: ["150,000 km/s", "10,000 km/s", "500,000 km/s"] },
+            { q: "The atomic number of Oxygen?", a: "8", o: ["6", "10", "1"] },
+            { q: "Liquid metal at room temp?", a: "Mercury", o: ["Lead", "Gallium", "Silver"] },
+            { q: "Who discovered Penicillin?", a: "Fleming", o: ["Pasteur", "Curie", "Newton"] },
+            { q: "What is the pH of pure water?", a: "7", o: ["1", "14", "9"] },
+            { q: "The center of an atom is called?", a: "Nucleus", o: ["Proton", "Neutron", "Shell"] },
+            { q: "Unit of electrical resistance?", a: "Ohm", o: ["Volt", "Amp", "Watt"] }
         ],
         Elite: [
-            { q: "Element with symbol 'Fe'?", a: "Iron", o: ["Fluorine", "Fermium", "Silver", "Lead"] },
-            { q: "Planet with the most moons?", a: "Saturn", o: ["Jupiter", "Uranus", "Neptune", "Mars"] },
-            { q: "Most abundant metal in Earth's crust?", a: "Aluminum", o: ["Iron", "Steel", "Copper", "Gold"] },
-            { q: "What type of charge does a neutron have?", a: "Neutral", o: ["Positive", "Negative", "Double Positive", "Variable"] },
-            { q: "Study of fungi is called...", a: "Mycology", o: ["Biology", "Zoology", "Botany", "Virology"] },
-            { q: "Deepest point in the world's oceans?", a: "Mariana Trench", o: ["Puerto Rico Trench", "Java Trench", "Arctic Basin", "Dead Sea"] },
-            { q: "What gas do plants absorb?", a: "Carbon Dioxide", o: ["Oxygen", "Nitrogen", "Methane", "Ozone"] },
-            { q: "Newton's First Law is also known as?", a: "Inertia", o: ["Gravity", "Friction", "Momentum", "Reaction"] },
-            { q: "Main component of glass?", a: "Silica", o: ["Sodium", "Calcium", "Carbon", "Iron"] },
-            { q: "The only bird that can fly backwards?", a: "Hummingbird", o: ["Sparrow", "Eagle", "Penguin", "Parrot"] }
+            { q: "Element with symbol 'Fe'?", a: "Iron", o: ["Fluorine", "Silver", "Lead"] },
+            { q: "Planet with the most moons?", a: "Saturn", o: ["Jupiter", "Uranus", "Neptune"] },
+            { q: "Most abundant metal in Earth's crust?", a: "Aluminum", o: ["Iron", "Steel", "Gold"] },
+            { q: "What type of charge does a neutron have?", a: "Neutral", o: ["Positive", "Negative", "Variable"] },
+            { q: "Study of fungi is called...", a: "Mycology", o: ["Biology", "Zoology", "Botany"] },
+            { q: "Deepest point in the world's oceans?", a: "Mariana Trench", o: ["Java Trench", "Arctic Basin", "Dead Sea"] },
+            { q: "What gas do plants absorb?", a: "Carbon Dioxide", o: ["Oxygen", "Nitrogen", "Ozone"] },
+            { q: "Newton's First Law is also known as?", a: "Inertia", o: ["Gravity", "Friction", "Momentum"] },
+            { q: "Main component of glass?", a: "Silica", o: ["Sodium", "Calcium", "Carbon"] },
+            { q: "The only bird that can fly backwards?", a: "Hummingbird", o: ["Sparrow", "Eagle", "Parrot"] }
         ],
         Ruby: [
-            { q: "What is the rarest blood type?", a: "AB Negative", o: ["O Negative", "A Positive", "B Negative", "O Positive"] },
-            { q: "The 'Golden Ratio' is approximately...", a: "1.618", o: ["3.141", "2.718", "1.414", "0.618"] },
-            { q: "Which planet rotates on its side?", a: "Uranus", o: ["Neptune", "Saturn", "Jupiter", "Venus"] },
-            { q: "The part of the eye that adjusts light?", a: "Iris", o: ["Retina", "Lens", "Cornea", "Pupil"] },
-            { q: "Who developed the Polio vaccine?", a: "Salk", o: ["Sabin", "Lister", "Jenner", "Koch"] },
-            { q: "What element is used in old thermometer?", a: "Mercury", o: ["Alcohol", "Silver", "Water", "Oil"] },
-            { q: "The atmosphere's lowest layer?", a: "Troposphere", o: ["Stratosphere", "Mesosphere", "Exosphere", "Thermosphere"] },
-            { q: "Number of teeth in an adult human?", a: "32", o: ["28", "30", "34", "36"] },
-            { q: "Symbol for Potassium?", a: "K", o: ["P", "Po", "Ka", "Pt"] },
-            { q: "How many elements in the periodic table?", a: "118", o: ["115", "120", "110", "100"] }
+            { q: "What is the rarest blood type?", a: "AB Negative", o: ["O Negative", "A Positive", "B Negative"] },
+            { q: "The 'Golden Ratio' is approximately...", a: "1.618", o: ["3.141", "2.718", "1.414"] },
+            { q: "Which planet rotates on its side?", a: "Uranus", o: ["Neptune", "Saturn", "Jupiter"] },
+            { q: "The part of the eye that adjusts light?", a: "Iris", o: ["Retina", "Lens", "Pupil"] },
+            { q: "Who developed the Polio vaccine?", a: "Salk", o: ["Sabin", "Lister", "Jenner"] },
+            { q: "What element is used in old thermometer?", a: "Mercury", o: ["Alcohol", "Silver", "Water"] },
+            { q: "The atmosphere's lowest layer?", a: "Troposphere", o: ["Stratosphere", "Mesosphere", "Exosphere"] },
+            { q: "Number of teeth in an adult human?", a: "32", o: ["28", "30", "36"] },
+            { q: "Symbol for Potassium?", a: "K", o: ["P", "Po", "Ka"] },
+            { q: "How many elements in the periodic table?", a: "118", o: ["115", "120", "100"] }
         ],
         Emerald: [
-            { q: "What is the speed of sound in air?", a: "343 m/s", o: ["299 m/s", "500 m/s", "100 m/s", "1000 m/s"] },
-            { q: "The process of a gas turning to liquid?", a: "Condensation", o: ["Evaporation", "Sublimation", "Freezing", "Melting"] },
-            { q: "Which vitamin helps blood clot?", a: "Vitamin K", o: ["Vitamin C", "Vitamin D", "Vitamin A", "Vitamin E"] },
-            { q: "Largest organ in the human body?", a: "Skin", o: ["Liver", "Lungs", "Brain", "Heart"] },
-            { q: "A sound's frequency is measured in?", a: "Hertz", o: ["Decibels", "Watts", "Ohms", "Volts"] },
-            { q: "What is the molar mass of water?", a: "18.015 g/mol", o: ["1.008 g/mol", "16.00 g/mol", "22.4 g/mol", "12.01 g/mol"] },
-            { q: "Which gas is used in light bulbs?", a: "Argon", o: ["Neon", "Oxygen", "Nitrogen", "Hydrogen"] },
-            { q: "The most dense planet in solar system?", a: "Earth", o: ["Jupiter", "Mars", "Saturn", "Mercury"] },
-            { q: "How many legs does a spider have?", a: "8", o: ["6", "10", "12", "4"] },
-            { q: "Main pigment used in photosynthesis?", a: "Chlorophyll", o: ["Carotene", "Melanin", "Hemoglobin", "Xanthophyll"] }
+            { q: "What is the speed of sound in air?", a: "343 m/s", o: ["299 m/s", "500 m/s", "100 m/s"] },
+            { q: "The process of a gas turning to liquid?", a: "Condensation", o: ["Evaporation", "Sublimation", "Melting"] },
+            { q: "Which vitamin helps blood clot?", a: "Vitamin K", o: ["Vitamin C", "Vitamin D", "Vitamin A"] },
+            { q: "Largest organ in the human body?", a: "Skin", o: ["Liver", "Lungs", "Brain"] },
+            { q: "A sound's frequency is measured in?", a: "Hertz", o: ["Decibels", "Watts", "Ohms"] },
+            { q: "What is the molar mass of water?", a: "18.015 g/mol", o: ["1.008 g/mol", "16.00 g/mol", "12.01 g/mol"] },
+            { q: "Which gas is used in light bulbs?", a: "Argon", o: ["Neon", "Oxygen", "Hydrogen"] },
+            { q: "The most dense planet in solar system?", a: "Earth", o: ["Jupiter", "Mars", "Saturn"] },
+            { q: "How many legs does a spider have?", a: "8", o: ["6", "10", "12"] },
+            { q: "Main pigment used in photosynthesis?", a: "Chlorophyll", o: ["Carotene", "Melanin", "Hemoglobin"] }
         ],
         Gold: [
             { q: "Most abundant gas in universe?", a: "Hydrogen", o: ["Helium", "Oxygen", "Nitrogen"] },
@@ -237,9 +279,9 @@
             { q: "Layer with the Ozone?", a: "Stratosphere", o: ["Troposphere", "Mesosphere", "Exosphere"] },
             { q: "0 Kelvin in Celsius?", a: "-273.15°C", o: ["0°C", "-100°C", "273.15°C"] },
             { q: "Symbol for Sodium?", a: "Na", o: ["S", "So", "K"] },
-            { q: "A polygon with 8 sides?", a: "Octagon", o: ["Hexagon", "Pentagon", "Decagon"] },
+            { q: "A polygon with 8 sides?", a: "Octagon", o: ["Hexagon", "Pentagon", "Heptagon"] },
             { q: "Most common element in Earth's crust?", a: "Oxygen", o: ["Iron", "Silicon", "Carbon"] },
-            { q: "How many chambers in human heart?", a: "4", o: ["2", "3", "1"] },
+            { q: "How many chambers in human heart?", a: "4", o: ["2", "3", "6"] },
             { q: "Brightest planet in the sky?", a: "Venus", o: ["Mars", "Jupiter", "Saturn"] },
             { q: "Hardest mineral on Mohs scale?", a: "Diamond", o: ["Corundum", "Topaz", "Quartz"] },
             { q: "Chemical symbol for Lead?", a: "Pb", o: ["Ld", "Le", "Ag"] },
@@ -255,6 +297,8 @@
         "41. Earth is 4.5 billion years old.", "42. Your skin is your primary immune barrier.", "43. Boiling point decreases as altitude increases.", "44. Jupiter's gravity protects Earth from comets.", "45. Humans walk 115,000 miles in a lifetime.", "46. Plate tectonics move the continents slowly.", "47. Snail can sleep for three whole years.", "48. Crust is thin compared to core.", "49. Most universe is Dark Matter.", "50. Mercury is shrinking as core cools."
     ];
 
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
     function handleLogin() {
         const inp = document.getElementById('username-input'); if(!inp.value) return;
         user = inp.value.trim().toUpperCase();
@@ -262,7 +306,7 @@
         document.getElementById('cert-name').innerText = user;
         document.getElementById('login-screen').style.display = 'none';
         loadArchive();
-        addAI("Welcome " + user + ". Terminal stabilized.", 'ai-bub');
+        addAI("Welcome " + user + ". Terminal active.", 'ai-bub');
     }
 
     function nav(id, btn) {
@@ -270,6 +314,7 @@
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active-view');
         btn.classList.add('active');
+        if(window.innerWidth <= 768) toggleSidebar(); 
     }
 
     function loadArchive() {
@@ -292,8 +337,7 @@
         document.getElementById('q-num').innerText = `${qIdx+1}/${currentQuestions.length}`;
         document.getElementById('q-txt').innerText = data.q;
         const box = document.getElementById('q-opts'); box.innerHTML = "";
-        const options = [data.a, ...data.o].sort(() => Math.random() - 0.5);
-        options.forEach(o => {
+        [data.a, ...data.o].sort(() => Math.random() - 0.5).forEach(o => {
             const b = document.createElement('button'); b.className="quiz-opt"; b.innerText=o;
             b.onclick = () => { if(o === data.a){ qIdx++; if(qIdx < currentQuestions.length) showQ(); else finishQuiz(); } else { b.classList.add('error-shake'); setTimeout(()=>b.classList.remove('error-shake'),400); } };
             box.appendChild(b);
@@ -326,11 +370,9 @@
     function askAI() {
         const i = document.getElementById('ai-in'); const q = i.value.trim().toLowerCase();
         if(!q) return; i.value = ""; addAI(q, 'user-bub');
-        
-        if(q === "skilabs_root_access") { unlockMaster(); addAI("OVERRIDE SUCCESSFUL. Root access granted.", 'ai-bub'); }
+        if(q === "skilabs_root_access") { unlockMaster(); addAI("OVERRIDE SUCCESSFUL.", 'ai-bub'); }
         else if(q === "nk gf") { addLetter(); }
-        else if(["hi","yo","hello"].some(s => q.includes(s))) { addAI("Safe! Let's get through the trials.", 'ai-bub'); }
-        else { addAI("Scanning protocols... Complete Elite to unlock the Gold Circle.", 'ai-bub'); }
+        else { addAI("Protocol 4-0-4. Continue the trials.", 'ai-bub'); }
     }
 
     function addAI(t, c) {
@@ -342,13 +384,7 @@
         const chat = document.getElementById('ai-chat');
         const d = document.createElement('div');
         d.className = `secret-letter`;
-        d.innerHTML = `
-            <strong>TO NHYIRA KARIKARI BONSU,</strong><br><br>
-            In this world of complex systems and logic, you remain my most beautiful constant. 
-            You are the source of my focus and the only one I truly seek to honor.<br><br>
-            <span class="letter-quote">"If time were to ever ask me where I belong, I would point to your heart and call it home."</span><br><br>
-            You are my Gold Master, today and always.
-        `;
+        d.innerHTML = `<strong>TO NHYIRA KARIKARI BONSU,</strong><br><br>In this world of complex systems and logic, you remain my most beautiful constant.<br><br><span class="letter-quote">"If time were to ever ask me where I belong, I would point to your heart and call it home."</span><br><br>You are my Gold Master, today and always.`;
         chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
     }
 </script>
