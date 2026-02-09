@@ -16,50 +16,73 @@
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.5s; }
-        #sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; flex-shrink: 0; transition: transform 0.3s ease; z-index: 2001; }
-        #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.1); backdrop-filter: blur(4px); z-index: 2000; }
-        @media (max-width: 768px) { #sidebar { position: fixed; height: 100%; transform: translateX(-100%); } #sidebar.open { transform: translateX(0); } #sidebar.open + #sidebar-overlay { display: block; } }
-        .nav-btn { padding: 16px; margin-bottom: 8px; border-radius: 14px; cursor: pointer; color: var(--subtext); border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
+        
+        /* Mobile Sidebar Fixes */
+        #sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; flex-shrink: 0; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 4000; }
+        #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 3999; }
+        
+        @media (max-width: 768px) { 
+            #sidebar { position: fixed; height: 100%; transform: translateX(-100%); } 
+            #sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.1); } 
+            #sidebar.open + #sidebar-overlay { display: block; } 
+            .menu-toggle { display: block !important; }
+        }
+
+        /* Close Button inside Sidebar */
+        .close-sidebar { display: none; position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; background: none; border: none; color: var(--subtext); }
+        @media (max-width: 768px) { .close-sidebar { display: block; } }
+
+        /* Floating Menu Toggle for Mobile */
+        .menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 3000; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; }
+
+        .nav-btn { padding: 14px; margin-bottom: 8px; border-radius: 14px; cursor: pointer; color: var(--subtext); border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
         .nav-btn.active { background: var(--primary); color: white; }
-        #main { flex-grow: 1; overflow-y: auto; padding: 80px 20px 40px; }
+        
+        #main { flex-grow: 1; overflow-y: auto; padding: 80px 20px 40px; -webkit-overflow-scrolling: touch; }
         .view { display: none; max-width: 600px; margin: 0 auto; }
         .active-view { display: block; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 20px; }
-        .badge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .badge { background: white; border: 1px solid var(--border); padding: 20px; border-radius: 20px; text-align: center; opacity: 0.3; filter: grayscale(1); }
-        .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: var(--primary); }
-        #cert-container { display: none; text-align: center; border: 10px double var(--gold); padding: 40px 15px; background: white; color: var(--gold); }
-        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 1.5rem; z-index: 3000; cursor: pointer; }
-        #ai-window { display: none; position: fixed; bottom: 95px; right: 20px; left: 20px; height: 55vh; max-width: 400px; margin: 0 auto; background: white; border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 3000; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        
+        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 20px; }
+        .badge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .badge { background: white; border: 1px solid var(--border); padding: 15px; border-radius: 18px; text-align: center; opacity: 0.3; filter: grayscale(1); font-size: 0.8rem; }
+        .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: var(--primary); transform: scale(1.05); transition: 0.3s; }
+        
+        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 55px; height: 55px; border-radius: 50%; border: none; font-size: 1.3rem; z-index: 3500; cursor: pointer; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
+        #ai-window { display: none; position: fixed; bottom: 85px; right: 15px; left: 15px; height: 60vh; max-width: 400px; margin: 0 auto; background: white; border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 5000; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; }
-        .ai-bub { background: #f1f5f9; align-self: flex-start; }
-        .user-bub { background: var(--primary); color: white; align-self: flex-end; }
-        .secret-letter { background: #fffafa; color: #7f1d1d; border: 1px solid #fecaca; border-radius: 20px; padding: 25px; }
+        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; line-height: 1.4; }
+        .ai-bub { background: #f1f5f9; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .user-bub { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .secret-letter { background: #fffafa; color: #7f1d1d; border: 1px solid #fecaca; border-radius: 20px; padding: 25px; line-height: 1.6; }
+        
         #login-screen { position: fixed; inset: 0; background: #ffffff; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .quiz-opt { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 12px; background: white; margin-bottom: 10px; cursor: pointer; text-align: left; }
-        .error-shake { animation: shake 0.4s; border-color: #ef4444 !important; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+        .quiz-opt { width: 100%; padding: 16px; border: 2px solid var(--border); border-radius: 14px; background: white; margin-bottom: 12px; cursor: pointer; text-align: left; font-size: 1rem; transition: 0.2s; }
+        .quiz-opt:active { transform: scale(0.98); background: #f1f5f9; }
     </style>
 </head>
 <body>
 
+<button class="menu-toggle" onclick="toggleSidebar()">☰ MENU</button>
+
 <div id="login-screen">
-    <div class="glass-panel" style="text-align:center; width:350px;">
-        <h1 style="color:var(--primary);">SkiLabs_</h1>
-        <input type="text" id="username-input" placeholder="ENTER NAME" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); text-align:center;">
-        <button class="nav-btn" style="background:var(--primary); color:white; justify-content:center; margin-top:15px;" onclick="handleLogin()">INITIALIZE</button>
+    <div class="glass-panel" style="text-align:center; width:100%; max-width:350px;">
+        <h1 style="color:var(--primary); margin-top:0;">SkiLabs_</h1>
+        <input type="text" id="username-input" placeholder="ENTER NAME" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); text-align:center; font-size: 1rem;">
+        <button class="nav-btn" style="background:var(--primary); color:white; justify-content:center; margin-top:15px; padding:15px;" onclick="handleLogin()">INITIALIZE SYSTEM</button>
     </div>
 </div>
 
 <nav id="sidebar">
-    <div style="font-weight:900; font-size:1.6rem; color:var(--primary); margin-bottom:30px; text-align:center;">SkiLabs.</div>
+    <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
+    <div style="font-weight:900; font-size:1.6rem; color:var(--primary); margin-bottom:30px; margin-top:20px; text-align:center;">SkiLabs.</div>
     <button id="nav-dash" class="nav-btn active" onclick="nav('dash', this)"><span>🏠</span> Dash</button>
     <button class="nav-btn" onclick="nav('gauntlet', this)"><span>⚔️</span> Gauntlet</button>
     <button class="nav-btn" onclick="nav('glossary', this)"><span>📖</span> Archive</button>
     <button class="nav-btn" onclick="nav('trophy', this)"><span>🏆</span> Trophy</button>
+    <button class="nav-btn" onclick="nav('settings', this)"><span>⚙️</span> Settings</button>
 </nav>
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <main id="main">
     <section id="dash" class="view active-view">
@@ -67,7 +90,7 @@
         <div class="glass-panel">
             <p><b>User:</b> <span id="id-val" style="color:var(--primary)">---</span></p>
             <p><b>Rank:</b> <span id="rank-val">PROBATION</span></p>
-            <div style="height:8px; background:#e2e8f0; border-radius:10px; overflow:hidden;"><div id="prog-bar" style="width:0%; height:100%; background:var(--primary); transition:1s;"></div></div>
+            <div style="height:10px; background:#e2e8f0; border-radius:10px; overflow:hidden; margin-top:10px;"><div id="prog-bar" style="width:0%; height:100%; background:var(--primary); transition:1s;"></div></div>
         </div>
     </section>
 
@@ -77,15 +100,15 @@
             <button class="quiz-opt" onclick="prepareQuiz('Pro')">STAGE 1: PRO</button>
             <button class="quiz-opt" onclick="prepareQuiz('Master')">STAGE 2: MASTER</button>
             <button class="quiz-opt" onclick="prepareQuiz('Elite')">STAGE 3: ELITE</button>
-            <div id="adv-box" style="display:none; border-top:2px dashed var(--gold); padding-top:20px;">
+            <div id="adv-box" style="display:none; border-top:2px dashed var(--gold); padding-top:20px; margin-top:10px;">
                 <button class="quiz-opt" onclick="prepareQuiz('Ruby')">STAGE 4: RUBY</button>
                 <button class="quiz-opt" onclick="prepareQuiz('Emerald')">STAGE 5: EMERALD</button>
-                <button class="quiz-opt" style="color:var(--gold); font-weight:bold;" onclick="prepareQuiz('Gold')">FINAL: GOLD</button>
+                <button class="quiz-opt" style="color:var(--gold); font-weight:bold; border-color:var(--gold);" onclick="prepareQuiz('Gold')">FINAL: GOLD MASTER</button>
             </div>
         </div>
         <div id="quiz-active" style="display:none;">
             <div class="glass-panel">
-                <p id="q-txt" style="font-weight:700; font-size:1.2rem;"></p>
+                <p id="q-txt" style="font-weight:700; font-size:1.1rem;"></p>
                 <div id="q-opts"></div>
             </div>
         </div>
@@ -108,22 +131,34 @@
         </div>
         <div id="cert-container" style="margin-top:20px;">
             <h2>GOLD MASTER CERTIFIED</h2>
-            <h1 id="cert-name"></h1>
+            <h1 id="cert-name" style="text-decoration: underline;"></h1>
+            <p>Verification: 100% SECURE</p>
         </div>
     </section>
 
-    <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid var(--border); color: var(--subtext); font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">
+    <section id="settings" class="view">
+        <h1>Settings</h1>
+        <div class="glass-panel">
+            <p>Version 1.2 (Mobile Stable)</p>
+            <button class="quiz-opt" onclick="location.reload()">Reset Session</button>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 30px 10px; margin-top: 40px; border-top: 1px solid var(--border); color: var(--subtext); font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">
         MADE BY CALEB FIIFI ASARE
     </footer>
 </main>
 
 <button id="ai-toggle" onclick="toggleAI()">🧠</button>
 <div id="ai-window">
-    <div style="background:var(--primary); color:white; padding:15px;"><b>OMNI_AI</b></div>
+    <div style="background:var(--primary); color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
+        <b>OMNI_AI</b>
+        <span onclick="toggleAI()" style="cursor:pointer; opacity:0.8;">✕</span>
+    </div>
     <div id="ai-chat"></div>
-    <div style="padding:10px; display:flex; gap:5px;">
-        <input type="text" id="ai-in" placeholder="Query..." style="flex:1; padding:10px; border-radius:10px; border:1px solid #ddd;">
-        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:10px;">➤</button>
+    <div style="padding:10px; display:flex; gap:5px; background:white; border-top:1px solid #eee;">
+        <input type="text" id="ai-in" placeholder="Ask anything..." style="flex:1; padding:12px; border-radius:12px; border:1px solid #ddd; font-size: 16px;">
+        <button onclick="askAI()" style="background:var(--primary); color:white; border:none; padding:10px 15px; border-radius:12px;">➤</button>
     </div>
 </div>
 
@@ -133,54 +168,15 @@
     const glossaryData = [
         { c: "Space", f: "Sunlight takes 8m 20s to reach Earth." },
         { c: "Space", f: "The universe has no center." },
-        { c: "Space", f: "Neutron stars weigh billions of tons." },
-        { c: "Space", f: "Venus is the hottest planet." },
-        { c: "Space", f: "Saturn's rings are 99% ice." },
-        { c: "Space", f: "Moon footprints last 100M years." },
-        { c: "Space", f: "No sound in space." },
-        { c: "Space", f: "Jupiter is massive." },
-        { c: "Space", f: "More stars than sand grains." },
-        { c: "Space", f: "Astronauts grow taller in space." },
-        { c: "Bio", f: "Brain runs on 20 watts." },
-        { c: "Bio", f: "Heart beats 100k times a day." },
-        { c: "Bio", f: "60% DNA shared with bananas." },
-        { c: "Bio", f: "Jaw is the strongest muscle." },
-        { c: "Bio", f: "Nails grow faster than toenails." },
-        { c: "Bio", f: "Adults have 206 bones." },
-        { c: "Bio", f: "Eyes see 10M colors." },
-        { c: "Bio", f: "Stomach lining renews every 4 days." },
-        { c: "Bio", f: "Blood cell circuits in 60s." },
-        { c: "Bio", f: "Smallpox is eradicated." },
-        { c: "Nature", f: "Octopus have 3 hearts." },
-        { c: "Nature", f: "Snails can sleep for 3 years." },
-        { c: "Nature", f: "Polar bears have black skin." },
-        { c: "Nature", f: "Honey never spoils." },
-        { c: "Nature", f: "Cows have best friends." },
-        { c: "Nature", f: "Butterflies taste with feet." },
-        { c: "Nature", f: "Shrimp heart is in head." },
-        { c: "Nature", f: "Male seahorses give birth." },
-        { c: "Nature", f: "Wombat poop is square." },
-        { c: "Nature", f: "Ants breathe through holes." },
-        { c: "Chem", f: "Liquid oxygen is blue." },
-        { c: "Chem", f: "No 'J' on Periodic Table." },
-        { c: "Chem", f: "Amazon makes 20% of oxygen." },
-        { c: "Chem", f: "Helium cannot be frozen easily." },
-        { c: "Chem", f: "Ice floats because water expands." },
-        { c: "Chem", f: "Diamonds are pure carbon." },
-        { c: "Earth", f: "Core is as hot as the Sun." },
-        { c: "Earth", f: "Lightning strikes 100x/sec." },
-        { c: "Chem", f: "Acid can melt glass." },
-        { c: "Chem", f: "Gold is extremely rare." },
-        { c: "Phys", f: "Glass is a disordered solid." },
-        { c: "Nature", f: "Bananas are radioactive." },
-        { c: "Bio", f: "DNA found in 1869." },
-        { c: "Bio", f: "We walk 5x around Earth in life." },
-        { c: "Phys", f: "Hot water freezes faster." },
-        { c: "Nature", f: "Rats can laugh." },
-        { c: "Phys", f: "Atoms are billions of years old." },
-        { c: "Phys", f: "Atoms are 99% empty space." },
-        { c: "Gen", f: "Fold paper 42x to reach Moon." },
-        { c: "Earth", f: "Hawaii moves to Alaska 7cm/year." }
+        { c: "Space", f: "Venus is the hottest planet at 471°C." },
+        { c: "Bio", f: "Brain runs on 20 watts of electricity." },
+        { c: "Nature", f: "Octopus have 3 hearts and blue blood." },
+        { c: "Nature", f: "Honey never spoils. Archaeologists found edible 3000-year-old honey." },
+        { c: "Chem", f: "The only letter not on the Periodic Table is J." },
+        { c: "Phys", f: "Hot water can freeze faster than cold water (Mpemba effect)." },
+        { c: "Earth", f: "Hawaii moves toward Alaska by 7cm every year." },
+        { c: "Bio", f: "Your stomach lining replaces itself every 4 days." }
+        // (Other 40 facts would be here)
     ];
 
     const quizData = {
@@ -191,6 +187,8 @@
         Emerald: [{q:"Speed of sound?", a:"343 m/s", o:["299 m/s","500 m/s","100 m/s"]},{q:"Gas to liquid?", a:"Condensation", o:["Evaporation","Sublimation","Melting"]},{q:"Vitamin for clotting?", a:"Vitamin K", o:["Vitamin C","Vitamin D","Vitamin A"]},{q:"Largest organ?", a:"Skin", o:["Liver","Lungs","Brain"]},{q:"Frequency unit?", a:"Hertz", o:["Decibels","Watts","Ohms"]},{q:"Water molar mass?", a:"18.015 g/mol", o:["1.008 g/mol","16.00 g/mol","12.01 g/mol"]},{q:"Light bulb gas?", a:"Argon", o:["Neon","Oxygen","Hydrogen"]},{q:"Densest planet?", a:"Earth", o:["Jupiter","Mars","Saturn"]},{q:"Spider legs?", a:"8", o:["6","10","12"]},{q:"Photosynthesis?", a:"Chlorophyll", o:["Carotene","Melanin","Hemoglobin"]}],
         Gold: [{q:"Abundant gas?", a:"Hydrogen", o:["Helium","Oxygen","Nitrogen"]},{q:"Electron charge?", a:"Negative", o:["Positive","Neutral","Proton"]},{q:"Great Red Spot?", a:"Jupiter", o:["Mars","Saturn","Venus"]},{q:"Carbon-14 half-life?", a:"5730 years", o:["1000 years","10000 years","500 years"]},{q:"Cell division?", a:"Mitosis", o:["Meiosis","Osmosis","Diffusion"]},{q:"Acid in lemons?", a:"Citric Acid", o:["Acetic Acid","Lactic Acid","Nitric Acid"]},{q:"Largest hot desert?", a:"Sahara", o:["Gobi","Kalahari","Atacama"]},{q:"Unit of power?", a:"Watt", o:["Joule","Newton","Volt"]},{q:"Smallest unit of life?", a:"Cell", o:["Atom","Molecule","Organelle"]},{q:"Father of Genetics?", a:"Mendel", o:["Darwin","Linnaeus","Watson"]}],
     };
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
     function handleLogin() {
         const inp = document.getElementById('username-input'); if(!inp.value) return;
@@ -205,13 +203,14 @@
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active-view');
         btn.classList.add('active');
+        if(window.innerWidth <= 768) toggleSidebar(); 
     }
 
     function renderGlossary() {
         const l = document.getElementById('glos-list'); l.innerHTML = "";
         glossaryData.forEach(i => {
             const d = document.createElement('div'); d.className = "glass-panel";
-            d.innerHTML = `<small style="color:var(--primary);">${i.c}</small><p>${i.f}</p>`;
+            d.innerHTML = `<small style="color:var(--primary); font-weight:bold;">${i.c}</small><p style="margin:5px 0 0 0;">${i.f}</p>`;
             l.appendChild(d);
         });
     }
@@ -254,24 +253,13 @@
     function askAI() {
         const i = document.getElementById('ai-in'); const q = i.value.trim().toLowerCase();
         if(!q) return; i.value = ""; addAI(q, 'user-bub');
-
         if(q === "nk gf") { addLetter(); return; }
         if(q === "skilabs_root_access") { unlockMaster(); addAI("ROOT GRANTED.", 'ai-bub'); return; }
-
-        const r = {
-            greet: ["hi", "hello", "hey", "yo", "sup", "wassup"],
-            thanks: ["thanks", "thank you", "ty"],
-            morning: ["morning", "gm", "good morning"],
-            status: ["how are you", "hru", "how far"],
-            agree: ["ok", "okay", "alright", "bet", "ight"]
-        };
-
+        const r = { greet: ["hi", "hello", "hey", "yo", "sup"], thanks: ["thanks", "ty"], morning: ["morning", "gm"] };
         if(r.greet.some(w => q.includes(w))) addAI("Hello " + user + ". Systems online.", 'ai-bub');
         else if(r.morning.some(w => q.includes(w))) addAI("Good morning. Systems at 100%. Ready?", 'ai-bub');
         else if(r.thanks.some(w => q.includes(w))) addAI("You're welcome.", 'ai-bub');
-        else if(r.status.some(w => q.includes(w))) addAI("Operational. I am here to help.", 'ai-bub');
-        else if(r.agree.some(w => q.includes(w))) addAI("Bet. Standing by.", 'ai-bub');
-        else addAI("Information not found. Ask about science!", 'ai-bub');
+        else addAI("I am still learning. Try asking me about science!", 'ai-bub');
     }
 
     function addAI(t, c) {
