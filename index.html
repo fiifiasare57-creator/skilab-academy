@@ -51,6 +51,9 @@
         .hidden-stage { display: none; }
         .gold-unlocked .hidden-stage { display: block; animation: slideDown 0.5s ease; }
 
+        .archive-card { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 20px; transition: 0.3s; }
+        .archive-category { font-family: 'JetBrains Mono'; font-size: 0.65rem; color: var(--primary); background: rgba(79, 70, 229, 0.1); padding: 4px 8px; border-radius: 5px; display: inline-block; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; }
+
         #ai-window { display: none; position: fixed; bottom: 100px; right: 20px; left: 20px; height: 60vh; max-width: 400px; margin: 0 auto; background: var(--panel); border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 5000; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
         #ai-chat { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.95rem; }
@@ -123,7 +126,7 @@
                         <span id="q-count">NODE: 1/10</span>
                         <span id="q-score">SCORE: 0</span>
                     </div>
-                    <p id="q-txt" style="font-weight:700; font-size:1.3rem;"></p>
+                    <p id="q-txt" style="font-weight:700; font-size:1.1rem; line-height: 1.4;"></p>
                     <div id="q-opts"></div>
                 </div>
             </div>
@@ -136,17 +139,15 @@
             </div>
         </section>
 
-       <section id="glossary" class="view">
-    <h1 style="font-weight:900;">Archive</h1>
-    
-    <div class="glass-panel" style="padding: 15px; margin-bottom: 20px;">
-        <input type="text" id="archive-search" placeholder="Search facts or categories..." 
-               style="width:100%; padding:15px; border-radius:12px; border:2px solid var(--border); background:var(--bg); color:var(--text); font-family: 'Outfit';"
-               onkeyup="filterArchive()">
-    </div>
-
-    <div id="glos-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;"></div>
-</section>
+        <section id="glossary" class="view">
+            <h1 style="font-weight:900;">Archive</h1>
+            <div class="glass-panel" style="padding: 15px; margin-bottom: 20px;">
+                <input type="text" id="archive-search" placeholder="Search facts or categories..." 
+                       style="width:100%; padding:15px; border-radius:12px; border:2px solid var(--border); background:var(--bg); color:var(--text); font-family: 'Outfit';"
+                       onkeyup="filterArchive()">
+            </div>
+            <div id="glos-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;"></div>
+        </section>
 
         <section id="settings" class="view">
             <h1 style="font-weight:900;">Settings</h1>
@@ -168,7 +169,7 @@
     </div>
     <div id="ai-chat"></div>
     <div style="padding:15px; display:flex; gap:10px; border-top:1px solid var(--border);">
-        <input type="text" id="ai-in" placeholder="Say hello..." style="flex:1; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+        <input type="text" id="ai-in" placeholder="Say hello..." style="flex:1; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg); color:var(--text);" onkeypress="if(event.key==='Enter') askAI()">
         <button onclick="askAI()" style="background:var(--primary); color:white; border:none; width:50px; border-radius:12px;">➤</button>
     </div>
 </div>
@@ -218,95 +219,96 @@
         {cat:"Physics", txt:"Neutrons have no electrical charge."},
         {cat:"Biology", txt:"Sea otters hold hands while sleeping."},
         {cat:"Misc", txt:"The first orange was actually green."},
-        {cat:"Space", txt:"Mars has the tallest volcano (Olympus Mons)."},
+        {cat:"Space", txt:"Mars has the tallest volcano in the solar system (Olympus Mons)."},
         {cat:"Biology", txt:"Turtles can breathe through their butts."},
         {cat:"Physics", txt:"The universe has no center."},
         {cat:"Biology", txt:"A shrimp's heart is in its head."},
         {cat:"Misc", txt:"A group of flamingos is called a flamboyance."},
-        {cat:"Space", txt:"Neptune has the strongest winds."},
+        {cat:"Space", txt:"Neptune has the strongest winds in the solar system."},
         {cat:"Biology", txt:"Sloths can hold their breath longer than dolphins."},
         {cat:"Physics", txt:"Helium can defy gravity and climb up walls."},
         {cat:"Biology", txt:"Elephants are the only animals that can't jump."},
-        {cat:"Misc", txt:"Strawberries are not berries, but bananas are."},
+        {cat:"Misc", txt:"Strawberries are not actually berries, but bananas are."},
         {cat:"Space", txt:"Uranus smells like rotten eggs."},
         {cat:"Biology", txt:"Human teeth are as strong as shark teeth."},
-        {cat:"Physics", txt:"Time moves slower at high altitudes."}
+        {cat:"Physics", txt:"Time moves slower at the top of a mountain than at sea level."}
     ];
 
-const quizzes = {
-    Pro: [
-        {q:"What is the chemical symbol for Gold?", a:"Au", o:["Ag","Fe","Gd"]}, 
-        {q:"Which planet is famously known as the Red Planet?", a:"Mars", o:["Venus","Saturn","Pluto"]}, 
-        {q:"What is the chemical formula for water?", a:"H2O", o:["HO2","CO2","NaCl"]}, 
-        {q:"Which gas do humans need to breathe to survive?", a:"Oxygen", o:["Nitrogen","Neon","Helium"]}, 
-        {q:"What is the name of the star at the center of our solar system?", a:"Sun", o:["Sirius","Vega","Proxima"]},
-        {q:"Which planet is the eighth planet from the Sun?", a:"Neptune", o:["Uranus","Saturn","Jupiter"]}, 
-        {q:"What is considered the hardest natural substance on Earth?", a:"Diamond", o:["Ruby","Quartz","Emerald"]}, 
-        {q:"Which of the Earth's oceans is the largest?", a:"Pacific", o:["Atlantic","Indian","Arctic"]}, 
-        {q:"At what temperature in Celsius does water begin to boil?", a:"100", o:["90","120","80"]}, 
-        {q:"What is the name of the Earth's only natural satellite?", a:"Moon", o:["Sun","Titan","Europa"]}
-    ],
-    Master: [
-        {q:"How many bones are found in a typical adult human body?", a:"206", o:["200","210","300"]}, 
-        {q:"What is the approximate speed of light in a vacuum?", a:"300k km/s", o:["150k","500k","10k"]}, 
-        {q:"Which of these is a noble gas often used in bright signs?", a:"Neon", o:["Oxygen","Argon","Chlorine"]}, 
-        {q:"What is the temperature of absolute zero in Celsius?", a:"-273.15", o:["0","-100","-400"]}, 
-        {q:"Which metal is unique for being a liquid at room temperature?", a:"Mercury", o:["Lead","Iron","Gallium"]},
-        {q:"Which gas makes up approximately 78% of the Earth's atmosphere?", a:"Nitrogen", o:["Oxygen","Argon","CO2"]}, 
-        {q:"What is the standard unit used to measure electrical power?", a:"Watt", o:["Volt","Ohm","Amp"]}, 
-        {q:"What is the name of the central part of an atom?", a:"Nucleus", o:["Proton","Electron","Shell"]}, 
-        {q:"Which scientist is famous for his laws of motion and gravity?", a:"Newton", o:["Einstein","Tesla","Galileo"]}, 
-        {q:"What is the atomic number of the element Carbon?", a:"6", o:["12","8","1"]}
-    ],
-    Elite: [
-        {q:"What is the pH level of pure, distilled water?", a:"7", o:["1","14","5"]}, 
-        {q:"What is the basic structural and functional unit of all life?", a:"Cell", o:["Atom","Tissue","Organ"]}, 
-        {q:"What is the most abundant chemical element in the universe?", a:"Hydrogen", o:["Oxygen","Helium","Nitrogen"]}, 
-        {q:"What is the scientific study of fungi called?", a:"Mycology", o:["Botany","Zoology","Biology"]}, 
-        {q:"In terms of surface area, what is the largest organ in the human body?", a:"Skin", o:["Liver","Brain","Heart"]},
-        {q:"Which organelle is known as the powerhouse of the cell?", a:"Mitochondria", o:["Nucleus","Ribosome","DNA"]}, 
-        {q:"What is the name of the deepest known part of the Earth's oceans?", a:"Mariana", o:["Java","Tonga","Kuril"]}, 
-        {q:"Which pigment gives plants their green color and absorbs light?", a:"Chlorophyll", o:["Hemoglobin","Melanin","Carotene"]}, 
-        {q:"What is the speed of sound in dry air at room temperature?", a:"343 m/s", o:["299","500","100"]}, 
-        {q:"What is the electrical charge of a neutron?", a:"Neutral", o:["Positive","Negative","Varies"]}
-    ],
-    Ruby: [
-        {q:"Which blood type is considered the rarest in the world?", a:"AB-", o:["O-","A+","B-"]}, 
-        {q:"Approximately how many kilometers are in one light year?", a:"9.46T km", o:["1M km","1T km","500B km"]}, 
-        {q:"Who is widely considered the father of modern genetics?", a:"Mendel", o:["Darwin","Watson","Crick"]}, 
-        {q:"Which planet in our solar system has the most confirmed moons?", a:"Saturn", o:["Jupiter","Uranus","Mars"]}, 
-        {q:"What is the molar mass of water (rounded to three decimals)?", a:"18.015", o:["16","1","12"]},
-        {q:"Which gas is most commonly used to fill incandescent light bulbs?", a:"Argon", o:["Neon","Oxygen","Hydrogen"]}, 
-        {q:"Which planet is the densest in our solar system?", a:"Earth", o:["Jupiter","Mars","Saturn"]}, 
-        {q:"How many legs do spiders typically have?", a:"8", o:["6","10","12"]}, 
-        {q:"What unique flying ability do hummingbirds possess?", a:"Fly backwards", o:["Swim","Talk","Sleep flying"]}, 
-        {q:"Which common fruit contains high levels of citric acid?", a:"Lemons", o:["Apples","Milk","Vinegar"]}
-    ],
-    Emerald: [
-        {q:"What is the value of the Golden Ratio to three decimal places?", a:"1.618", o:["3.14","2.71","1.41"]}, 
-        {q:"What is the half-life of the isotope Carbon-14?", a:"5730y", o:["1k","10k","500"]}, 
-        {q:"Which of these is known as the largest hot desert on Earth?", a:"Sahara", o:["Gobi","Atacama","Mojave"]}, 
-        {q:"Which vitamin is essential for blood clotting?", a:"K", o:["C","D","A"]}, 
-        {q:"How many confirmed elements are currently on the Periodic Table?", a:"118", o:["115","120","100"]},
-        {q:"Which law states that an object at rest stays at rest?", a:"Newton 1st", o:["2nd","3rd","Gravity"]}, 
-        {q:"What is the primary ingredient used to make glass?", a:"Silica", o:["Iron","Gold","Carbon"]}, 
-        {q:"What is the process called when a gas turns into a liquid?", a:"Condensation", o:["L to G","S to G","G to S"]}, 
-        {q:"How many moons does the planet Mars have?", a:"2", o:["1","5","0"]}, 
-        {q:"Which planet is the smallest in our solar system?", a:"Mercury", o:["Mars","Pluto","Venus"]}
-    ],
-    Gold: [
-        {q:"What is the most abundant element in the Earth's crust?", a:"Oxygen", o:["Iron","Silicon","Gold"]}, 
-        {q:"At what degree are Celsius and Fahrenheit temperatures equal?", a:"-40", o:["0","32","100"]}, 
-        {q:"Who is credited with developing the first successful polio vaccine?", a:"Salk", o:["Pasteur","Fleming","Curie"]}, 
-        {q:"What type of galaxy is our Milky Way classified as?", a:"Spiral", o:["Elliptical","Irregular","Lenticular"]}, 
-        {q:"What is the scientific study of weather and atmosphere called?", a:"Meteorology", o:["Geology","Ecology","Biology"]},
-        {q:"The liver is biologically classified as which of the following?", a:"Internal organ", o:["Muscle","Bone","Gland"]}, 
-        {q:"What is the primary gas found in the atmosphere of Jupiter?", a:"Hydrogen", o:["Helium","Oxygen","Neon"]}, 
-        {q:"Which scientist developed the Theory of General Relativity?", a:"Einstein", o:["Newton","Hawking","Bohr"]}, 
-        {q:"Our Sun is scientifically classified as what type of star?", a:"Yellow Dwarf", o:["Red Giant","Blue Star","White Dwarf"]}, 
-        {q:"What is the geometric shape of a DNA molecule?", a:"Double Helix", o:["Circle","Square","Line"]}
-    ]
-};
+    const quizzes = {
+        Pro: [
+            {q:"What is the chemical symbol for Gold?", a:"Au", o:["Ag","Fe","Gd"]}, 
+            {q:"Which planet is famously known as the Red Planet?", a:"Mars", o:["Venus","Saturn","Pluto"]}, 
+            {q:"What is the chemical formula for water?", a:"H2O", o:["HO2","CO2","NaCl"]}, 
+            {q:"Which gas do humans need to breathe to survive?", a:"Oxygen", o:["Nitrogen","Neon","Helium"]}, 
+            {q:"What is the name of the star at the center of our solar system?", a:"Sun", o:["Sirius","Vega","Proxima"]},
+            {q:"Which planet is the eighth planet from the Sun?", a:"Neptune", o:["Uranus","Saturn","Jupiter"]}, 
+            {q:"What is considered the hardest natural substance on Earth?", a:"Diamond", o:["Ruby","Quartz","Emerald"]}, 
+            {q:"Which of the Earth's oceans is the largest?", a:"Pacific", o:["Atlantic","Indian","Arctic"]}, 
+            {q:"At what temperature in Celsius does water begin to boil?", a:"100", o:["90","120","80"]}, 
+            {q:"What is the name of the Earth's only natural satellite?", a:"Moon", o:["Sun","Titan","Europa"]}
+        ],
+        Master: [
+            {q:"How many bones are found in a typical adult human body?", a:"206", o:["200","210","300"]}, 
+            {q:"What is the approximate speed of light in a vacuum?", a:"300k km/s", o:["150k","500k","10k"]}, 
+            {q:"Which of these is a noble gas often used in bright signs?", a:"Neon", o:["Oxygen","Argon","Chlorine"]}, 
+            {q:"What is the temperature of absolute zero in Celsius?", a:"-273.15", o:["0","-100","-400"]}, 
+            {q:"Which metal is unique for being a liquid at room temperature?", a:"Mercury", o:["Lead","Iron","Gallium"]},
+            {q:"Which gas makes up approximately 78% of the Earth's atmosphere?", a:"Nitrogen", o:["Oxygen","Argon","CO2"]}, 
+            {q:"What is the standard unit used to measure electrical power?", a:"Watt", o:["Volt","Ohm","Amp"]}, 
+            {q:"What is the name of the central part of an atom?", a:"Nucleus", o:["Proton","Electron","Shell"]}, 
+            {q:"Which scientist is famous for his laws of motion and gravity?", a:"Newton", o:["Einstein","Tesla","Galileo"]}, 
+            {q:"What is the atomic number of the element Carbon?", a:"6", o:["12","8","1"]}
+        ],
+        Elite: [
+            {q:"What is the pH level of pure, distilled water?", a:"7", o:["1","14","5"]}, 
+            {q:"What is the basic structural and functional unit of all life?", a:"Cell", o:["Atom","Tissue","Organ"]}, 
+            {q:"What is the most abundant chemical element in the universe?", a:"Hydrogen", o:["Oxygen","Helium","Nitrogen"]}, 
+            {q:"What is the scientific study of fungi called?", a:"Mycology", o:["Botany","Zoology","Biology"]}, 
+            {q:"In terms of surface area, what is the largest organ in the human body?", a:"Skin", o:["Liver","Brain","Heart"]},
+            {q:"Which organelle is known as the powerhouse of the cell?", a:"Mitochondria", o:["Nucleus","Ribosome","DNA"]}, 
+            {q:"What is the name of the deepest known part of the Earth's oceans?", a:"Mariana", o:["Java","Tonga","Kuril"]}, 
+            {q:"Which pigment gives plants their green color and absorbs light?", a:"Chlorophyll", o:["Hemoglobin","Melanin","Carotene"]}, 
+            {q:"What is the speed of sound in dry air at room temperature?", a:"343 m/s", o:["299","500","100"]}, 
+            {q:"What is the electrical charge of a neutron?", a:"Neutral", o:["Positive","Negative","Varies"]}
+        ],
+        Ruby: [
+            {q:"Which blood type is considered the rarest in the world?", a:"AB-", o:["O-","A+","B-"]}, 
+            {q:"Approximately how many kilometers are in one light year?", a:"9.46T km", o:["1M km","1T km","500B km"]}, 
+            {q:"Who is widely considered the father of modern genetics?", a:"Mendel", o:["Darwin","Watson","Crick"]}, 
+            {q:"Which planet in our solar system has the most confirmed moons?", a:"Saturn", o:["Jupiter","Uranus","Mars"]}, 
+            {q:"What is the molar mass of water (rounded to three decimals)?", a:"18.015", o:["16","1","12"]},
+            {q:"Which gas is most commonly used to fill incandescent light bulbs?", a:"Argon", o:["Neon","Oxygen","Hydrogen"]}, 
+            {q:"Which planet is the densest in our solar system?", a:"Earth", o:["Jupiter","Mars","Saturn"]}, 
+            {q:"How many legs do spiders typically have?", a:"8", o:["6","10","12"]}, 
+            {q:"What unique flying ability do hummingbirds possess?", a:"Fly backwards", o:["Swim","Talk","Sleep flying"]}, 
+            {q:"Which common fruit contains high levels of citric acid?", a:"Lemons", o:["Apples","Milk","Vinegar"]}
+        ],
+        Emerald: [
+            {q:"What is the value of the Golden Ratio to three decimal places?", a:"1.618", o:["3.14","2.71","1.41"]}, 
+            {q:"What is the half-life of the isotope Carbon-14?", a:"5730y", o:["1k","10k","500"]}, 
+            {q:"Which of these is known as the largest hot desert on Earth?", a:"Sahara", o:["Gobi","Atacama","Mojave"]}, 
+            {q:"Which vitamin is essential for blood clotting?", a:"K", o:["C","D","A"]}, 
+            {q:"How many confirmed elements are currently on the Periodic Table?", a:"118", o:["115","120","100"]},
+            {q:"Which law states that an object at rest stays at rest?", a:"Newton 1st", o:["2nd","3rd","Gravity"]}, 
+            {q:"What is the primary ingredient used to make glass?", a:"Silica", o:["Iron","Gold","Carbon"]}, 
+            {q:"What is the process called when a gas turns into a liquid?", a:"Condensation", o:["L to G","S to G","G to S"]}, 
+            {q:"How many moons does the planet Mars have?", a:"2", o:["1","5","0"]}, 
+            {q:"Which planet is the smallest in our solar system?", a:"Mercury", o:["Mars","Pluto","Venus"]}
+        ],
+        Gold: [
+            {q:"What is the most abundant element in the Earth's crust?", a:"Oxygen", o:["Iron","Silicon","Gold"]}, 
+            {q:"At what degree are Celsius and Fahrenheit temperatures equal?", a:"-40", o:["0","32","100"]}, 
+            {q:"Who is credited with developing the first successful polio vaccine?", a:"Salk", o:["Pasteur","Fleming","Curie"]}, 
+            {q:"What type of galaxy is our Milky Way classified as?", a:"Spiral", o:["Elliptical","Irregular","Lenticular"]}, 
+            {q:"What is the scientific study of weather and atmosphere called?", a:"Meteorology", o:["Geology","Ecology","Biology"]},
+            {q:"The liver is biologically classified as which of the following?", a:"Internal organ", o:["Muscle","Bone","Gland"]}, 
+            {q:"What is the primary gas found in the atmosphere of Jupiter?", a:"Hydrogen", o:["Helium","Oxygen","Neon"]}, 
+            {q:"Which scientist developed the Theory of General Relativity?", a:"Einstein", o:["Newton","Hawking","Bohr"]}, 
+            {q:"Our Sun is scientifically classified as what type of star?", a:"Yellow Dwarf", o:["Red Giant","Blue Star","White Dwarf"]}, 
+            {q:"What is the geometric shape of a DNA molecule?", a:"Double Helix", o:["Circle","Square","Line"]}
+        ]
+    };
+
     function handleLogin() {
         const i = document.getElementById('username-input');
         if(!i.value) return;
@@ -330,12 +332,22 @@ const quizzes = {
     function toggleAI() { const w = document.getElementById('ai-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
     function toggleMusic() { const m = document.getElementById('bg-music'); isPlaying ? m.pause() : m.play(); isPlaying = !isPlaying; }
 
-    function renderArchive() {
+    function renderArchive(filteredFacts = facts) {
         const list = document.getElementById('glos-list');
         list.innerHTML = "";
-        facts.forEach(f => {
+        if (filteredFacts.length === 0) {
+            list.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--subtext);">No matching records found.</p>`;
+            return;
+        }
+        filteredFacts.forEach(f => {
             list.innerHTML += `<div class="archive-card"><span class="archive-category">${f.cat}</span><p style="margin:0; font-weight:600;">${f.txt}</p></div>`;
         });
+    }
+
+    function filterArchive() {
+        const query = document.getElementById('archive-search').value.toLowerCase();
+        const filtered = facts.filter(f => f.txt.toLowerCase().includes(query) || f.cat.toLowerCase().includes(query));
+        renderArchive(filtered);
     }
 
     function prepareQuiz(lvl) {
@@ -367,7 +379,7 @@ const quizzes = {
         document.getElementById('score-screen').style.display = 'block';
         document.getElementById('final-score-display').innerText = `${score}/10`;
         if(score >= 7) {
-            confetti();
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             if(currentLvl === 'Elite') {
                 document.getElementById('gauntlet').classList.add('gold-unlocked');
                 document.body.classList.add('gold-theme');
@@ -378,66 +390,53 @@ const quizzes = {
     }
 
     function closeQuiz() { document.getElementById('score-screen').style.display = 'none'; document.getElementById('quiz-menu').style.display = 'block'; }
-function askAI() {
-    const input = document.getElementById('ai-in');
-    const chat = document.getElementById('ai-chat');
-    const query = input.value.toLowerCase().trim();
-    
-    if(!query) return;
 
-    // Show what she typed
-    chat.innerHTML += `<div class="bubble user-bub">${input.value}</div>`;
-    
-    let response = "";
+    function askAI() {
+        const input = document.getElementById('ai-in');
+        const chat = document.getElementById('ai-chat');
+        const query = input.value.toLowerCase().trim();
+        if(!query) return;
 
-    // 1. THE SECRET CODE (Confetti + Love Letter)
-    if(query === "nk") {
-        response = `
-            <div class="love-letter">
-                My Dearest,<br><br>
-                From the moment you entered my orbit, everything changed. Your light reaches the deepest parts of my soul. 
-                Like a star, you guide me through the dark. I find myself lost in thoughts of you constantly.<br><br>
-                There is no logic or science for how I feel. Every second with you is a gift I cherish. 
-                I promise to stand by you, always. You are my greatest discovery and my best friend.<br><br>
-                My world is brighter simply because you are in it. I choose you today, and I will choose you tomorrow. 
-                No distance or time could ever dim this flame. I promise to hold you and never let go.<br><br>
-                <b>if time was ever to ask where i belong i would point to your heaart and call it home</b><br><br>
-                from yours truly Caleb Fiifi Asare
-            </div>`;
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-    } 
-    // 2. GREETINGS
-    else if(query === "hello" || query === "hi") {
-        response = `System online. I am OMNI_AI. Ready to assist with your research, ${user}.`;
+        chat.innerHTML += `<div class="bubble user-bub">${input.value}</div>`;
+        let response = "";
+
+        if(query === "nk") {
+            response = `
+                <div class="love-letter">
+                    My Dearest,<br><br>
+                    From the moment you entered my orbit, everything changed. Your light reaches the deepest parts of my soul. 
+                    Like a star, you guide me through the dark. I find myself lost in thoughts of you constantly.<br><br>
+                    There is no logic or science for how I feel. Every second with you is a gift I cherish. 
+                    I promise to stand by you, always. You are my greatest discovery and my best friend.<br><br>
+                    My world is brighter simply because you are in it. I choose you today, and I will choose you tomorrow. 
+                    No distance or time could ever dim this flame. I promise to hold you and never let go.<br><br>
+                    <b>if time was ever to ask where i belong i would point to your heaart and call it home</b><br><br>
+                    from yours truly Caleb Fiifi Asare
+                </div>`;
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        } 
+        else if(query === "hello" || query === "hi") {
+            response = `System online. I am OMNI_AI. Ready to assist with your research, ${user}.`;
+        }
+        else {
+            response = `
+                <div style="border-left: 3px solid var(--accent); padding-left: 10px;">
+                    <p style="margin: 0 0 10px 0;">I have analyzed your request. I don't have this specific data in my local core, but I can query the <b>Global Science Network</b> for you:</p>
+                    <a href="https://www.google.com/search?q=${encodeURIComponent(input.value + ' science facts')}" 
+                       target="_blank" 
+                       style="display: inline-block; background: var(--primary); color: white; padding: 10px 15px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.8rem; margin-top: 5px;">
+                       🌐 ACCESS GLOBAL DATABASE
+                    </a>
+                </div>
+            `;
+        }
+
+        setTimeout(() => {
+            chat.innerHTML += `<div class="bubble ai-bub">${response}</div>`;
+            chat.scrollTop = chat.scrollHeight;
+        }, 600);
+        input.value = "";
     }
-    // 3. THE GLOBAL LINK (The "Google Connect" trick)
-    else {
-        response = `
-            <div style="border-left: 3px solid var(--accent); padding-left: 10px;">
-                <p style="margin: 0 0 10px 0;">I have analyzed your request. I don't have this specific data in my local core, but I can query the <b>Global Science Network</b> for you:</p>
-                <a href="https://www.google.com/search?q=${encodeURIComponent(input.value + ' science facts')}" 
-                   target="_blank" 
-                   style="display: inline-block; background: var(--primary); color: white; padding: 10px 15px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.8rem; margin-top: 5px;">
-                   🌐 ACCESS GLOBAL DATABASE
-                </a>
-            </div>
-        `;
-    }
-
-    // Thinking delay
-    setTimeout(() => {
-        chat.innerHTML += `<div class="bubble ai-bub">${response}</div>`;
-        chat.scrollTop = chat.scrollHeight; // Auto-scroll to bottom
-    }, 600);
-
-    input.value = ""; // Clear the input box
-}
-}
 </script>
 </body>
 </html>
-
-
-
-
-
