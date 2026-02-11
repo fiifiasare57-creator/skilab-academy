@@ -136,10 +136,17 @@
             </div>
         </section>
 
-        <section id="glossary" class="view">
-            <h1 style="font-weight:900;">Archive</h1>
-            <div id="glos-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;"></div>
-        </section>
+       <section id="glossary" class="view">
+    <h1 style="font-weight:900;">Archive</h1>
+    
+    <div class="glass-panel" style="padding: 15px; margin-bottom: 20px;">
+        <input type="text" id="archive-search" placeholder="Search facts or categories..." 
+               style="width:100%; padding:15px; border-radius:12px; border:2px solid var(--border); background:var(--bg); color:var(--text); font-family: 'Outfit';"
+               onkeyup="filterArchive()">
+    </div>
+
+    <div id="glos-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;"></div>
+</section>
 
         <section id="settings" class="view">
             <h1 style="font-weight:900;">Settings</h1>
@@ -347,7 +354,7 @@
                 I choose you today, and I will choose you tomorrow.<br>
                 No distance or time could ever dim this flame.<br>
                 I promise to hold you and never let go.<br>
-                <b>if time was ever to ask where i belong i would point to your heaart and call it home</b><br><br>
+                <b>if time was ever to ask where i belong i would point to your heart and call it home</b><br><br>
                 from yours truly Caleb Fiifi Asare
             </div>`;
             confetti();
@@ -358,4 +365,5 @@
 </script>
 </body>
 </html>
+
 
