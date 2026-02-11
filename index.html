@@ -233,33 +233,80 @@
         {cat:"Physics", txt:"Time moves slower at high altitudes."}
     ];
 
-    const quizzes = {
-        Pro: [
-            {q:"Gold Symbol?", a:"Au", o:["Ag","Fe","Gd"]}, {q:"Red Planet?", a:"Mars", o:["Venus","Saturn","Pluto"]}, {q:"Water?", a:"H2O", o:["HO2","CO2","NaCl"]}, {q:"Gas we breathe?", a:"Oxygen", o:["Nitrogen","Neon","Helium"]}, {q:"Star at center?", a:"Sun", o:["Sirius","Vega","Proxima"]},
-            {q:"8th Planet?", a:"Neptune", o:["Uranus","Saturn","Jupiter"]}, {q:"Hardest gem?", a:"Diamond", o:["Ruby","Quartz","Emerald"]}, {q:"Largest ocean?", a:"Pacific", o:["Atlantic","Indian","Arctic"]}, {q:"Boiling point (C)?", a:"100", o:["90","120","80"]}, {q:"Earth Satellite?", a:"Moon", o:["Sun","Titan","Europa"]}
-        ],
-        Master: [
-            {q:"Adult bones?", a:"206", o:["200","210","300"]}, {q:"Speed of light?", a:"300k km/s", o:["150k","500k","10k"]}, {q:"Noble gas?", a:"Neon", o:["Oxygen","Argon","Chlorine"]}, {q:"Absolute zero (C)?", a:"-273.15", o:["0","-100","-400"]}, {q:"Liquid metal?", a:"Mercury", o:["Lead","Iron","Gallium"]},
-            {q:"78% of air?", a:"Nitrogen", o:["Oxygen","Argon","CO2"]}, {q:"Unit of power?", a:"Watt", o:["Volt","Ohm","Amp"]}, {q:"Atom center?", a:"Nucleus", o:["Proton","Electron","Shell"]}, {q:"Gravity man?", a:"Newton", o:["Einstein","Tesla","Galileo"]}, {q:"Carbon ID?", a:"6", o:["12","8","1"]}
-        ],
-        Elite: [
-            {q:"pH of water?", a:"7", o:["1","14","5"]}, {q:"Unit of life?", a:"Cell", o:["Atom","Tissue","Organ"]}, {q:"Most abundant gas?", a:"Hydrogen", o:["Oxygen","Helium","Nitrogen"]}, {q:"Fungi study?", a:"Mycology", o:["Botany","Zoology","Biology"]}, {q:"Skin organ?", a:"Largest", o:["Smallest","Internal","None"]},
-            {q:"Powerhouse?", a:"Mitochondria", o:["Nucleus","Ribosome","DNA"]}, {q:"Deepest trench?", a:"Mariana", o:["Java","Tonga","Kuril"]}, {q:"Plant pigment?", a:"Chlorophyll", o:["Hemoglobin","Melanin","Carotene"]}, {q:"Sound speed?", a:"343 m/s", o:["299","500","100"]}, {q:"Neutron charge?", a:"Neutral", o:["Positive","Negative","Varies"]}
-        ],
-        Ruby: [
-            {q:"Rarest blood?", a:"AB-", o:["O-","A+","B-"]}, {q:"Light year?", a:"9.46T km", o:["1M km","1T km","500B km"]}, {q:"Genetics father?", a:"Mendel", o:["Darwin","Watson","Crick"]}, {q:"Most moons?", a:"Saturn", o:["Jupiter","Uranus","Mars"]}, {q:"Molar water?", a:"18.015", o:["16","1","12"]},
-            {q:"Bulb gas?", a:"Argon", o:["Neon","Oxygen","Hydrogen"]}, {q:"Densest planet?", a:"Earth", o:["Jupiter","Mars","Saturn"]}, {q:"Spider legs?", a:"8", o:["6","10","12"]}, {q:"Hummingbird?", a:"Fly backwards", o:["Swim","Talk","Sleep flying"]}, {q:"Citric acid?", a:"Lemons", o:["Apples","Milk","Vinegar"]}
-        ],
-        Emerald: [
-            {q:"Golden Ratio?", a:"1.618", o:["3.14","2.71","1.41"]}, {q:"C-14 half-life?", a:"5730y", o:["1k","10k","500"]}, {q:"Hot desert?", a:"Sahara", o:["Gobi","Atacama","Mojave"]}, {q:"Clotting Vit?", a:"K", o:["C","D","A"]}, {q:"Elements?", a:"118", o:["115","120","100"]},
-            {q:"Inertia law?", a:"Newton 1st", o:["2nd","3rd","Gravity"]}, {q:"Glass part?", a:"Silica", o:["Iron","Gold","Carbon"]}, {q:"Condensation?", a:"Gas to Liquid", o:["L to G","S to G","G to S"]}, {q:"Mars moons?", a:"2", o:["1","5","0"]}, {q:"Smallest planet?", a:"Mercury", o:["Mars","Pluto","Venus"]}
-        ],
-        Gold: [
-            {q:"Crust element?", a:"Oxygen", o:["Iron","Silicon","Gold"]}, {q:"C and F same?", a:"-40", o:["0","32","100"]}, {q:"Polio vaccine?", a:"Salk", o:["Pasteur","Fleming","Curie"]}, {q:"Galaxy type?", a:"Spiral", o:["Elliptical","Irregular","Lenticular"]}, {q:"Weather study?", a:"Meteorology", o:["Geology","Ecology","Biology"]},
-            {q:"Liver?", a:"Internal organ", o:["Muscle","Bone","Gland"]}, {q:"Jupiter gas?", a:"Hydrogen", o:["Helium","Oxygen","Neon"]}, {q:"Relativity?", a:"Einstein", o:["Newton","Hawking","Bohr"]}, {q:"Sun type?", a:"Yellow Dwarf", o:["Red Giant","Blue Star","White Dwarf"]}, {q:"DNA shape?", a:"Double Helix", o:["Circle","Square","Line"]}
-        ]
-    };
-
+const quizzes = {
+    Pro: [
+        {q:"What is the chemical symbol for Gold?", a:"Au", o:["Ag","Fe","Gd"]}, 
+        {q:"Which planet is famously known as the Red Planet?", a:"Mars", o:["Venus","Saturn","Pluto"]}, 
+        {q:"What is the chemical formula for water?", a:"H2O", o:["HO2","CO2","NaCl"]}, 
+        {q:"Which gas do humans need to breathe to survive?", a:"Oxygen", o:["Nitrogen","Neon","Helium"]}, 
+        {q:"What is the name of the star at the center of our solar system?", a:"Sun", o:["Sirius","Vega","Proxima"]},
+        {q:"Which planet is the eighth planet from the Sun?", a:"Neptune", o:["Uranus","Saturn","Jupiter"]}, 
+        {q:"What is considered the hardest natural substance on Earth?", a:"Diamond", o:["Ruby","Quartz","Emerald"]}, 
+        {q:"Which of the Earth's oceans is the largest?", a:"Pacific", o:["Atlantic","Indian","Arctic"]}, 
+        {q:"At what temperature in Celsius does water begin to boil?", a:"100", o:["90","120","80"]}, 
+        {q:"What is the name of the Earth's only natural satellite?", a:"Moon", o:["Sun","Titan","Europa"]}
+    ],
+    Master: [
+        {q:"How many bones are found in a typical adult human body?", a:"206", o:["200","210","300"]}, 
+        {q:"What is the approximate speed of light in a vacuum?", a:"300k km/s", o:["150k","500k","10k"]}, 
+        {q:"Which of these is a noble gas often used in bright signs?", a:"Neon", o:["Oxygen","Argon","Chlorine"]}, 
+        {q:"What is the temperature of absolute zero in Celsius?", a:"-273.15", o:["0","-100","-400"]}, 
+        {q:"Which metal is unique for being a liquid at room temperature?", a:"Mercury", o:["Lead","Iron","Gallium"]},
+        {q:"Which gas makes up approximately 78% of the Earth's atmosphere?", a:"Nitrogen", o:["Oxygen","Argon","CO2"]}, 
+        {q:"What is the standard unit used to measure electrical power?", a:"Watt", o:["Volt","Ohm","Amp"]}, 
+        {q:"What is the name of the central part of an atom?", a:"Nucleus", o:["Proton","Electron","Shell"]}, 
+        {q:"Which scientist is famous for his laws of motion and gravity?", a:"Newton", o:["Einstein","Tesla","Galileo"]}, 
+        {q:"What is the atomic number of the element Carbon?", a:"6", o:["12","8","1"]}
+    ],
+    Elite: [
+        {q:"What is the pH level of pure, distilled water?", a:"7", o:["1","14","5"]}, 
+        {q:"What is the basic structural and functional unit of all life?", a:"Cell", o:["Atom","Tissue","Organ"]}, 
+        {q:"What is the most abundant chemical element in the universe?", a:"Hydrogen", o:["Oxygen","Helium","Nitrogen"]}, 
+        {q:"What is the scientific study of fungi called?", a:"Mycology", o:["Botany","Zoology","Biology"]}, 
+        {q:"In terms of surface area, what is the largest organ in the human body?", a:"Skin", o:["Liver","Brain","Heart"]},
+        {q:"Which organelle is known as the powerhouse of the cell?", a:"Mitochondria", o:["Nucleus","Ribosome","DNA"]}, 
+        {q:"What is the name of the deepest known part of the Earth's oceans?", a:"Mariana", o:["Java","Tonga","Kuril"]}, 
+        {q:"Which pigment gives plants their green color and absorbs light?", a:"Chlorophyll", o:["Hemoglobin","Melanin","Carotene"]}, 
+        {q:"What is the speed of sound in dry air at room temperature?", a:"343 m/s", o:["299","500","100"]}, 
+        {q:"What is the electrical charge of a neutron?", a:"Neutral", o:["Positive","Negative","Varies"]}
+    ],
+    Ruby: [
+        {q:"Which blood type is considered the rarest in the world?", a:"AB-", o:["O-","A+","B-"]}, 
+        {q:"Approximately how many kilometers are in one light year?", a:"9.46T km", o:["1M km","1T km","500B km"]}, 
+        {q:"Who is widely considered the father of modern genetics?", a:"Mendel", o:["Darwin","Watson","Crick"]}, 
+        {q:"Which planet in our solar system has the most confirmed moons?", a:"Saturn", o:["Jupiter","Uranus","Mars"]}, 
+        {q:"What is the molar mass of water (rounded to three decimals)?", a:"18.015", o:["16","1","12"]},
+        {q:"Which gas is most commonly used to fill incandescent light bulbs?", a:"Argon", o:["Neon","Oxygen","Hydrogen"]}, 
+        {q:"Which planet is the densest in our solar system?", a:"Earth", o:["Jupiter","Mars","Saturn"]}, 
+        {q:"How many legs do spiders typically have?", a:"8", o:["6","10","12"]}, 
+        {q:"What unique flying ability do hummingbirds possess?", a:"Fly backwards", o:["Swim","Talk","Sleep flying"]}, 
+        {q:"Which common fruit contains high levels of citric acid?", a:"Lemons", o:["Apples","Milk","Vinegar"]}
+    ],
+    Emerald: [
+        {q:"What is the value of the Golden Ratio to three decimal places?", a:"1.618", o:["3.14","2.71","1.41"]}, 
+        {q:"What is the half-life of the isotope Carbon-14?", a:"5730y", o:["1k","10k","500"]}, 
+        {q:"Which of these is known as the largest hot desert on Earth?", a:"Sahara", o:["Gobi","Atacama","Mojave"]}, 
+        {q:"Which vitamin is essential for blood clotting?", a:"K", o:["C","D","A"]}, 
+        {q:"How many confirmed elements are currently on the Periodic Table?", a:"118", o:["115","120","100"]},
+        {q:"Which law states that an object at rest stays at rest?", a:"Newton 1st", o:["2nd","3rd","Gravity"]}, 
+        {q:"What is the primary ingredient used to make glass?", a:"Silica", o:["Iron","Gold","Carbon"]}, 
+        {q:"What is the process called when a gas turns into a liquid?", a:"Condensation", o:["L to G","S to G","G to S"]}, 
+        {q:"How many moons does the planet Mars have?", a:"2", o:["1","5","0"]}, 
+        {q:"Which planet is the smallest in our solar system?", a:"Mercury", o:["Mars","Pluto","Venus"]}
+    ],
+    Gold: [
+        {q:"What is the most abundant element in the Earth's crust?", a:"Oxygen", o:["Iron","Silicon","Gold"]}, 
+        {q:"At what degree are Celsius and Fahrenheit temperatures equal?", a:"-40", o:["0","32","100"]}, 
+        {q:"Who is credited with developing the first successful polio vaccine?", a:"Salk", o:["Pasteur","Fleming","Curie"]}, 
+        {q:"What type of galaxy is our Milky Way classified as?", a:"Spiral", o:["Elliptical","Irregular","Lenticular"]}, 
+        {q:"What is the scientific study of weather and atmosphere called?", a:"Meteorology", o:["Geology","Ecology","Biology"]},
+        {q:"The liver is biologically classified as which of the following?", a:"Internal organ", o:["Muscle","Bone","Gland"]}, 
+        {q:"What is the primary gas found in the atmosphere of Jupiter?", a:"Hydrogen", o:["Helium","Oxygen","Neon"]}, 
+        {q:"Which scientist developed the Theory of General Relativity?", a:"Einstein", o:["Newton","Hawking","Bohr"]}, 
+        {q:"Our Sun is scientifically classified as what type of star?", a:"Yellow Dwarf", o:["Red Giant","Blue Star","White Dwarf"]}, 
+        {q:"What is the geometric shape of a DNA molecule?", a:"Double Helix", o:["Circle","Square","Line"]}
+    ]
+};
     function handleLogin() {
         const i = document.getElementById('username-input');
         if(!i.value) return;
@@ -365,5 +412,6 @@
 </script>
 </body>
 </html>
+
 
 
