@@ -11,7 +11,6 @@
             --primary: #4f46e5; --accent: #06b6d4; --gold: #b45309; --bg: #ffffff; 
             --panel: #f8fafc; --border: #e2e8f0; --text: #1e293b; --subtext: #64748b; --sidebar-bg: #f1f5f9;
         }
-        /* The Gold Transformation Theme */
         .gold-theme { 
             --primary: #d97706; --accent: #f59e0b; --bg: #fffcf0; --panel: #ffffff; --border: #fef3c7; --sidebar-bg: #fef3c7; --text: #451a03;
         }
@@ -49,6 +48,15 @@
         
         .hidden-stage { display: none; border: 2px solid var(--gold); }
         .gold-unlocked .hidden-stage { display: block; animation: slideDown 0.5s ease; }
+
+        /* Archive Specific Styles */
+        .filter-tag { padding: 6px 15px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; color: var(--subtext); transition: 0.2s; }
+        .filter-tag:hover, .filter-tag.active { border-color: var(--primary); color: var(--primary); background: rgba(79, 70, 229, 0.1); }
+
+        .archive-card { position: relative; padding: 20px; margin-bottom: 15px; background: var(--panel); border-radius: 18px; border: 1px solid var(--border); transition: 0.3s; overflow: hidden; }
+        .archive-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 10px 20px -10px rgba(79, 70, 229, 0.2); }
+        .archive-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--primary); opacity: 0.5; }
+        .archive-category { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; display: block; margin-bottom: 8px; }
 
         #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 55px; height: 55px; border-radius: 50%; border: none; z-index: 3500; font-size: 1.5rem; }
         #ai-window { display: none; position: fixed; bottom: 85px; right: 15px; left: 15px; height: 60vh; max-width: 400px; margin: 0 auto; background: var(--panel); border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 5000; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
@@ -135,6 +143,19 @@
 
     <section id="glossary" class="view">
         <h1>Data Archive</h1>
+        <div class="glass-panel" style="padding: 15px; margin-bottom: 20px;">
+            <input type="text" id="archive-search" placeholder="Search data nodes..." 
+                   style="width:100%; padding:12px; border-radius:12px; border:2px solid var(--border); background:var(--bg); color:var(--text); margin-bottom:10px;"
+                   onkeyup="filterArchive()">
+            
+            <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">
+                <button class="filter-tag active" onclick="filterCategory('all', this)">All</button>
+                <button class="filter-tag" onclick="filterCategory('Space', this)">Space</button>
+                <button class="filter-tag" onclick="filterCategory('Biology', this)">Biology</button>
+                <button class="filter-tag" onclick="filterCategory('Physics', this)">Physics</button>
+                <button class="filter-tag" onclick="filterCategory('Misc', this)">Misc</button>
+            </div>
+        </div>
         <div id="glos-list"></div>
     </section>
 
@@ -173,17 +194,27 @@
     let activeQuestions = [];
     let isGoldUnlocked = false;
 
-    const facts = [
-        "Light takes 8 minutes and 20 seconds to travel from the Sun to Earth.", "A teaspoon of a neutron star would weigh 6 billion tons.", "Venus rotates clockwise, unlike most other planets.", "There are more trees on Earth than stars in the Milky Way.", "Water can boil and freeze at the same time at its 'triple point'.",
-        "Octopuses have three hearts and blue blood.", "Honey never spoils; archaeologists found edible 3,000-year-old honey.", "Bananas are slightly radioactive because they contain potassium.", "A day on Venus is longer than its year.", "The footprints on the Moon will stay there for millions of years.",
-        "Your DNA could stretch from the Earth to Pluto and back 17 times.", "The Eiffel Tower can be 15cm taller during summer due to heat expansion.", "Sharks have been around longer than trees.", "A bolt of lightning is 5 times hotter than the Sun's surface.", "Humans share 50% of their DNA with bananas.",
-        "Saturn would float if you put it in a giant bathtub of water.", "Plastic takes about 450 years to decompose in the ocean.", "There is enough gold in Earth's core to coat the entire surface.", "Clouds can weigh over a million pounds.", "A single solar flare can release the energy of millions of hydrogen bombs.",
-        "The world's oldest known living tree is over 4,800 years old.", "Antarctica is the largest desert on Earth.", "Sound travels 4 times faster in water than in air.", "Koalas have fingerprints almost identical to humans.", "The heart of a shrimp is located in its head.",
-        "An ostrich's eye is bigger than its brain.", "Rats laugh when they are tickled.", "The smell of rain is caused by bacteria called Actinomycetes.", "Glass is actually a slow-moving liquid.", "The human eye can distinguish 10 million different colors.",
-        "There are 206 bones in an adult human body.", "Jupiter's Great Red Spot is a storm larger than Earth.", "Diamond is the hardest natural substance.", "Wombat poop is cube-shaped.", "Turtles can breathe through their butts.",
-        "A group of flamingos is called a 'flamboyance'.", "Sea otters hold hands while sleeping to stay together.", "Cows have best friends and get stressed when separated.", "The longest recorded flight of a chicken is 13 seconds.", "A snail can sleep for up to three years.",
-        "Butterflies taste with their feet.", "The total weight of all ants on Earth is roughly equal to all humans.", "A blue whale's tongue weighs as much as an elephant.", "Earth is the only planet not named after a god.", "Your heart beats about 100,000 times a day.",
-        "Stomach acid can dissolve metal.", "A jiffy is an actual unit of time (1/100th of a second).", "The most common element in the universe is Hydrogen.", "Rubber bands last longer when refrigerated.", "Venus is the hottest planet in our solar system."
+    const categorizedFacts = [
+        { cat: "Space", txt: "Light takes 8 minutes and 20 seconds to travel from the Sun to Earth." },
+        { cat: "Physics", txt: "A teaspoon of a neutron star would weigh 6 billion tons." },
+        { cat: "Space", txt: "Venus rotates clockwise, unlike most other planets." },
+        { cat: "Biology", txt: "There are more trees on Earth than stars in the Milky Way." },
+        { cat: "Physics", txt: "Water can boil and freeze at the same time at its 'triple point'." },
+        { cat: "Biology", txt: "Octopuses have three hearts and blue blood." },
+        { cat: "Biology", txt: "Honey never spoils; archaeologists found edible 3,000-year-old honey." },
+        { cat: "Physics", txt: "Bananas are slightly radioactive because they contain potassium." },
+        { cat: "Space", txt: "A day on Venus is longer than its year." },
+        { cat: "Space", txt: "The footprints on the Moon will stay there for millions of years." },
+        { cat: "Biology", txt: "Your DNA could stretch from the Earth to Pluto and back 17 times." },
+        { cat: "Physics", txt: "The Eiffel Tower can be 15cm taller during summer due to heat expansion." },
+        { cat: "Biology", txt: "Sharks have been around longer than trees." },
+        { cat: "Physics", txt: "A bolt of lightning is 5 times hotter than the Sun's surface." },
+        { cat: "Biology", txt: "Humans share 50% of their DNA with bananas." },
+        { cat: "Space", txt: "Saturn would float if you put it in a giant bathtub of water." },
+        { cat: "Misc", txt: "Plastic takes about 450 years to decompose in the ocean." },
+        { cat: "Misc", txt: "There is enough gold in Earth's core to coat the entire surface." },
+        { cat: "Physics", txt: "Clouds can weigh over a million pounds." },
+        { cat: "Space", txt: "A single solar flare can release the energy of millions of hydrogen bombs." }
     ];
 
     const quizzes = {
@@ -242,14 +273,30 @@
 
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-    function renderArchive() {
+    function renderArchive(filter = 'all') {
         const list = document.getElementById('glos-list');
         list.innerHTML = "";
-        facts.forEach((f, i) => {
+        categorizedFacts.forEach((f, i) => {
+            if (filter !== 'all' && f.cat !== filter) return;
             const card = document.createElement('div');
             card.className = "archive-card";
-            card.innerHTML = `<small style="opacity: 0.6;">ENTRY_ID_${i+1}</small><p style="margin: 5px 0 0 0; font-weight: 500;">${f}</p>`;
+            card.innerHTML = `<span class="archive-category">${f.cat} // DATA_NODE_${i+1}</span><p style="margin: 0; font-weight: 500; line-height: 1.5;">${f.txt}</p>`;
             list.appendChild(card);
+        });
+    }
+
+    function filterCategory(cat, btn) {
+        document.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderArchive(cat);
+    }
+
+    function filterArchive() {
+        const query = document.getElementById('archive-search').value.toLowerCase();
+        const cards = document.querySelectorAll('.archive-card');
+        cards.forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(query) ? "block" : "none";
         });
     }
 
@@ -301,7 +348,6 @@
             document.getElementById('score-msg').innerText = "Advancement authorized. Data updated.";
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             
-            // Logic for unlocking Gold Stages
             if(currentLvl === 'Elite') {
                 isGoldUnlocked = true;
                 document.body.classList.add('gold-theme');
