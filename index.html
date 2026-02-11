@@ -378,7 +378,6 @@ const quizzes = {
     }
 
     function closeQuiz() { document.getElementById('score-screen').style.display = 'none'; document.getElementById('quiz-menu').style.display = 'block'; }
-
 function askAI() {
     const input = document.getElementById('ai-in');
     const chat = document.getElementById('ai-chat');
@@ -386,74 +385,58 @@ function askAI() {
     
     if(!query) return;
 
-    // Display user message
+    // Show what she typed
     chat.innerHTML += `<div class="bubble user-bub">${input.value}</div>`;
     
     let response = "";
 
-    // 1. SECRET CODE LOGIC
+    // 1. THE SECRET CODE (Confetti + Love Letter)
     if(query === "nk") {
-        response = `<div class="love-letter">
-            My Dearest,<br><br>
-            From the moment you entered my orbit, everything changed.<br>
-            Your light reaches the deepest parts of my soul.<br>
-            Like a star, you guide me through the dark.<br>
-            I find myself lost in thoughts of you constantly.<br>
-            There is no logic or science for how I feel.<br>
-            Every second with you is a gift I cherish.<br>
-            I promise to stand by you, always.<br>
-            You are my greatest discovery and my best friend.<br>
-            My world is brighter simply because you are in it.<br>
-            I choose you today, and I will choose you tomorrow.<br>
-            No distance or time could ever dim this flame.<br>
-            I promise to hold you and never let go.<br>
-            <b>if time was ever to ask where i belong i would point to your heaart and call it home</b><br><br>
-            from yours truly Caleb Fiifi Asare
-        </div>`;
-        confetti();
-    } 
-    // 2. BASIC INTERACTION
-    else if(query === "hello" || query === "hi") {
-        response = `System online. I am OMNI_AI. How can I assist your scientific research today, ${user}?`;
-    }
-    // 3. GLOBAL DATABASE LINK (The "Google Connect" trick)
-    else {
-      // 3. CHECK FOR INSTANT SCIENCE ANSWERS
-    else if(query.includes("dna")) {
         response = `
-            <b>Analysis Complete:</b> DNA (Deoxyribonucleic Acid) is the molecule that carries the genetic instructions for all living things. It looks like a twisted ladder called a double helix.
-            <br><br>
-            <a href="https://www.google.com/search?q=dna+explained+for+students" target="_blank" style="display: inline-block; background: var(--primary); color: white; padding: 10px 15px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.8rem;">
-               🌐 RESEARCH MORE ON DNA
-            </a>
-        `;
+            <div class="love-letter">
+                My Dearest,<br><br>
+                From the moment you entered my orbit, everything changed. Your light reaches the deepest parts of my soul. 
+                Like a star, you guide me through the dark. I find myself lost in thoughts of you constantly.<br><br>
+                There is no logic or science for how I feel. Every second with you is a gift I cherish. 
+                I promise to stand by you, always. You are my greatest discovery and my best friend.<br><br>
+                My world is brighter simply because you are in it. I choose you today, and I will choose you tomorrow. 
+                No distance or time could ever dim this flame. I promise to hold you and never let go.<br><br>
+                <b>if time was ever to ask where i belong i would point to your heaart and call it home</b><br><br>
+                from yours truly Caleb Fiifi Asare
+            </div>`;
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    } 
+    // 2. GREETINGS
+    else if(query === "hello" || query === "hi") {
+        response = `System online. I am OMNI_AI. Ready to assist with your research, ${user}.`;
     }
-    // 4. GENERAL GLOBAL SEARCH (For anything else)
+    // 3. THE GLOBAL LINK (The "Google Connect" trick)
     else {
         response = `
             <div style="border-left: 3px solid var(--accent); padding-left: 10px;">
                 <p style="margin: 0 0 10px 0;">I have analyzed your request. I don't have this specific data in my local core, but I can query the <b>Global Science Network</b> for you:</p>
                 <a href="https://www.google.com/search?q=${encodeURIComponent(input.value + ' science facts')}" 
                    target="_blank" 
-                   style="display: inline-block; background: var(--primary); color: white; padding: 10px 15px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.8rem;">
+                   style="display: inline-block; background: var(--primary); color: white; padding: 10px 15px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.8rem; margin-top: 5px;">
                    🌐 ACCESS GLOBAL DATABASE
                 </a>
             </div>
         `;
     }
-    }
 
-    // Processing delay to make it feel like "thinking"
+    // Thinking delay
     setTimeout(() => {
         chat.innerHTML += `<div class="bubble ai-bub">${response}</div>`;
-        chat.scrollTop = chat.scrollHeight;
+        chat.scrollTop = chat.scrollHeight; // Auto-scroll to bottom
     }, 600);
 
-    input.value = "";
+    input.value = ""; // Clear the input box
+}
 }
 </script>
 </body>
 </html>
+
 
 
 
