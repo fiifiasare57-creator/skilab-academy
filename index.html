@@ -1,74 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SkiLabs | Academy Terminal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <style>
-        :root { 
-            --primary: #4f46e5; --accent: #06b6d4; --gold: #b45309; --bg: #ffffff; 
-            --panel: #f8fafc; --border: #e2e8f0; --text: #1e293b; --subtext: #64748b; --sidebar-bg: #f1f5f9;
-        }
-        .gold-theme { 
-            --primary: #d97706; --accent: #f59e0b; --bg: #fffcf0; --panel: #ffffff; --border: #fef3c7; --sidebar-bg: #fef3c7; --text: #451a03;
-        }
-        .dark-mode {
-            --bg: #0f172a; --panel: #1e293b; --border: #334155; --text: #f8fafc; --subtext: #94a3b8; --sidebar-bg: #0f172a;
-        }
-        
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.5s ease; }
-        
-        #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        #sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; flex-shrink: 0; transition: transform 0.3s; z-index: 4000; }
-        #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 3999; }
-        
-        @media (max-width: 768px) { 
-            #sidebar { position: fixed; height: 100%; transform: translateX(-100%); } 
-            #sidebar.open { transform: translateX(0); } 
-            #sidebar.open + #sidebar-overlay { display: block; } 
-        }
-
-        .menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 3000; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; }
-        @media (max-width: 768px) { .menu-toggle { display: block; } }
-
-        .nav-btn { padding: 14px; margin-bottom: 8px; border-radius: 14px; cursor: pointer; color: var(--subtext); border: 1px solid transparent; background: none; text-align: left; width: 100%; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
-        .nav-btn.active { background: var(--primary); color: white; }
-        
-        #main { flex-grow: 1; overflow-y: auto; padding: 80px 20px 40px; }
-        .view { display: none; max-width: 600px; margin: 0 auto; }
-        .active-view { display: block; animation: fadeIn 0.3s ease-out; }
-        
-        .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .quiz-opt { width: 100%; padding: 16px; border: 2px solid var(--border); border-radius: 14px; background: var(--panel); color: var(--text); margin-bottom: 12px; cursor: pointer; text-align: left; font-weight: 600; }
-        .opt-wrong { background: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; }
-        .opt-correct { background: #dcfce7 !important; border-color: #22c55e !important; color: #166534; }
-        
-        .hidden-stage { display: none; border: 2px solid var(--gold); }
-        .gold-unlocked .hidden-stage { display: block; animation: slideDown 0.5s ease; }
-
-        /* Archive Specific Styles */
-        .filter-tag { padding: 6px 15px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; color: var(--subtext); transition: 0.2s; }
-        .filter-tag:hover, .filter-tag.active { border-color: var(--primary); color: var(--primary); background: rgba(79, 70, 229, 0.1); }
-
-        .archive-card { position: relative; padding: 20px; margin-bottom: 15px; background: var(--panel); border-radius: 18px; border: 1px solid var(--border); transition: 0.3s; overflow: hidden; }
-        .archive-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 10px 20px -10px rgba(79, 70, 229, 0.2); }
-        .archive-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--primary); opacity: 0.5; }
-        .archive-category { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; display: block; margin-bottom: 8px; }
-
-        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 55px; height: 55px; border-radius: 50%; border: none; z-index: 3500; font-size: 1.5rem; }
-        #ai-window { display: none; position: fixed; bottom: 85px; right: 15px; left: 15px; height: 60vh; max-width: 400px; margin: 0 auto; background: var(--panel); border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 5000; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; }
-        .ai-bub { background: var(--border); align-self: flex-start; }
-        .user-bub { background: var(--primary); color: white; align-self: flex-end; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
 <body>
 
 <audio id="bg-music" loop>
@@ -102,6 +31,11 @@
             <p><b>Operator:</b> <span id="id-val" style="color:var(--primary)">---</span></p>
             <p><b>Status:</b> <span id="rank-val">PROBATION</span></p>
             <div style="height:12px; background:var(--border); border-radius:10px; overflow:hidden; margin-top: 10px;"><div id="prog-bar" style="width:5%; height:100%; background:var(--primary); transition:1.5s cubic-bezier(0.4, 0, 0.2, 1);"></div></div>
+        </div>
+        
+        <div class="glass-panel" style="border-left: 4px solid var(--accent);">
+            <small style="color: var(--accent); font-weight: 800; letter-spacing: 1px;">DAILY_INTEL</small>
+            <p id="daily-fact" style="margin: 10px 0 0; font-style: italic; color: var(--subtext);"></p>
         </div>
     </section>
 
@@ -144,12 +78,12 @@
     <section id="glossary" class="view">
         <h1>Data Archive</h1>
         <div class="glass-panel" style="padding: 15px; margin-bottom: 20px;">
-            <input type="text" id="archive-search" placeholder="Search data nodes..." 
+            <input type="text" id="archive-search" placeholder="Search 50 data nodes..." 
                    style="width:100%; padding:12px; border-radius:12px; border:2px solid var(--border); background:var(--bg); color:var(--text); margin-bottom:10px;"
                    onkeyup="filterArchive()">
             
             <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px;">
-                <button class="filter-tag active" onclick="filterCategory('all', this)">All</button>
+                <button class="filter-tag active" onclick="filterCategory('all', this)">All (50)</button>
                 <button class="filter-tag" onclick="filterCategory('Space', this)">Space</button>
                 <button class="filter-tag" onclick="filterCategory('Biology', this)">Biology</button>
                 <button class="filter-tag" onclick="filterCategory('Physics', this)">Physics</button>
@@ -194,7 +128,8 @@
     let activeQuestions = [];
     let isGoldUnlocked = false;
 
-const categorizedFacts = [
+    // FULL 50 FACT DATABASE
+    const categorizedFacts = [
         { cat: "Space", txt: "Light takes 8 minutes and 20 seconds to travel from the Sun to Earth." },
         { cat: "Physics", txt: "A teaspoon of a neutron star would weigh 6 billion tons." },
         { cat: "Space", txt: "Venus rotates clockwise, unlike most other planets." },
@@ -246,7 +181,7 @@ const categorizedFacts = [
         { cat: "Misc", txt: "Rubber bands last longer when refrigerated." },
         { cat: "Space", txt: "Venus is the hottest planet in our solar system." }
     ];
-       
+
     const quizzes = {
         Pro: [
             {q:"What is the chemical symbol for Gold?", a:"Au", o:["Ag","Fe","Gd"]}, {q:"Which planet is known as the Red Planet?", a:"Mars", o:["Venus","Saturn","Jupiter"]}, {q:"What is the hardest natural substance on Earth?", a:"Diamond", o:["Gold","Iron","Quartz"]}, {q:"What is the chemical formula for water?", a:"H2O", o:["HO2","CO2","NaCl"]}, {q:"Which gas do humans need to breathe to live?", a:"Oxygen", o:["Nitrogen","Helium","Carbon"]},
@@ -290,6 +225,11 @@ const categorizedFacts = [
         user = inp.value.trim().toUpperCase();
         document.getElementById('id-val').innerText = user;
         document.getElementById('login-screen').style.display = 'none';
+        
+        // Show random fact on dash
+        const randomFact = categorizedFacts[Math.floor(Math.random() * categorizedFacts.length)];
+        document.getElementById('daily-fact').innerText = randomFact.txt;
+        
         renderArchive();
     }
 
@@ -427,6 +367,3 @@ const categorizedFacts = [
         chat.scrollTop = chat.scrollHeight;
     }
 </script>
-</body>
-</html>
-
