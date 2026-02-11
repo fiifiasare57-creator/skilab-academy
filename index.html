@@ -54,14 +54,18 @@
         .archive-card { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 20px; transition: 0.3s; }
         .archive-category { font-family: 'JetBrains Mono'; font-size: 0.65rem; color: var(--primary); background: rgba(79, 70, 229, 0.1); padding: 4px 8px; border-radius: 5px; display: inline-block; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; }
 
-        #ai-window { display: none; position: fixed; bottom: 100px; right: 20px; left: 20px; height: 60vh; max-width: 400px; margin: 0 auto; background: var(--panel); border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 5000; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        /* AI Button & Window Mobile Fix */
+        #ai-window { display: none; position: fixed; bottom: 90px; right: 20px; left: 20px; height: 65vh; max-width: 400px; margin: 0 auto; background: var(--panel); border-radius: 24px; border: 1px solid var(--border); flex-direction: column; overflow: hidden; z-index: 5000; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); }
+        #ai-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; width: 60px; height: 60px; border-radius: 20px; font-size: 1.5rem; cursor: pointer; z-index: 5001; transition: 0.3s ease; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        #ai-toggle.active { transform: rotate(90deg); background: #ef4444; }
+
         #ai-chat { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.95rem; }
+        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; }
         .ai-bub { background: var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
         .user-bub { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .love-letter { font-family: 'Dancing Script', cursive; font-size: 1.1rem; color: #be185d; line-height: 1.5; padding: 5px; }
+        .love-letter { font-family: 'Dancing Script', cursive; font-size: 1.2rem; color: #be185d; line-height: 1.5; padding: 5px; }
 
-        footer { text-align: center; padding: 15px; background: var(--sidebar-bg); border-top: 1px solid var(--border); font-size: 0.8rem; font-weight: 800; color: var(--subtext); letter-spacing: 1px; }
+        footer { text-align: center; padding: 15px; background: var(--sidebar-bg); border-top: 1px solid var(--border); font-size: 0.75rem; font-weight: 800; color: var(--subtext); letter-spacing: 1.5px; text-transform: uppercase; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
@@ -160,16 +164,16 @@
     </main>
 </div>
 
-<footer>MADE BY CALEB FIIFI ASARE</footer>
+<footer>DEVELOPED BY CALEB FIIFI ASARE</footer>
 
-<button id="ai-toggle" onclick="toggleAI()" style="position:fixed; bottom:70px; right:25px; background:var(--primary); color:white; border:none; width:65px; height:65px; border-radius:20px; font-size:1.8rem; cursor:pointer; z-index:5001;">🧠</button>
+<button id="ai-toggle" onclick="toggleAI()">🧠</button>
 <div id="ai-window">
-    <div style="background:var(--primary); color:white; padding:18px; font-weight: bold; display: flex; justify-content: space-between;">
-        OMNI_AI <span onclick="toggleAI()" style="cursor:pointer;">×</span>
+    <div style="background:var(--primary); color:white; padding:18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+        OMNI_AI <span onclick="toggleAI()" style="cursor:pointer; font-size: 1.5rem;">×</span>
     </div>
     <div id="ai-chat"></div>
-    <div style="padding:15px; display:flex; gap:10px; border-top:1px solid var(--border);">
-        <input type="text" id="ai-in" placeholder="Say hello..." style="flex:1; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg); color:var(--text);" onkeypress="if(event.key==='Enter') askAI()">
+    <div style="padding:15px; display:flex; gap:10px; border-top:1px solid var(--border); background: var(--panel);">
+        <input type="text" id="ai-in" placeholder="Query Global Database..." style="flex:1; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg); color:var(--text);" onkeypress="if(event.key==='Enter') askAI()">
         <button onclick="askAI()" style="background:var(--primary); color:white; border:none; width:50px; border-radius:12px;">➤</button>
     </div>
 </div>
@@ -329,7 +333,16 @@
 
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-    function toggleAI() { const w = document.getElementById('ai-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
+    
+    function toggleAI() { 
+        const w = document.getElementById('ai-window'); 
+        const t = document.getElementById('ai-toggle');
+        const isOpen = w.style.display === 'flex';
+        w.style.display = isOpen ? 'none' : 'flex'; 
+        t.classList.toggle('active', !isOpen);
+        if(!isOpen) t.innerText = "×"; else t.innerText = "🧠";
+    }
+
     function toggleMusic() { const m = document.getElementById('bg-music'); isPlaying ? m.pause() : m.play(); isPlaying = !isPlaying; }
 
     function renderArchive(filteredFacts = facts) {
@@ -409,8 +422,8 @@
                     There is no logic or science for how I feel. Every second with you is a gift I cherish. 
                     I promise to stand by you, always. You are my greatest discovery and my best friend.<br><br>
                     My world is brighter simply because you are in it. I choose you today, and I will choose you tomorrow. 
-                    No distance or time could ever dim this flame. Nhyi, you are my queen, my life and my world. I promise to hold you and never let go.<br><br>
-                    <b>if time was ever to ask where I belong I would point to your heart and call it home</b><br><br>
+                    No distance or time could ever dim this flame. I promise to hold you and never let go.<br><br>
+                    <b>if time was ever to ask where i belong i would point to your heaart and call it home</b><br><br>
                     from yours truly Caleb Fiifi Asare
                 </div>`;
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
@@ -440,4 +453,3 @@
 </script>
 </body>
 </html>
-
